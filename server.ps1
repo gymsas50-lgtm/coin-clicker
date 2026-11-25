@@ -1,181 +1,84 @@
 $ErrorActionPreference = 'Stop'
+Set-Location $PSScriptRoot
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $root = $PSScriptRoot
-$listener = New-Object System.Net.Sockets.TcpListener([System.Net.IPAddress]::Any, 3000)
-$job = $null
-$dropSeq = 0
-$dropEvents = New-Object System.Collections.Generic.List[object]
-$dropSeen = @{}
-$dropNames = @{ cosmos=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('0JrQvtGB0LzQvtGB'))); prism=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('0J/RgNC40LfQvNCw'))); dragon=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('0KHQtdGA0LTRhtC1INC00YDQsNC60L7QvdCw'))); singularity=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('0KHQuNC90LPRg9C70Y/RgNC90L7RgdGC0Yw='))) }
-
-$utf8 = New-Object System.Text.UTF8Encoding($false)
-function Get-Version {
-    $sha = [System.Security.Cryptography.SHA256]::Create()
-    try { return ([BitConverter]::ToString($sha.ComputeHash([IO.File]::ReadAllBytes((Join-Path $root 'index.html'))))).Replace('-','').ToLowerInvariant() } finally { $sha.Dispose() }
+$utf8 = New-Object Text.UTF8Encoding($false)
+$nodeVersion = '22.16.0'
+$runtime = Join-Path $root 'runtime'
+$node = Join-Path $runtime 'node.exe'
+$child = $null
+function Download-File($url, $dest) {
+    $wc = New-Object Net.WebClient
+    try { $wc.Headers['User-Agent'] = 'CoinGameUpdater/3'; $wc.DownloadFile($url, $dest) } finally { $wc.Dispose() }
+}
+function Get-Revision {
+    $wc = New-Object Net.WebClient
+    try { $wc.Headers['User-Agent']='git/2.43.0'; $text=$wc.DownloadString('https://github.com/gymsas50-lgtm/coin-clicker.git/info/refs?service=git-upload-pack') } finally { $wc.Dispose() }
+    $m=[regex]::Match($text,'([0-9a-f]{40}) refs/heads/main')
+    if (-not $m.Success) { throw 'Cannot resolve game revision' }
+    return $m.Groups[1].Value
 }
 try {
-    $listener.Start()
-    $job = Start-Job -ArgumentList $root -ScriptBlock {
-        param($root)
-        $ErrorActionPreference = 'Stop'
-        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-        $dest = Join-Path $root 'index.html'
-        $temp = Join-Path $root 'download.tmp'
-        $backup = Join-Path $root 'index.previous.html'
-        $statusFile = Join-Path $root 'update-status.txt'
-        $enc = New-Object Text.UTF8Encoding($false)
-        $lastRevision = $null
-        while ($true) {
-            $web = $null
-            try {
-                $url = [IO.File]::ReadAllText((Join-Path $root 'source-url.txt')).Trim()
-                $uri = [Uri]$url
-                if ($uri.Scheme -ne 'https' -or $uri.Host -ne 'raw.githubusercontent.com' -or $uri.AbsolutePath -ne '/gymsas50-lgtm/coin-clicker/main/index.html') { throw 'Invalid update URL. Expected this game on raw.githubusercontent.com.' }
-                # Read Git's branch advertisement, then fetch an immutable revision.
-                # No REST API token or 60 requests/hour API quota is involved.
-                $refsRequest = [Net.HttpWebRequest]::Create('https://github.com/gymsas50-lgtm/coin-clicker.git/info/refs?service=git-upload-pack')
-                $refsRequest.Timeout = 10000
-                $refsRequest.ReadWriteTimeout = 10000
-                $refsRequest.UserAgent = 'git/2.43.0'
-                $refsRequest.Headers['Cache-Control'] = 'no-cache'
-                $refsResponse = $refsRequest.GetResponse()
-                try {
-                    $refsReader = New-Object IO.StreamReader($refsResponse.GetResponseStream())
-                    try { $advertisement = $refsReader.ReadToEnd() } finally { $refsReader.Dispose() }
-                } finally { $refsResponse.Dispose() }
-                $match = [regex]::Match($advertisement, '([0-9a-f]{40}) refs/heads/main')
-                if (-not $match.Success) { throw 'Cannot determine latest game revision' }
-                $revision = $match.Groups[1].Value
-                if ($revision -eq $lastRevision) {
-                    [IO.File]::WriteAllText($statusFile, ('UP TO DATE ' + (Get-Date -Format 'HH:mm:ss') + ' rev ' + $revision.Substring(0,7)), $enc)
-                    Start-Sleep -Seconds 2
-                    continue
-                }
-                $uri = [Uri]('https://raw.githubusercontent.com/gymsas50-lgtm/coin-clicker/' + $revision + '/index.html')
-                $builder = New-Object UriBuilder($uri)
-                $builder.Query = 'check=' + [DateTimeOffset]::UtcNow.ToUnixTimeSeconds()
-                $request = [Net.HttpWebRequest]::Create($builder.Uri)
-                $request.Timeout = 12000
-                $request.ReadWriteTimeout = 12000
-                $request.UserAgent = 'CoinClickerUpdater/2.0'
-                $request.Headers['Cache-Control'] = 'no-cache'
-                $web = $request.GetResponse()
-                $inputStream = $web.GetResponseStream()
-                $memory = New-Object IO.MemoryStream
-                try { $inputStream.CopyTo($memory); $bytes = $memory.ToArray() } finally { $inputStream.Dispose(); $memory.Dispose() }
-                if ($bytes.Length -lt 300 -or $bytes.Length -gt 2097152) { throw 'Unexpected update size' }
-                $html = [Text.Encoding]::UTF8.GetString($bytes)
-                if (-not $html.Contains('<meta name="app-id" content="arena-coin-clicker">') -or -not $html.Contains('</html>') -or -not $html.Contains('simple-coin-clicker.v1')) { throw 'Not a clicker update. Keeping current game.' }
-                $old = [Convert]::ToBase64String([IO.File]::ReadAllBytes($dest))
-                if ($old -ne [Convert]::ToBase64String($bytes)) {
-                    [IO.File]::WriteAllBytes($temp, $bytes)
-                    [IO.File]::Replace($temp, $dest, $backup)
-                    [IO.File]::WriteAllText($statusFile, ('UPDATED ' + (Get-Date -Format 'HH:mm:ss')), $enc)
-                } else {
-                    [IO.File]::WriteAllText($statusFile, ('UP TO DATE ' + (Get-Date -Format 'HH:mm:ss')), $enc)
-                }
-                $lastRevision = $revision
-            } catch {
-                try { [IO.File]::WriteAllText($statusFile, ('OFFLINE - keeping local game. ' + $_.Exception.GetBaseException().Message), $enc) } catch {}
-            } finally {
-                if ($web) { $web.Dispose() }
-                if (Test-Path $temp) { Remove-Item $temp -Force -ErrorAction SilentlyContinue }
-            }
-            Start-Sleep -Seconds 2
-        }
+    if (-not (Test-Path $node)) {
+        Write-Host 'First launch: downloading portable Node.js. No system installation.' -ForegroundColor Yellow
+        New-Item -ItemType Directory -Path $runtime -Force | Out-Null
+        $arch = if ($env:PROCESSOR_ARCHITECTURE -eq 'ARM64') { 'arm64' } else { 'x64' }
+        $name = "node-v$nodeVersion-win-$arch.zip"
+        $archive = Join-Path $runtime $name
+        $checks = Join-Path $runtime 'SHASUMS256.txt'
+        Download-File "https://nodejs.org/dist/v$nodeVersion/$name" $archive
+        Download-File "https://nodejs.org/dist/v$nodeVersion/SHASUMS256.txt" $checks
+        $line = Get-Content $checks | Where-Object { $_ -match ([regex]::Escape($name) + '$') } | Select-Object -First 1
+        if (-not $line) { throw 'Runtime checksum not found' }
+        $expected=($line -split '\s+')[0]
+        if ((Get-FileHash $archive -Algorithm SHA256).Hash.ToLowerInvariant() -ne $expected) { throw 'Runtime checksum mismatch' }
+        Expand-Archive -Path $archive -DestinationPath $runtime -Force
+        Copy-Item (Join-Path $runtime "node-v$nodeVersion-win-$arch/node.exe") $node -Force
+        Remove-Item $archive -Force
     }
-    Write-Host ''
-    Write-Host 'COIN CLICKER - AUTO UPDATE SERVER' -ForegroundColor Yellow
-    Write-Host 'PC: http://localhost:3000'
-    Write-Host 'iPhone: open your home network address below in Safari:'
-    foreach ($ip in [Net.Dns]::GetHostAddresses([Net.Dns]::GetHostName())) {
-        if ($ip.AddressFamily -eq [Net.Sockets.AddressFamily]::InterNetwork -and -not [Net.IPAddress]::IsLoopback($ip)) {
-            Write-Host ('  http://' + $ip.IPAddressToString + ':3000') -ForegroundColor Green
-        }
-    }
-    Write-Host 'Allow PRIVATE networks in Windows Firewall. Keep this window open.'
-    Write-Host 'Updates: automatic. Status: update-status.txt in this folder.'
-    Write-Host 'FAST UPDATE: immutable Git revision; check every 2 seconds.'
-    Write-Host ''
+    $lastRevision = ''
+    $nextCheck = [DateTime]::MinValue
     while ($true) {
-        $client = $listener.AcceptTcpClient()
-        try {
-            $client.ReceiveTimeout = 3000
-            $client.SendTimeout = 3000
-            $stream = $client.GetStream()
-            $reader = New-Object IO.StreamReader($stream, [Text.Encoding]::ASCII, $false, 1024, $true)
-            $first = $reader.ReadLine()
-            if (-not $first) { continue }
-            $total = 0
-            while ($true) {
-                $line = $reader.ReadLine()
-                if ([string]::IsNullOrEmpty($line)) { break }
-                $total += $line.Length
-                if ($total -gt 16384) { throw 'Headers too large' }
-            }
-            $parts = $first.Split(' ')
-            $method = $parts[0]
-            $path = ($parts[1] -split '\?', 2)[0]
-            $code = '200 OK'
-            $type = 'text/plain; charset=utf-8'
-            if ($method -notin @('GET','HEAD')) {
-                $code = '405 Method Not Allowed'; $body = $utf8.GetBytes('Method not allowed')
-            } elseif ($path -eq '/drops' -or $path -eq '/announce-drop') {
-                $query = @{}
-                $requestParts = $parts[1] -split '\?', 2
-                if ($requestParts.Length -gt 1) {
-                    foreach ($pair in ($requestParts[1] -split '&')) {
-                        $kv = $pair -split '=', 2
-                        if ($kv.Length -eq 2) { $query[$kv[0]] = [Uri]::UnescapeDataString($kv[1]) }
-                    }
+        if ((Get-Date) -ge $nextCheck) {
+            $nextCheck=(Get-Date).AddSeconds(8)
+            try {
+                $rev=Get-Revision
+                if ($rev -ne $lastRevision) {
+                    $base="https://raw.githubusercontent.com/gymsas50-lgtm/coin-clicker/$rev"
+                    $gameTemp=Join-Path $root 'index.download.html'
+                    $codeTemp=Join-Path $root 'server.download.js'
+                    Download-File "$base/index.html" $gameTemp
+                    Download-File "$base/server.js" $codeTemp
+                    $game=[IO.File]::ReadAllText($gameTemp)
+                    if (-not $game.Contains('<meta name="app-id" content="arena-coin-clicker">') -or -not $game.Contains('</html>')) { throw 'Invalid game update' }
+                    & $node --check $codeTemp
+                    if ($LASTEXITCODE -ne 0) { throw 'Invalid server update' }
+                    $dest=Join-Path $root 'server.js'
+                    $serverChanged=(-not (Test-Path $dest)) -or ((Get-FileHash $dest).Hash -ne (Get-FileHash $codeTemp).Hash)
+                    if ($serverChanged -and $child -and -not $child.HasExited) { Stop-Process -Id $child.Id -Force; $child.WaitForExit(); $child=$null }
+                    if ($serverChanged) { Copy-Item $codeTemp $dest -Force }
+                    $gameDest=Join-Path $root 'index.html'
+                    if (-not (Test-Path $gameDest)) { Copy-Item $gameTemp $gameDest -Force } elseif ((Get-FileHash $gameDest).Hash -ne (Get-FileHash $gameTemp).Hash) { [IO.File]::Replace($gameTemp,$gameDest,(Join-Path $root 'index.previous.html')) }
+                    Remove-Item $gameTemp,$codeTemp -Force -ErrorAction SilentlyContinue
+                    $lastRevision=$rev
+                    [IO.File]::WriteAllText((Join-Path $root 'update-status.txt'),('UP TO DATE '+$rev.Substring(0,7)),$utf8)
+                    Write-Host ('Updated: '+$rev.Substring(0,7)) -ForegroundColor Green
                 }
-                if ($path -eq '/announce-drop') {
-                    $skin = [string]$query['coin']; $eventId = [string]$query['id']
-                    if ($dropNames.ContainsKey($skin) -and $eventId -match '^[a-zA-Z0-9-]{10,100}$' -and -not $dropSeen.ContainsKey($eventId)) {
-                        $dropSeen[$eventId] = $true
-                        $dropSeq++
-                        $dropEvents.Add(@{ seq=$dropSeq; name=$dropNames[$skin]; id=$eventId })
-                        if ($dropEvents.Count -gt 100) { $oldId=$dropEvents[0].id; $dropEvents.RemoveAt(0); $dropSeen.Remove($oldId) }
-                    }
-                }
-                $since = 0L
-                [void][long]::TryParse([string]$query['since'], [ref]$since)
-                $events = @($dropEvents | Where-Object { $_.seq -gt $since })
-                $json = @{ cursor=$dropSeq; events=$events } | ConvertTo-Json -Depth 5 -Compress
-                $body = $utf8.GetBytes($json)
-                $type = 'application/json; charset=utf-8'
-            } elseif ($path -eq '/version') {
-                $body = $utf8.GetBytes((Get-Version))
-            } elseif ($path -eq '/' -or $path -eq '/index.html') {
-                # Embed the version of exactly these bytes, avoiding a load/update race.
-                $raw = [IO.File]::ReadAllBytes((Join-Path $root 'index.html'))
-                $sha = [Security.Cryptography.SHA256]::Create()
-                try { $version = ([BitConverter]::ToString($sha.ComputeHash($raw))).Replace('-','').ToLowerInvariant() } finally { $sha.Dispose() }
-                $html = [Text.Encoding]::UTF8.GetString($raw)
-                $reloadScript = @'
-<script>
-(()=>{const initial='__VERSION__';let checking=false,down=0;addEventListener('pointerdown',()=>down++);addEventListener('pointerup',()=>down=Math.max(0,down-1));addEventListener('pointercancel',()=>down=0);addEventListener('blur',()=>down=0);async function check(){if(checking||document.hidden)return;checking=true;try{const r=await fetch('/version?t='+Date.now(),{cache:'no-store'});if(!r.ok)return;const v=(await r.text()).trim();if(/^[a-f0-9]{64}$/.test(v)&&v!==initial&&down===0)location.reload();}catch(e){}finally{checking=false;}}setInterval(check,1000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){down=0;check();}});})();
-</script>
-'@
-                $reloadScript = $reloadScript.Replace('__VERSION__', $version)
-                $body = $utf8.GetBytes($html.Replace('</body>', ($reloadScript + '</body>')))
-                $type = 'text/html; charset=utf-8'
-            } else {
-                $code = '404 Not Found'; $body = $utf8.GetBytes('Not found')
+            } catch {
+                Write-Host ('Update offline; keeping local game: '+$_.Exception.Message) -ForegroundColor DarkYellow
             }
-            $headers = "HTTP/1.1 $code`r`nContent-Type: $type`r`nContent-Length: $($body.Length)`r`nCache-Control: no-store`r`nX-Content-Type-Options: nosniff`r`nConnection: close`r`n`r`n"
-            $b = [Text.Encoding]::ASCII.GetBytes($headers)
-            $stream.Write($b,0,$b.Length)
-            if ($method -ne 'HEAD') { $stream.Write($body,0,$body.Length) }
-            $stream.Flush()
-        } catch {
-            # Abandoned browser connections are harmless; keep serving requests.
-        } finally { $client.Close() }
+        }
+        if (-not $child -or $child.HasExited) {
+            if (-not (Test-Path (Join-Path $root 'server.js'))) { throw 'server.js is missing. Download the complete server package.' }
+            $child=Start-Process -FilePath $node -ArgumentList 'server.js' -WorkingDirectory $root -NoNewWindow -PassThru
+            Start-Sleep -Seconds 2
+            if ($child.HasExited) { throw 'Server stopped. Close the old server; port 3000 must be free.' }
+        }
+        Start-Sleep -Seconds 1
     }
 } catch {
-    Write-Host ('SERVER ERROR: ' + $_.Exception.Message) -ForegroundColor Red
-    Write-Host 'Close the old server first: port 3000 must be free.'
+    Write-Host ('SERVER ERROR: '+$_.Exception.Message) -ForegroundColor Red
     Read-Host 'Press Enter to close'
 } finally {
-    $listener.Stop()
-    if ($job) { Stop-Job $job; Remove-Job $job -Force }
+    if ($child -and -not $child.HasExited) { Stop-Process -Id $child.Id -Force -ErrorAction SilentlyContinue }
 }
