@@ -1,11 +1,11 @@
-﻿$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
 $listener = New-Object System.Net.Sockets.TcpListener([System.Net.IPAddress]::Any, 3000)
 $job = $null
 $dropSeq = 0
 $dropEvents = New-Object System.Collections.Generic.List[object]
 $dropSeen = @{}
-$dropNames = @{ cosmos='Космос'; prism='Призма'; dragon='Сердце дракона'; singularity='Сингулярность' }
+$dropNames = @{ cosmos=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('0JrQvtGB0LzQvtGB'))); prism=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('0J/RgNC40LfQvNCw'))); dragon=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('0KHQtdGA0LTRhtC1INC00YDQsNC60L7QvdCw'))); singularity=([Text.Encoding]::UTF8.GetString([Convert]::FromBase64String('0KHQuNC90LPRg9C70Y/RgNC90L7RgdGC0Yw='))) }
 
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 function Get-Version {
