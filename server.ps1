@@ -1,7 +1,12 @@
-$ErrorActionPreference = 'Stop'
+﻿$ErrorActionPreference = 'Stop'
 $root = $PSScriptRoot
 $listener = New-Object System.Net.Sockets.TcpListener([System.Net.IPAddress]::Any, 3000)
 $job = $null
+$dropSeq = 0
+$dropEvents = New-Object System.Collections.Generic.List[object]
+$dropSeen = @{}
+$dropNames = @{ cosmos='Космос'; prism='Призма'; dragon='Сердце дракона'; singularity='Сингулярность' }
+
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 function Get-Version {
     $sha = [System.Security.Cryptography.SHA256]::Create()
@@ -114,6 +119,30 @@ try {
             $type = 'text/plain; charset=utf-8'
             if ($method -notin @('GET','HEAD')) {
                 $code = '405 Method Not Allowed'; $body = $utf8.GetBytes('Method not allowed')
+            } elseif ($path -eq '/drops' -or $path -eq '/announce-drop') {
+                $query = @{}
+                $requestParts = $parts[1] -split '\?', 2
+                if ($requestParts.Length -gt 1) {
+                    foreach ($pair in ($requestParts[1] -split '&')) {
+                        $kv = $pair -split '=', 2
+                        if ($kv.Length -eq 2) { $query[$kv[0]] = [Uri]::UnescapeDataString($kv[1]) }
+                    }
+                }
+                if ($path -eq '/announce-drop') {
+                    $skin = [string]$query['coin']; $eventId = [string]$query['id']
+                    if ($dropNames.ContainsKey($skin) -and $eventId -match '^[a-zA-Z0-9-]{10,100}$' -and -not $dropSeen.ContainsKey($eventId)) {
+                        $dropSeen[$eventId] = $true
+                        $dropSeq++
+                        $dropEvents.Add(@{ seq=$dropSeq; name=$dropNames[$skin]; id=$eventId })
+                        if ($dropEvents.Count -gt 100) { $oldId=$dropEvents[0].id; $dropEvents.RemoveAt(0); $dropSeen.Remove($oldId) }
+                    }
+                }
+                $since = 0L
+                [void][long]::TryParse([string]$query['since'], [ref]$since)
+                $events = @($dropEvents | Where-Object { $_.seq -gt $since })
+                $json = @{ cursor=$dropSeq; events=$events } | ConvertTo-Json -Depth 5 -Compress
+                $body = $utf8.GetBytes($json)
+                $type = 'application/json; charset=utf-8'
             } elseif ($path -eq '/version') {
                 $body = $utf8.GetBytes((Get-Version))
             } elseif ($path -eq '/' -or $path -eq '/index.html') {
