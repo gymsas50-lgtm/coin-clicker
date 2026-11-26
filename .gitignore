@@ -1,0 +1,3 @@
+# Private player saves remain on the game server, never in the update package.
+player-data.json
+player-data.json.tmp
