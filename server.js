@@ -2,7 +2,7 @@
 const http=require('http'),fs=require('fs'),path=require('path'),crypto=require('crypto');
 const root=__dirname,port=Number(process.env.PORT)||3000;
 let html,version='',updateAt=0,stamp=0;
-function load(){const file=path.join(root,'index.html'),raw=fs.readFileSync(file),next=crypto.createHash('sha256').update(raw).digest('hex');if(next!==version)updateAt=Date.now()+12000;html=raw;version=next;stamp=fs.statSync(file).mtimeMs;}
+function load(){const file=path.join(root,'index.html'),raw=fs.readFileSync(file),next=crypto.createHash('sha256').update(raw).digest('hex');if(!raw.includes(Buffer.from('</html>')))return;if(next!==version)updateAt=Date.now()+12000;html=raw;version=next;stamp=fs.statSync(file).mtimeMs;}
 load();setInterval(()=>{try{if(fs.statSync(path.join(root,'index.html')).mtimeMs!==stamp)load();}catch{}},500);
 const players=new Map();
 function json(res,code,data){res.writeHead(code,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify(data));}
