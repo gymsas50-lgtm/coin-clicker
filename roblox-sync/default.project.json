@@ -15,9 +15,9 @@
           "Anchored": true,
           "Locked": true,
           "Size": [
-            25,
+            100,
             0.5,
-            25
+            100
           ],
           "Position": [
             0,
@@ -41,6 +41,24 @@
       "Terrain": {
         "$className": "Terrain",
         "$ignoreUnknownInstances": true
+      },
+      "SpawnLocation": {
+        "$className": "SpawnLocation",
+        "$ignoreUnknownInstances": false,
+        "$properties": {
+          "Anchored": true,
+          "Neutral": true,
+          "Size": [
+            5,
+            1,
+            5
+          ],
+          "Position": [
+            0,
+            0.5,
+            0
+          ]
+        }
       }
     },
     "StarterPack": {
