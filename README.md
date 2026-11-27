@@ -2,7 +2,7 @@
 
 Empty platform with a right-side first-person camera. No hands, on-screen labels or screenshot downloads.
 
-Retro rendering:240p framebuffer, nearest textures, low-poly surfaces,5bit color with ordered dithering and vertex snapping.
+Retro rendering:480p framebuffer, nearest textures, low-poly surfaces,clean color without dithering and mild vertex snapping.
 
 Click the screen to capture the mouse. WASD to move, Shift to move faster, Escape to release.
 
