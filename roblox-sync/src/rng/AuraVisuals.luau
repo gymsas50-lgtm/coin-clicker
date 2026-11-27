@@ -1,146 +1,96 @@
 local CollectionService=game:GetService("CollectionService")
 local Visuals={}
-local styles={
-    Common={level=1,speed=.28,radius=1.2},
-    InDev={level=2,speed=.38,radius=1.4},
-    Uncommon={level=3,speed=.32,radius=1.55},
-    Rare={level=4,speed=.45,radius=1.7},
-    SuperRare={level=5,speed=.52,radius=1.85},
-    Epic={level=6,speed=.42,radius=2.0},
-    Lucky={level=7,speed=.58,radius=2.05},
-    Legendary={level=8,speed=.38,radius=2.2},
-    Ice={level=9,speed=.30,radius=2.3},
-}
 function Visuals.Build(character,id,color)
     local root=character:FindFirstChild("HumanoidRootPart")
     if not root then return end
     local model=Instance.new("Model");model.Name="AuraVisuals";model.Parent=character
-    local style=styles[id] or styles.Common
-    local level=style.level
-    local pale=color:Lerp(Color3.new(1,1,1),.38)
-    local function anchor(name,size,offset,speed)
+    local pale=color:Lerp(Color3.new(1,1,1),.35)
+    local function source(name,size,offset,speed)
         local p=Instance.new("Part");p.Name=name;p.Size=size;p.Transparency=1
         p.CanCollide=false;p.CanTouch=false;p.CanQuery=false;p.Massless=true;p.CastShadow=false
         p.CFrame=root.CFrame*offset;p.Parent=model
-        local motor=Instance.new("Motor6D");motor.Part0=root;motor.Part1=p;motor.C0=offset
-        motor:SetAttribute("BaseOffset",offset);motor:SetAttribute("Speed",speed or 0)
-        motor:SetAttribute("Bob",.12);motor:SetAttribute("Sway",.035)
-        motor.Parent=p;CollectionService:AddTag(motor,"AuraOrbit")
+        local m=Instance.new("Motor6D");m.Part0=root;m.Part1=p;m.C0=offset
+        m:SetAttribute("BaseOffset",offset);m:SetAttribute("Speed",speed or 0)
+        m:SetAttribute("Bob",.04);m:SetAttribute("Sway",0)
+        m.Parent=p;CollectionService:AddTag(m,"AuraOrbit")
         return p
     end
-    local function particles(parent,name,rate,size,lifetime,locked)
-        local e=Instance.new("ParticleEmitter");e.Name=name
+    local function emit(parent,rate,size,life,velocity,acceleration,locked)
+        local e=Instance.new("ParticleEmitter");e.Name="AuraParticles"
         e.Texture="rbxasset://textures/particles/sparkles_main.dds"
-        e.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,pale),ColorSequenceKeypoint.new(.4,color),ColorSequenceKeypoint.new(1,color:Lerp(pale,.25))})
-        e.LightEmission=1;e.LightInfluence=0;e.Brightness=1.6
-        e.Rate=rate;e.Lifetime=NumberRange.new(lifetime*.75,lifetime)
-        e.LockedToPart=locked;e.VelocityInheritance=0
-        e.Rotation=NumberRange.new(0,360);e.RotSpeed=NumberRange.new(-18,18)
-        e.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,size*.2),NumberSequenceKeypoint.new(.2,size,size*.3),NumberSequenceKeypoint.new(.65,size*.7,size*.2),NumberSequenceKeypoint.new(1,0)})
-        e.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.18,.25),NumberSequenceKeypoint.new(.6,.45),NumberSequenceKeypoint.new(1,1)})
-        e.Speed=NumberRange.new(.15,.45);e.SpreadAngle=Vector2.new(30,30)
-        e.Acceleration=Vector3.new(0,.35,0);e.Drag=.5
-        e:SetAttribute("WarmCount",math.ceil(rate*lifetime*.6))
-        e.Parent=parent;return e
+        e.Color=ColorSequence.new(pale,color);e.LightEmission=1;e.LightInfluence=0;e.Brightness=1.5
+        e.Rate=rate;e.Lifetime=NumberRange.new(life*.8,life)
+        e.Speed=NumberRange.new(velocity*.6,velocity);e.Acceleration=acceleration or Vector3.zero
+        e.LockedToPart=locked or false;e.VelocityInheritance=0
+        e.SpreadAngle=Vector2.new(20,20);e.Rotation=NumberRange.new(0,360);e.RotSpeed=NumberRange.new(-12,12)
+        e.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.18,size,size*.25),NumberSequenceKeypoint.new(.7,size*.65),NumberSequenceKeypoint.new(1,0)})
+        e.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.18,.25),NumberSequenceKeypoint.new(.7,.45),NumberSequenceKeypoint.new(1,1)})
+        e:SetAttribute("WarmCount",math.ceil(rate*life*.5));e.Parent=parent
+        return e
     end
-    -- Deliberate symmetric accents: a readable silhouette beneath the motes.
-    local function rod(parent,a,b,width,tint)
-        local p=Instance.new("Part");p.Name="Luminous accent"
-        p.Size=Vector3.new(width,width,(b-a).Magnitude)
-        p.Material=Enum.Material.Neon;p.Color=tint;p.Transparency=.28
-        p.CanCollide=false;p.CanTouch=false;p.CanQuery=false;p.Massless=true;p.CastShadow=false
-        p.CFrame=parent.CFrame*CFrame.lookAt((a+b)*.5,b);p.Parent=model
-        local w=Instance.new("WeldConstraint");w.Part0=parent;w.Part1=p;w.Parent=p
+    local function orbit(name,height,radius,speed,tilt,rate,size)
+        local p=source(name,Vector3.new(.1,.1,.1),CFrame.new(0,height,0)*(tilt or CFrame.identity),speed)
+        local a=Instance.new("Attachment");a.Position=Vector3.new(radius,0,0);a.Parent=p
+        emit(a,rate,size,1.2,.04,Vector3.zero,false)
     end
-    local function arc(parent,radius,startAngle,endAngle,height,tint)
-        local segments=12
-        for j=1,segments do
-            local a=startAngle+(endAngle-startAngle)*(j-1)/segments
-            local b=startAngle+(endAngle-startAngle)*j/segments
-            rod(parent,Vector3.new(math.cos(a)*radius,height,math.sin(a)*radius),Vector3.new(math.cos(b)*radius,height,math.sin(b)*radius),.035,tint)
+    if id=="Common" then
+        -- Quiet silver dust rising close to the avatar.
+        local p=source("Silver dust",Vector3.new(2.5,3.4,1.8),CFrame.new(0,-.4,0))
+        emit(p,95,.09,1.8,.35,Vector3.new(0,.15,0),true)
+    elseif id=="InDev" then
+        -- Amber horizontal scan bands, drifting in opposite directions.
+        for i=1,3 do
+            local p=source("Amber scan",Vector3.new(3.5,.12,2.2),CFrame.new(0,-1.8+i*.9,0),i%2==0 and .32 or -.32)
+            local e=emit(p,55,.13,1.1,.18,Vector3.zero,true)
+            e.EmissionDirection=Enum.NormalId.Right;e.SpreadAngle=Vector2.new(5,5)
         end
-    end
-    local accents=anchor("Sculpted accents",Vector3.new(.1,.1,.1),CFrame.new(0,-1.9,0),style.speed*.35)
-    for i=0,2 do
-        local start=i*math.pi*2/3
-        arc(accents,style.radius+.15,start,start+math.pi*.43,0,color)
-    end
-    if level>=3 then
-        local satellites=anchor("Crystal orbit",Vector3.new(.1,.1,.1),CFrame.new(0,.1,0),-style.speed*.45)
-        local count=level>=7 and 6 or 4
-        for i=1,count do
-            local a=i*math.pi*2/count
-            local center=Vector3.new(math.cos(a)*(style.radius+.25),math.sin(a*2)*.25,math.sin(a)*(style.radius+.25))
-            local h=.20+level*.025
-            local x=Vector3.new(.13,0,0);local y=Vector3.new(0,h,0)
-            rod(satellites,center+y,center+x,.045,pale)
-            rod(satellites,center+x,center-y,.045,color)
-            rod(satellites,center-y,center-x,.045,color)
-            rod(satellites,center-x,center+y,.045,pale)
+    elseif id=="Uncommon" then
+        -- Green rising wisps in a broad soft shell.
+        local p=source("Living green",Vector3.new(3.8,3,3),CFrame.new(0,-.8,0))
+        local e=emit(p,155,.16,2.1,.65,Vector3.new(0,.25,0),true)
+        e.Shape=Enum.ParticleEmitterShape.Ellipsoid;e.ShapeStyle=Enum.ParticleEmitterShapeStyle.Surface
+        e.RotSpeed=NumberRange.new(-45,45)
+    elseif id=="Rare" then
+        -- Two intersecting blue orbital streams.
+        orbit("Blue ascending arc",0,2,.85,CFrame.Angles(.8,0,0),115,.13)
+        orbit("Blue crossing arc",0,2,-.85,CFrame.Angles(-.8,0,0),115,.13)
+    elseif id=="SuperRare" then
+        -- Cyan double helix, with moving emitters at staggered heights.
+        for i=1,6 do
+            orbit("Cyan helix",-2+(i-1)*.75,1.65,.7,CFrame.Angles(0,i*1.1,0),42,.12)
         end
-    end
-    if level>=6 then
-        -- A compact fan behind the shoulders, with graduated lengths and clear gaps.
-        local back=anchor("Radiant fan",Vector3.new(.1,.1,.1),CFrame.new(0,.2,1),0)
+    elseif id=="Epic" then
+        -- A broad violet particle curtain behind the shoulders, no rods or wings.
         for _,side in {-1,1} do
-            for j=1,4 do
-                local base=Vector3.new(side*(.75+j*.28),-.3+j*.10,.1+j*.10)
-                local tip=base+Vector3.new(side*(.25+j*.10),.65+j*.25,.12)
-                rod(back,base,tip,.045+j*.005,j%2==0 and pale or color)
-            end
+            local p=source("Violet veil",Vector3.new(1.4,2.6,.45),CFrame.new(side*1.45,.45,1)*CFrame.Angles(0,0,-side*.4))
+            local e=emit(p,130,.18,1.8,.4,Vector3.new(side*.12,.18,0),true)
+            e.SpreadAngle=Vector2.new(35,35)
         end
-        local crown=anchor("Crown arcs",Vector3.new(.1,.1,.1),CFrame.new(0,2.55,0),style.speed*.3)
-        for i=0,2 do
-            local a=i*math.pi*2/3
-            arc(crown,.65,a,a+1.4,0,pale)
+    elseif id=="Lucky" then
+        -- Green fountain with sparse gold flecks, not another orbit.
+        local p=source("Lucky fountain",Vector3.new(2.8,.15,2.8),CFrame.new(0,-2.4,0))
+        local e=emit(p,185,.12,2,2.3,Vector3.new(0,-1.5,0),false)
+        e.SpreadAngle=Vector2.new(35,35)
+        local gold=emit(p,42,.23,1.8,1.6,Vector3.new(0,-.9,0),false)
+        gold.Color=ColorSequence.new(Color3.fromRGB(255,237,160),Color3.fromRGB(255,190,65))
+    elseif id=="Legendary" then
+        -- Radial golden sunburst behind the avatar.
+        local p=source("Solar radiance",Vector3.new(.5,.5,.2),CFrame.new(0,.5,1.1),.2)
+        for i=1,10 do
+            local a=Instance.new("Attachment");local angle=i*math.pi*2/10
+            a.CFrame=CFrame.new(math.cos(angle)*.8,math.sin(angle)*.8,0)*CFrame.Angles(0,0,angle-math.pi/2)
+            a.Parent=p
+            local e=emit(a,27,.16,1.4,1.35,Vector3.zero,true)
+            e.SpreadAngle=Vector2.new(7,7)
         end
-    end
-    -- A soft moving volume around the avatar, never a dotted wireframe.
-    local core=anchor("Living energy",Vector3.new(3.4,4.2,2.8),CFrame.new(0,-.4,0),0)
-    local dust=particles(core,"Fine energy",65+level*9,.075,1.8,true)
-    dust.Shape=Enum.ParticleEmitterShape.Ellipsoid;dust.ShapeStyle=Enum.ParticleEmitterShapeStyle.Surface
-    dust.ShapeInOut=Enum.ParticleEmitterShapeInOut.Outward
-    dust.Speed=NumberRange.new(.08,.24)
-    dust.Acceleration=Vector3.new(0,.22,0)
-    local sparks=particles(core,"Bright accents",10+level*2,.17,1.3,true)
-    sparks.Shape=Enum.ParticleEmitterShape.Ellipsoid
-    sparks.ShapeStyle=Enum.ParticleEmitterShapeStyle.Surface
-    sparks.Speed=NumberRange.new(.08,.25)
-    sparks.Color=ColorSequence.new(pale,color)
-    sparks.Rate=8+level
-    sparks.Lifetime=NumberRange.new(1.1,1.7)
-    -- Larger, sparse luminous flecks add depth without hiding the avatar.
-    local flecks=particles(core,"Floating highlights",5+level,.23,2.2,true)
-    flecks.Shape=Enum.ParticleEmitterShape.Ellipsoid
-    flecks.ShapeStyle=Enum.ParticleEmitterShapeStyle.Surface
-    flecks.Speed=NumberRange.new(.04,.14)
-    flecks.Acceleration=Vector3.new(0,.12,0)
-    flecks.Brightness=1.2
-    flecks.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.3,.20,.06),NumberSequenceKeypoint.new(.7,.14,.04),NumberSequenceKeypoint.new(1,0)})
-    flecks.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.3,.55),NumberSequenceKeypoint.new(.7,.65),NumberSequenceKeypoint.new(1,1)})
-    -- Continuous arcing streams: hidden rotating parents carry offset emission points.
-    local streams=2+math.floor(level/3)
-    for i=1,streams do
-        local direction=i%2==0 and -1 or 1
-        local tilt=CFrame.Angles((i%3-1)*.32,0,(i%2==0 and .25 or -.25))
-        local height=-1.65+(i-1)*(.95)
-        local orbit=anchor("Energy current",Vector3.new(.1,.1,.1),CFrame.new(0,height,0)*tilt,style.speed*direction)
-        local attachment=Instance.new("Attachment");attachment.Position=Vector3.new(style.radius,0,0);attachment.Parent=orbit
-        local e=particles(attachment,"Flowing arc",45+level*4,.12,1.1,false)
-        e.Speed=NumberRange.new(.06,.18);e.Acceleration=Vector3.new(0,.18,0)
-        e.SpreadAngle=Vector2.new(180,180)
-        if id=="Lucky" then e.Color=ColorSequence.new(color,Color3.fromRGB(255,218,110)) end
-        if id=="Ice" then e.Color=ColorSequence.new(Color3.fromRGB(225,250,255),color) end
-    end
-    -- Restrained floating afterglow at the feet, not a solid drawn circle.
-    local ground=anchor("Ground motes",Vector3.new(3.3+level*.08,.15,3.3+level*.08),CFrame.new(0,-2.5,0),-.12)
-    local haze=particles(ground,"Rising motes",24+level*4,.11,2,false)
-    haze.Shape=Enum.ParticleEmitterShape.Box;haze.Speed=NumberRange.new(.15,.45)
-    haze.Acceleration=Vector3.new(0,.2,0)
-    -- Short body trail follows motion naturally without leaving long stale clouds.
-    if level>=4 then
-        local trail=particles(core,"Motion glints",16+level*2,.09,.7,false)
-        trail.Speed=NumberRange.new(0,.1);trail.Acceleration=Vector3.zero
+    elseif id=="Ice" then
+        -- Snowfall from above, slow and cool, with a low counter-rotating frost current.
+        local p=source("Snow canopy",Vector3.new(5,.2,4),CFrame.new(0,3,0))
+        local e=emit(p,210,.15,3.2,.45,Vector3.new(0,-.25,0),false)
+        e.EmissionDirection=Enum.NormalId.Bottom;e.SpreadAngle=Vector2.new(10,10)
+        e.Color=ColorSequence.new(Color3.fromRGB(235,252,255),color)
+        e.RotSpeed=NumberRange.new(-45,45)
+        orbit("Ground frost",-2.2,2,-.38,nil,65,.1)
     end
     return model
 end
