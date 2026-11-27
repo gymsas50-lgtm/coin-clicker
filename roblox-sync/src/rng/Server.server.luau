@@ -2,6 +2,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local folder = ReplicatedStorage:WaitForChild("AuraRNG")
 local config = require(folder:WaitForChild("Config"))
+local visuals = require(folder:WaitForChild("AuraVisuals"))
 local request, result = folder:WaitForChild("RollRequest"), folder:WaitForChild("RollResult")
 local inventory = folder:WaitForChild("Inventory")
 local random = Random.new()
@@ -14,6 +15,8 @@ local function equip(player)
     local root = character:FindFirstChild("HumanoidRootPart")
     local head = character:FindFirstChild("Head")
     if not root or not head then return end
+    local previousVisuals = character:FindFirstChild("AuraVisuals")
+    if previousVisuals then previousVisuals:Destroy() end
     for _, name in {"AuraParticles", "AuraLight"} do
         local old = root:FindFirstChild(name)
         if old then old:Destroy() end
@@ -22,28 +25,11 @@ local function equip(player)
     if old then old:Destroy() end
     if state.equipped == 0 then return end
     local aura = config[state.equipped]
-    local attachment = Instance.new("Attachment")
-    attachment.Name = "AuraParticles"
-    attachment.Parent = root
-    local particles = Instance.new("ParticleEmitter")
-    particles.Texture = "rbxasset://textures/particles/sparkles_main.dds"
-    particles.Color = ColorSequence.new(aura.Color)
-    particles.LightEmission = 0.75
-    particles.Rate = aura.Rate
-    particles.Lifetime = NumberRange.new(1.1, 1.8)
-    particles.Speed = NumberRange.new(0.5, 2.0)
-    particles.SpreadAngle = Vector2.new(180, 180)
-    particles.Acceleration = Vector3.new(0, 1.8, 0)
-    particles.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.25,.22),NumberSequenceKeypoint.new(1,0)})
-    particles.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,.3),NumberSequenceKeypoint.new(.7,.4),NumberSequenceKeypoint.new(1,1)})
-    particles.Parent = attachment
-    if state.equipped >= 3 then
-        local light = Instance.new("PointLight")
-        light.Name = "AuraLight"
-        light.Color = aura.Color
-        light.Brightness = 0.5
-        light.Range = 9
-        light.Parent = root
+    visuals.Build(character,aura.Id,aura.Color)
+    if aura.Weight <= 24 then
+        local light=Instance.new("PointLight")
+        light.Name="AuraLight";light.Color=aura.Color
+        light.Brightness=.35;light.Range=8;light.Parent=root
     end
     local title = Instance.new("BillboardGui")
     title.Name = "AuraTitle"

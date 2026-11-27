@@ -3,6 +3,8 @@
     "default.project.json",
     "src/RollCooldown.client.luau",
     "src/rng/Config.luau",
-    "src/rng/Server.server.luau"
+    "src/rng/Server.server.luau",
+    "src/rng/AuraVisuals.luau",
+    "src/rng/AnimateAuras.client.luau"
   ]
 }

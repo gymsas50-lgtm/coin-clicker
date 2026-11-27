@@ -74,7 +74,14 @@
     },
     "StarterPlayer": {
       "$className": "StarterPlayer",
-      "$ignoreUnknownInstances": true
+      "$ignoreUnknownInstances": true,
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "$ignoreUnknownInstances": true,
+        "AnimateAuras": {
+          "$path": "src/rng/AnimateAuras.client.luau"
+        }
+      }
     },
     "StarterGui": {
       "$className": "StarterGui",
@@ -223,6 +230,9 @@
         },
         "Inventory": {
           "$className": "RemoteFunction"
+        },
+        "AuraVisuals": {
+          "$path": "src/rng/AuraVisuals.luau"
         }
       }
     }
