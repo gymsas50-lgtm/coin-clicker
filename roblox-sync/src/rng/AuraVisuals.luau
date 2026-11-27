@@ -269,17 +269,26 @@ function Visuals.Build(character, id, color)
     for _,part in model:GetChildren() do
         if part:IsA("BasePart") and part.Transparency<.95 then table.insert(objects,part) end
     end
-    local emitCount=math.min(#objects,32)
-    for i=1,emitCount do
-        local part=objects[math.floor((i-1)*#objects/emitCount)+1]
-        local attachment=Instance.new("Attachment");attachment.Name="ObjectSparkSource"
-        attachment.Position=Vector3.new(0,0,part.Size.Z*.35);attachment.Parent=part
-        motes(attachment,6+rank*.55,i%3==0 and .19 or .13,false)
-        for _,emitter in attachment:GetChildren() do
+    -- Cover every visible part; Box/Surface distributes emission over its full size.
+    local totalArea=0
+    for _,part in objects do
+        local v=part.Size
+        totalArea+=2*(v.X*v.Y+v.Y*v.Z+v.X*v.Z)
+    end
+    local objectBudget=420+rank*65
+    for _,part in objects do
+        local v=part.Size
+        local area=2*(v.X*v.Y+v.Y*v.Z+v.X*v.Z)
+        local rate=math.max(1.2,objectBudget*area/math.max(.01,totalArea)/2.6)
+        motes(part,rate,.13,false)
+        for _,emitter in part:GetChildren() do
             if emitter:IsA("ParticleEmitter") then
+                emitter.Shape=Enum.ParticleEmitterShape.Box
+                emitter.ShapeStyle=Enum.ParticleEmitterShapeStyle.Surface
+                emitter.ShapeInOut=Enum.ParticleEmitterShapeInOut.Outward
                 emitter.LockedToPart=false
-                emitter.Speed=NumberRange.new(.18,.45)
-                emitter.Acceleration=Vector3.new(0,.18,0)
+                emitter.Speed=NumberRange.new(.12,.32)
+                emitter.Acceleration=Vector3.new(0,.12,0)
                 emitter.SpreadAngle=Vector2.new(180,180)
                 emitter.LightEmission=1;emitter.Brightness=1.7
             end
