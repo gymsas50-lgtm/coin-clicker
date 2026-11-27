@@ -15,10 +15,14 @@ function Visuals.Build(character, id, color)
         p.CFrame=root.CFrame*offset;p.Parent=model
         local weld=Instance.new("Motor6D");weld.Name="AuraOrbit";weld.Part0=root;weld.Part1=p
         weld.C0=offset;weld.Parent=p
-        if speed and speed~=0 then
-            weld:SetAttribute("BaseOffset",offset);weld:SetAttribute("Speed",speed);weld:SetAttribute("Axis",axis or "Y")
-            CollectionService:AddTag(weld,"AuraOrbit")
-        end
+        -- Tag every pivot, including wings: all visuals have idle motion.
+        -- Set attributes before parenting/tagging; clients also retry streamed attributes.
+        weld:SetAttribute("BaseOffset",offset)
+        weld:SetAttribute("Speed",speed or 0)
+        weld:SetAttribute("Axis",axis or "Y")
+        weld:SetAttribute("Bob",name=="Crown wings" and .10 or .16)
+        weld:SetAttribute("Sway",name=="Crown wings" and .09 or .025)
+        CollectionService:AddTag(weld,"AuraOrbit")
         return p
     end
     local function piece(parent, name, size, cf, tint, transparency, shape, material)
