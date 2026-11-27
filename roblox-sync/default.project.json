@@ -65,7 +65,17 @@
       "$className": "ServerScriptService",
       "$ignoreUnknownInstances": true,
       "GardenCharacterSetup": {
-        "$path": "src/server"
+        "$className": "Folder",
+        "R6Setup": {
+          "$path": "src/server/R6Setup.server.luau"
+        }
+      }
+    },
+    "StarterPack": {
+      "$className": "StarterPack",
+      "$ignoreUnknownInstances": true,
+      "RoyalSword": {
+        "$path": "src/RoyalSword.rbxmx"
       }
     }
   }
