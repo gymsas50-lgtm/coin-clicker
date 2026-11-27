@@ -216,6 +216,55 @@ function Visuals.Build(character, id, color)
             for j=1,2 do local v=dir*(1+j*.65);line(snow,v,v-dir*.4+side*.4,.035,white,.3);line(snow,v,v-dir*.4-side*.4,.035,white,.3) end
         end
     end
+    -- Secondary detail layer complements the existing silhouettes.
+    local ranks={Common=1,InDev=2,Uncommon=3,Rare=4,SuperRare=5,Epic=6,Lucky=7,Legendary=8,Ice=9}
+    local rank=ranks[id] or 1
+    local accents={Common=white,InDev=white,Uncommon=Color3.fromRGB(203,255,168),Rare=white,SuperRare=white,Epic=Color3.fromRGB(235,182,255),Lucky=gold,Legendary=white,Ice=white}
+    local accent=accents[id] or white
+    if rank>=2 then
+        local detail=pivot("Floating detail gems",CFrame.new(0,-1.5,0),-.12-rank*.008)
+        local count=rank>=6 and 8 or 4
+        for i=1,count do
+            local a=i*math.pi*2/count
+            local pos=Vector3.new(math.cos(a)*(1.8+rank*.07),math.sin(a*2)*.18,math.sin(a)*(1.8+rank*.07))
+            diamond(detail,CFrame.new(pos),.10+rank*.008,i%2==0 and accent or color)
+        end
+    end
+    -- Add tiny end caps to a distributed selection of strokes, not every edge.
+    local strokes={}
+    for _,part in model:GetChildren() do
+        if part:IsA("BasePart") and part.Name=="Light stroke" then table.insert(strokes,part) end
+    end
+    local capCount=math.min(#strokes,4+rank*2)
+    for i=1,capCount do
+        local part=strokes[math.floor((i-1)*#strokes/capCount)+1]
+        piece(part,"Luminous inlay",Vector3.new(.09,.09,.09),CFrame.new(0,0,part.Size.Z*.5),accent,.18,Enum.PartType.Ball)
+    end
+    local function motes(parent,rate,size,body)
+        local e=Instance.new("ParticleEmitter");e.Name=body and "BodyMotes" or "ObjectMotes"
+        e.Texture="rbxasset://textures/particles/sparkles_main.dds"
+        e.Color=ColorSequence.new(accent,color);e.LightEmission=.8;e.LightInfluence=0;e.Brightness=1.1
+        e.Rate=rate;e.Lifetime=NumberRange.new(.9,1.6)
+        e.Speed=body and NumberRange.new(.15,.4) or NumberRange.new(.025,.12)
+        e.Acceleration=Vector3.new(0,body and .18 or .07,0)
+        e.SpreadAngle=Vector2.new(40,40);e.LockedToPart=not body
+        e.Rotation=NumberRange.new(0,360);e.RotSpeed=NumberRange.new(-15,15)
+        e.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.2,size,size*.25),NumberSequenceKeypoint.new(.7,size*.6),NumberSequenceKeypoint.new(1,0)})
+        e.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.2,.35),NumberSequenceKeypoint.new(.7,.65),NumberSequenceKeypoint.new(1,1)})
+        e:SetAttribute("WarmCount",math.ceil(rate));e.Parent=parent
+    end
+    -- Emit directly from selected moving strokes, including their full length.
+    local emitCount=math.min(#strokes,18)
+    for i=1,emitCount do
+        local part=strokes[math.floor((i-1)*#strokes/emitCount)+1]
+        motes(part,(40+rank*9)/math.max(1,emitCount),i%3==0 and .14 or .075,false)
+    end
+    local body=pivot("Body particle envelope",CFrame.new(0,-.5,0),0)
+    body.Size=Vector3.new(2.8,3.5,2)
+    motes(body,22+rank*4,.095,true)
+    local e=body:FindFirstChildOfClass("ParticleEmitter")
+    e.Shape=Enum.ParticleEmitterShape.Ellipsoid
+    e.ShapeStyle=Enum.ParticleEmitterShapeStyle.Surface
     return model
 end
 return Visuals
