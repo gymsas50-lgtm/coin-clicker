@@ -1,11 +1,11 @@
 # Camera horror-simulator prototype
 
-Retro480p scene, connected camera model on the right with live rear display.
+Dark road into fog,12 warm streetlamps with cached shadows,480p retro rendering.
 
-Left click prints a frozen image of the world: a physical instant photograph slides out and develops from dark to visible over3.6seconds. Only the latest print is kept. No downloads or screenshot files.
+Right-side single-mesh camera with live display. Left click prints a frozen image: instant photo slides out and develops in3.6seconds. No files/downloads.
 
-One objective point: get within3meters, aim at the camera icon and photograph it. No rewards or further missions.
+Approach the world camera icon within3meters, aim and photograph it to finish the current objective. No rewards or next mission yet.
 
-Click to capture mouse, WASD to move, Shift to move faster, Escape to release. No text HUD.
+Click to capture mouse; WASD move; Shift faster; Escape cursor. No text HUD or hands.
 
-Node22 server with LAN access and Windows auto-updater. Run npm start or START.bat, default port3000.
+Node22 server, LAN access, Windows auto-updater. npm start or START.bat, port3000.
