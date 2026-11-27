@@ -23,15 +23,21 @@ local function panel(name,pos,size)
     f.BackgroundTransparency=.08;f.BorderSizePixel=0;f.Parent=ui;rounded(f,14)
     local stroke=Instance.new("UIStroke");stroke.Color=Color3.fromRGB(71,88,124);stroke.Transparency=.4;stroke.Parent=f;return f
 end
-local stats=panel("SessionStats",UDim2.fromOffset(18,18),UDim2.fromOffset(230,135))
-label(stats,"Heading","A U R A  /  R N G",UDim2.fromOffset(10,9),UDim2.fromOffset(210,24),16)
-stats.BackgroundTransparency=1
-for _, child in stats:GetChildren() do if child:IsA("UIStroke") then child.Enabled=false end end
-local counter=label(stats,"RollCount","Rolls  :  0",UDim2.fromOffset(10,37),UDim2.fromOffset(210,22),14,muted)
-local equippedText=label(stats,"Equipped","Equipped  :  None",UDim2.fromOffset(8,61),UDim2.fromOffset(214,22),12)
-local inventoryButton=Instance.new("TextButton");inventoryButton.Name="InventoryButton";inventoryButton.Position=UDim2.fromOffset(14,92)
-inventoryButton.Size=UDim2.fromOffset(202,31);inventoryButton.BackgroundColor3=Color3.fromRGB(44,58,85);inventoryButton.BorderSizePixel=0
-inventoryButton.Font=Enum.Font.GothamBold;inventoryButton.TextSize=12;inventoryButton.TextColor3=white;inventoryButton.Text="INVENTORY";inventoryButton.Parent=stats;rounded(inventoryButton,7)
+local stats=panel("SessionStats",UDim2.fromOffset(18,18),UDim2.fromOffset(48,48))
+local counter={Text=""}
+local equippedText={Text="",TextColor3=white}
+local inventoryButton=Instance.new("TextButton");inventoryButton.Name="InventoryButton"
+inventoryButton.Position=UDim2.fromOffset(0,0);inventoryButton.Size=UDim2.fromOffset(48,48)
+inventoryButton.BackgroundColor3=Color3.fromRGB(25,32,47);inventoryButton.BorderSizePixel=0
+inventoryButton.Text="";inventoryButton.Parent=stats;rounded(inventoryButton,9)
+-- Draw a small inventory grid with UI primitives: no text or external image.
+for row=0,1 do
+    for column=0,1 do
+        local cell=Instance.new("Frame");cell.Name="IconCell"
+        cell.Size=UDim2.fromOffset(9,9);cell.Position=UDim2.fromOffset(13+column*13,13+row*13)
+        cell.BackgroundColor3=Color3.fromRGB(218,229,247);cell.BorderSizePixel=0;cell.Parent=inventoryButton;rounded(cell,2)
+    end
+end
 local card=panel("RollResult",UDim2.new(.5,0,.35,0),UDim2.fromOffset(320,150));card.AnchorPoint=Vector2.new(.5,.5);card.Visible=false
 card.BackgroundTransparency=1
 for _, child in card:GetChildren() do if child:IsA("UIStroke") then child.Enabled=false end end
@@ -62,7 +68,7 @@ end
 local inv=panel("InventoryPanel",UDim2.fromScale(.5,.45),UDim2.new(.92,0,0,325));inv.AnchorPoint=Vector2.new(.5,.5);inv.Visible=false
 local limit=Instance.new("UISizeConstraint");limit.MaxSize=Vector2.new(420,325);limit.Parent=inv
 label(inv,"Title","AURA INVENTORY",UDim2.fromOffset(18,13),UDim2.new(1,-75,0,30),18)
-label(inv,"Subtitle","Collect auras. Choose what you wear.",UDim2.fromOffset(18,45),UDim2.new(1,-36,0,22),12,muted)
+
 local close=Instance.new("TextButton");close.Size=UDim2.fromOffset(32,32);close.Position=UDim2.new(1,-44,0,12);close.Text="X";close.Font=Enum.Font.GothamBold;close.TextSize=15;close.TextColor3=white;close.BackgroundTransparency=1;close.Parent=inv
 local rows={}
 for i,aura in config do
@@ -74,7 +80,7 @@ for i,aura in config do
     action.BorderSizePixel=0;action.Font=Enum.Font.GothamBold;action.TextSize=11;action.TextColor3=white;action.Parent=row;rounded(action,7)
     rows[i]={count=count,action=action}
 end
-label(inv,"SessionNote","Session inventory - saving is not enabled yet.",UDim2.new(0,12,1,-24),UDim2.new(1,-24,0,18),10,muted)
+
 local function apply(data)
     if not data then return end
     owned=data.Owned or owned;equipped=data.Equipped or 0
@@ -101,7 +107,7 @@ end
 button.Size=UDim2.fromOffset(140,52);button.BackgroundColor3=Color3.fromRGB(65,91,153)
 local autoButton=Instance.new("TextButton");autoButton.AnchorPoint=Vector2.new(.5,1);autoButton.Position=UDim2.new(.5,-118,1,-24);autoButton.Size=UDim2.fromOffset(76,52)
 autoButton.BackgroundColor3=Color3.fromRGB(25,32,47);autoButton.BorderSizePixel=0;autoButton.Text="AUTO: OFF";autoButton.TextSize=11;autoButton.Font=Enum.Font.GothamBold;autoButton.TextColor3=white;autoButton.Parent=ui;rounded(autoButton)
-local hint=label(ui,"Hint","Roll to collect auras. Equip them from your inventory.",UDim2.new(.5,0,1,-125),UDim2.new(.92,0,0,20),11,muted);hint.AnchorPoint=Vector2.new(.5,1)
+
 local roll
 local function finish()
     busy=false;button.Active=true;button.AutoButtonColor=true;button.Text="ROLL";cooldown.Visible=false
