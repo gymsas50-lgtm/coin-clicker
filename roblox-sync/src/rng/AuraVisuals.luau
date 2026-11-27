@@ -105,6 +105,37 @@ function Visuals.Build(character, id, color)
                 line(frame,Vector3.new(side*r,-1.2,0),Vector3.new(side*.55,-1.2,0),.055,color,.3)
             end
         end
+        -- In-dev exclusive upgrade: technical engravings and suspended power cells.
+        local amber=Color3.fromRGB(255,156,48)
+        local ivory=Color3.fromRGB(255,233,180)
+        local seal=pivot("Prototype segmented seal",CFrame.new(0,-2.5,0),-.16)
+        for sector=0,5 do
+            local start=sector*math.pi/3+.08
+            for j=1,5 do
+                local a=start+(j-1)*.14;local b=start+j*.14
+                line(seal,Vector3.new(math.cos(a)*2.15,0,math.sin(a)*2.15),Vector3.new(math.cos(b)*2.15,0,math.sin(b)*2.15),.055,amber,.22)
+            end
+            local a=start+.35
+            local dir=Vector3.new(math.cos(a),0,math.sin(a))
+            line(seal,dir*1.88,dir*2.02,.045,ivory,.18)
+        end
+        local cells=pivot("Prototype floating cells",CFrame.new(0,.1,0),.20)
+        for i=1,4 do
+            local a=i*math.pi/2+math.pi/4
+            local center=Vector3.new(math.cos(a)*2.1,i%2==0 and .55 or -.55,math.sin(a)*2.1)
+            diamond(cells,CFrame.new(center),.33,i%2==0 and ivory or amber)
+            for tick=-1,1 do
+                local y=Vector3.new(0,tick*.12,0)
+                line(cells,center+y+Vector3.new(-.12,0,.23),center+y+Vector3.new(.12,0,.23),.025,ivory,.25)
+            end
+        end
+        local gauge=pivot("Prototype readout",CFrame.new(0,1.5,.95),0)
+        for side=-1,1,2 do
+            for j=1,5 do
+                local x=side*(.45+j*.16)
+                line(gauge,Vector3.new(x,0,0),Vector3.new(x,.12+j*.035,0),.035,j%2==0 and ivory or amber,.2)
+            end
+        end
     elseif id=="Uncommon" then
         -- A growing emerald double vine wrapping upward, with sculpted leaves.
         local vine=pivot("Emerald vines",CFrame.identity,.19)
