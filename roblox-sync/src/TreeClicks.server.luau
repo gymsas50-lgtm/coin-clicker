@@ -14,6 +14,7 @@ outline.Name="TreeOutline";outline.Adornee=tree;outline.FillTransparency=1
 outline.OutlineTransparency=0;outline.OutlineColor=Color3.fromRGB(240,255,220)
 outline.DepthMode=Enum.HighlightDepthMode.AlwaysOnTop;outline.Enabled=true;outline.Parent=tree
 local function upgradeCost() return 25*2^(level-1) end
+local function clickPower() return 2^(level-1) end
 
 local function sign(parent,adornee,name,offset,size)
     local gui=Instance.new("BillboardGui");gui.Name=name;gui.Adornee=adornee
@@ -37,8 +38,9 @@ local button=workspace:WaitForChild("TreeUpgradeButton")
 local _,upgradeText=sign(button,button,"UpgradeLabel",Vector3.new(0,2.1,0),UDim2.fromOffset(230,70))
 upgradeText.TextSize=18
 local function refresh()
-    text.Text="Clicks: "..count.."  |  Lv. "..level
+    text.Text="Clicks: "..count.."  |  Lv. "..level.."\n+"..string.format("%.0f",clickPower()).." / click"
     tree:SetAttribute("Clicks",count);tree:SetAttribute("Level",level)
+    tree:SetAttribute("ClickPower",clickPower())
     upgradeText.Text=busy and "BUILDING..." or ("UPGRADE TREE\n"..string.format("%.0f",upgradeCost()).." CLICKS")
     button.Color=count>=upgradeCost() and Color3.fromRGB(88,193,99) or Color3.fromRGB(233,180,63)
 end
@@ -51,7 +53,7 @@ local function clicked(player)
     if busy or not nearby(player,origin,28) then return end
     local now=os.clock()
     if lastClick[player] and now-lastClick[player]<.08 then return end
-    lastClick[player]=now;count+=1;refresh()
+    lastClick[player]=now;count+=clickPower();refresh()
 end
 local function clickable(part)
     local detector=Instance.new("ClickDetector");detector.Name="TreeClick";detector.MaxActivationDistance=24
