@@ -44,13 +44,28 @@ function Visuals.Build(character,id,color)
         e.Parent=parent;return e
     end
     -- A soft moving volume around the avatar, never a dotted wireframe.
-    local core=anchor("Living energy",Vector3.new(2.6,3.6,1.8),CFrame.new(0,-.4,0),0)
+    local core=anchor("Living energy",Vector3.new(3.4,4.2,2.8),CFrame.new(0,-.4,0),0)
     local dust=particles(core,"Fine energy",65+level*9,.075,1.8,true)
-    dust.Shape=Enum.ParticleEmitterShape.Box;dust.ShapeStyle=Enum.ParticleEmitterShapeStyle.Volume
-    dust.Speed=NumberRange.new(.25,.65)
+    dust.Shape=Enum.ParticleEmitterShape.Ellipsoid;dust.ShapeStyle=Enum.ParticleEmitterShapeStyle.Surface
+    dust.ShapeInOut=Enum.ParticleEmitterShapeInOut.Outward
+    dust.Speed=NumberRange.new(.08,.24)
+    dust.Acceleration=Vector3.new(0,.22,0)
     local sparks=particles(core,"Bright accents",10+level*2,.17,1.3,true)
-    sparks.Shape=Enum.ParticleEmitterShape.Box
-    sparks.Speed=NumberRange.new(.12,.4)
+    sparks.Shape=Enum.ParticleEmitterShape.Ellipsoid
+    sparks.ShapeStyle=Enum.ParticleEmitterShapeStyle.Surface
+    sparks.Speed=NumberRange.new(.08,.25)
+    sparks.Color=ColorSequence.new(pale,color)
+    sparks.Rate=8+level
+    sparks.Lifetime=NumberRange.new(1.1,1.7)
+    -- Larger, sparse luminous flecks add depth without hiding the avatar.
+    local flecks=particles(core,"Floating highlights",5+level,.23,2.2,true)
+    flecks.Shape=Enum.ParticleEmitterShape.Ellipsoid
+    flecks.ShapeStyle=Enum.ParticleEmitterShapeStyle.Surface
+    flecks.Speed=NumberRange.new(.04,.14)
+    flecks.Acceleration=Vector3.new(0,.12,0)
+    flecks.Brightness=1.2
+    flecks.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.3,.20,.06),NumberSequenceKeypoint.new(.7,.14,.04),NumberSequenceKeypoint.new(1,0)})
+    flecks.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.3,.55),NumberSequenceKeypoint.new(.7,.65),NumberSequenceKeypoint.new(1,1)})
     -- Continuous arcing streams: hidden rotating parents carry offset emission points.
     local streams=2+math.floor(level/3)
     for i=1,streams do
