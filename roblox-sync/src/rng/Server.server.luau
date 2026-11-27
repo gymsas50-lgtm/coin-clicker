@@ -85,17 +85,17 @@ request.OnServerEvent:Connect(function(player)
         return
     end
     state.nextAt = now+1
-    local value,index = random:NextInteger(1,10000),1
+    local value,index = random:NextInteger(1,8),0
     for i,aura in config do
         value -= aura.Weight
         if value <= 0 then index=i;break end
     end
     state.rolls += 1
-    state.owned[index] = (state.owned[index] or 0)+1
+    if index > 0 then state.owned[index] = (state.owned[index] or 0)+1 end
     local previous = state.best
     state.best = math.max(state.best,index)
     local stats = player:FindFirstChild("leaderstats")
     if stats and stats:FindFirstChild("Rolls") then stats.Rolls.Value=state.rolls end
     if state.best ~= previous then equip(player) end
-    result:FireClient(player,{Index=index,Rolls=state.rolls,Best=state.best,NewBest=state.best>previous,Count=state.owned[index]})
+    result:FireClient(player,{Index=index,Rolls=state.rolls,Best=state.best,NewBest=state.best>previous,Count=state.owned[index] or 0})
 end)

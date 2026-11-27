@@ -77,12 +77,13 @@ result.OnClientEvent:Connect(function(data)
         name.Text=preview.Name;name.TextColor3=preview.Color;chance.Text="\u{b7} \u{b7} \u{b7}"
         task.wait(.045+i*.003)
     end
-    local aura=config[data.Index]
+    local aura=config[data.Index] or {Name="NO AURA",Chance="-",Color=Color3.fromRGB(155,165,185)}
     cap.Text=data.NewBest and "\u{41d}\u{41e}\u{412}\u{410}\u{42f} \u{41b}\u{423}\u{427}\u{428}\u{410}\u{42f} \u{410}\u{423}\u{420}\u{410}" or "\u{420}\u{415}\u{417}\u{423}\u{41b}\u{42c}\u{422}\u{410}\u{422} \u{420}\u{41e}\u{41b}\u{41b}\u{410}"
-    name.Text=aura.Name;name.TextColor3=aura.Color;chance.Text="\u{428}\u{430}\u{43d}\u{441}  \u{b7}  "..aura.Chance
+    name.Text=aura.Name;name.TextColor3=aura.Color;chance.Text=aura.Chance
     counter.Text="\u{420}\u{43e}\u{43b}\u{43b}\u{44b}  \u{b7}  "..tostring(data.Rolls)
-    best.Text="\u{41b}\u{443}\u{447}\u{448}\u{430}\u{44f}  \u{b7}  "..config[data.Best].Name;best.TextColor3=config[data.Best].Color
-    note.Text=data.NewBest and "\u{410}\u{443}\u{440}\u{430} \u{44d}\u{43a}\u{438}\u{43f}\u{438}\u{440}\u{43e}\u{432}\u{430}\u{43d}\u{430} \u{43d}\u{430} \u{43f}\u{435}\u{440}\u{441}\u{43e}\u{43d}\u{430}\u{436}\u{430}" or "\u{41b}\u{443}\u{447}\u{448}\u{430}\u{44f} \u{430}\u{443}\u{440}\u{430} \u{441}\u{43e}\u{445}\u{440}\u{430}\u{43d}\u{435}\u{43d}\u{430} \u{43d}\u{430} \u{43f}\u{435}\u{440}\u{441}\u{43e}\u{43d}\u{430}\u{436}\u{435}"
+    local bestAura=config[data.Best]
+    best.Text="Best  :  "..(bestAura and bestAura.Name or "-");best.TextColor3=bestAura and bestAura.Color or white
+    note.Text=data.Index==0 and "No drop - equipped aura unchanged" or (data.NewBest and "New best aura equipped" or "Your best aura stays equipped")
     card.BackgroundColor3=aura.Color:Lerp(Color3.fromRGB(17,22,34),.83)
     TweenService:Create(card,TweenInfo.new(.25),{BackgroundColor3=Color3.fromRGB(17,22,34)}):Play()
     local remaining=1-(os.clock()-started)
