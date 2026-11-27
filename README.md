@@ -1,3 +1,3 @@
-# Blank page
+# Server
 
-The game and its assets have been removed from the current version. The page is intentionally empty and white. Server and Windows updater are retained.
+Only the HTTP server, Windows launcher/updater and an empty white index page are retained. No game, models, textures or concept assets are included.
