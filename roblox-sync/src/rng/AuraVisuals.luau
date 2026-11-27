@@ -145,7 +145,7 @@ function Visuals.Build(character, id, color)
         local crown=ring(.9,2.8,color,.4,nil,.06,.18)
         for i=1,6 do local a=i*math.pi/3;shard(crown,CFrame.new(math.cos(a)*.9,.35,math.sin(a)*.9),.7,.11,white,.2) end
     end
-    -- Supplemental drifting motes; geometry remains the main silhouette.
+    -- Particle-only silhouettes. Invisible non-collidable helpers position emitters.
     local levels={Common=1,InDev=2,Uncommon=3,Rare=4,SuperRare=5,Epic=6,Lucky=7,Legendary=8,Ice=9}
     local level=levels[id] or 1
     local particles=Instance.new("ParticleEmitter");particles.Name="DriftingMotes"
@@ -163,30 +163,38 @@ function Visuals.Build(character, id, color)
     particles.Rotation=NumberRange.new(0,360);particles.RotSpeed=NumberRange.new(-45,45)
     particles.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.2,.10+level*.012),NumberSequenceKeypoint.new(1,0)})
     particles.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.15,.25),NumberSequenceKeypoint.new(.7,.5),NumberSequenceKeypoint.new(1,1)})
-    -- Emit from the actual orbiting geometry, never from the avatar core.
-    -- Sample distributed pieces and cap total rate independently of part count.
+    -- Use all shape points so rings, wings and crowns are drawn entirely by particles.
     local surfaces={}
     for _,part in model:GetChildren() do
         if part:IsA("BasePart") and part.Transparency<.95 then table.insert(surfaces,part) end
     end
-    local count=math.min(#surfaces,level>=6 and 12 or 8)
+    local count=#surfaces
     for i=1,count do
         local part=surfaces[math.floor((i-1)*#surfaces/count)+1]
         local attachment=Instance.new("Attachment");attachment.Name="SurfaceMotes";attachment.Parent=part
         local emitter=particles:Clone()
         emitter.Color=ColorSequence.new(part.Color,part.Color:Lerp(white,.5))
-        emitter.Rate=(3+level*2)/count
+        emitter.Rate=(100+level*32)/math.max(1,count)
+        emitter.LockedToPart=true
+        emitter.Lifetime=NumberRange.new(.65,1.15)
+        emitter.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.15,.12+level*.008),NumberSequenceKeypoint.new(.7,.09),NumberSequenceKeypoint.new(1,0)})
         emitter.Shape=Enum.ParticleEmitterShape.Box
-        emitter.Speed=NumberRange.new(.15,.65)
+        emitter.Speed=NumberRange.new(.015,.12)
         emitter.SpreadAngle=Vector2.new(180,180)
         emitter.Parent=attachment
         if level>=6 and i%3==0 then
             local mist=emitter:Clone();mist.Name="SoftMist"
             mist.Texture="rbxasset://textures/particles/smoke_main.dds"
-            mist.Rate=level/math.max(1,math.floor(count/3));mist.Speed=NumberRange.new(.1,.3)
+            mist.Rate=(level*1.5)/math.max(1,math.floor(count/3));mist.Speed=NumberRange.new(.1,.3)
             mist.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,.2),NumberSequenceKeypoint.new(.5,.7),NumberSequenceKeypoint.new(1,1)})
             mist.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.3,.9),NumberSequenceKeypoint.new(1,1)})
-            mist.LightEmission=.35;mist.Parent=attachment
+            mist.LightEmission=.35;mist.LockedToPart=false;mist.Parent=attachment
+        end
+    end
+    -- Helpers are invisible: no solid neon meshes/parts remain on screen.
+    for _,part in model:GetChildren() do
+        if part:IsA("BasePart") then
+            part.Transparency=1;part.CastShadow=false
         end
     end
     particles:Destroy()
