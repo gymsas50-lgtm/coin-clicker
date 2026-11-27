@@ -254,7 +254,7 @@ function Visuals.Build(character, id, color)
         e:SetAttribute("WarmCount",math.ceil(rate*1.5));e.Parent=parent
         -- Additional small soft motes: same tint, different silhouette, no large smoke clouds.
         local soft=e:Clone();soft.Name="SoftLightDots"
-        soft.Texture="rbxasset://textures/particles/smoke_main.dds"
+        soft.Texture="rbxasset://textures/particles/sparkles_main.dds"
         soft.Rate=rate*.85
         soft.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.2,size*.85,size*.2),NumberSequenceKeypoint.new(.65,size*.6),NumberSequenceKeypoint.new(1,0)})
         soft.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.2,.25),NumberSequenceKeypoint.new(.7,.6),NumberSequenceKeypoint.new(1,1)})
