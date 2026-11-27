@@ -118,14 +118,20 @@ local function rebuild(index,instant)
         block(index==3 and "SmallCrystal" or "Fruit",Vector3.new(.24,.32,.24),Vector3.new(math.cos(a)*1.5,3.8+i%2*.5,math.sin(a)*1.5),tint)
     end
     for _,part in tree:GetChildren() do if part:IsA("BasePart") then part:Destroy() end end
-    for _,spec in specs do
+    for blockIndex,spec in specs do
         local part=Instance.new("Part");part.Name=spec.name;part.Anchored=true;part.CanCollide=false
         part.Size=spec.size*.3
         part.Position=spec.pos+Vector3.new(random:NextNumber(-1.7,1.7),1.8,random:NextNumber(-1.7,1.7))
         part.Color=spec.color;part.Material=Enum.Material.Plastic
         part.TopSurface=Enum.SurfaceType.Studs;part.BottomSurface=Enum.SurfaceType.Inlet;part.Parent=tree
-        -- Play assembly without yielding: the next equip can interrupt immediately.
-        TweenService:Create(part,TweenInfo.new(instant and .35 or .5,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=spec.pos,Size=spec.size}):Play()
+        -- Stagger appearance/tweens, not the server handler: equipping stays interruptible.
+        part.Transparency=1
+        local buildDelay=(blockIndex-1)*.026
+        task.delay(buildDelay,function()
+            if not part.Parent then return end -- Replaced by a newer equip.
+            part.Transparency=0
+            TweenService:Create(part,TweenInfo.new(.6,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=spec.pos,Size=spec.size}):Play()
+        end)
         clickable(part)
         if spec.name=="CrownTop" then anchor.Position=spec.pos+Vector3.new(0,spec.size.Y/2+1.8,0) end
         if not instant then task.wait(.006) end
