@@ -23,7 +23,8 @@ local function panel(name,pos,size)
     f.BackgroundTransparency=.08;f.BorderSizePixel=0;f.Parent=ui;rounded(f,14)
     local stroke=Instance.new("UIStroke");stroke.Color=Color3.fromRGB(71,88,124);stroke.Transparency=.4;stroke.Parent=f;return f
 end
-local stats=panel("SessionStats",UDim2.fromOffset(18,18),UDim2.fromOffset(48,48))
+local stats=panel("SessionStats",UDim2.new(0,18,.5,0),UDim2.fromOffset(48,48))
+stats.AnchorPoint=Vector2.new(0,.5)
 local counter={Text=""}
 local equippedText={Text="",TextColor3=white}
 local inventoryButton=Instance.new("TextButton");inventoryButton.Name="InventoryButton"
@@ -69,25 +70,47 @@ local function fadeResult(token)
     end)
 end
 local inv=panel("InventoryPanel",UDim2.fromScale(.5,.45),UDim2.new(.92,0,.68,0));inv.AnchorPoint=Vector2.new(.5,.5);inv.Visible=false
-local limit=Instance.new("UISizeConstraint");limit.MaxSize=Vector2.new(420,520);limit.Parent=inv
+local limit=Instance.new("UISizeConstraint");limit.MaxSize=Vector2.new(560,520);limit.Parent=inv
 label(inv,"Title","AURA INVENTORY",UDim2.fromOffset(18,13),UDim2.new(1,-75,0,30),18)
 
 local close=Instance.new("TextButton");close.Size=UDim2.fromOffset(32,32);close.Position=UDim2.new(1,-44,0,12);close.Text="X";close.Font=Enum.Font.GothamBold;close.TextSize=15;close.TextColor3=white;close.BackgroundTransparency=1;close.Parent=inv
 local list=Instance.new("ScrollingFrame")
-list.Name="AuraList";list.Position=UDim2.fromOffset(0,60);list.Size=UDim2.new(1,-6,1,-72)
+list.Name="AuraSlots";list.Position=UDim2.fromOffset(10,60);list.Size=UDim2.new(1,-20,1,-72)
 list.BackgroundTransparency=1;list.BorderSizePixel=0;list.ScrollBarThickness=4
 list.ScrollBarImageColor3=Color3.fromRGB(104,121,150);list.ScrollingDirection=Enum.ScrollingDirection.Y
-list.CanvasSize=UDim2.fromOffset(0,#config*75+6);list.Parent=inv
+list.CanvasSize=UDim2.fromOffset(0,0);list.Parent=inv
+local grid=Instance.new("UIGridLayout");grid.SortOrder=Enum.SortOrder.LayoutOrder
+ grid.CellPadding=UDim2.fromOffset(10,10);grid.Parent=list
+local padding=Instance.new("UIPadding");padding.PaddingLeft=UDim.new(0,4);padding.PaddingTop=UDim.new(0,4);padding.Parent=list
+local function resizeGrid()
+    local width=math.max(1,list.AbsoluteSize.X-18)
+    local columns=width>=380 and 3 or 2
+    local size=math.max(70,math.floor((width-(columns-1)*10)/columns))
+    grid.CellSize=UDim2.fromOffset(size,size)
+    grid.FillDirectionMaxCells=columns
+    list.CanvasSize=UDim2.fromOffset(0,grid.AbsoluteContentSize.Y+12)
+end
+list:GetPropertyChangedSignal("AbsoluteSize"):Connect(resizeGrid)
+grid:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() list.CanvasSize=UDim2.fromOffset(0,grid.AbsoluteContentSize.Y+12) end)
 local rows={}
 for i,aura in config do
-    local row=Instance.new("Frame");row.Name="Slot"..i;row.Size=UDim2.new(1,-28,0,66);row.Position=UDim2.fromOffset(14,6+(i-1)*75)
-    row.BackgroundColor3=Color3.fromRGB(29,36,52);row.BorderSizePixel=0;row.Parent=list;rounded(row,9)
-    local title=label(row,"Name","?",UDim2.fromOffset(12,8),UDim2.new(1,-116,0,24),17,muted);title.TextXAlignment=Enum.TextXAlignment.Left
-    local count=label(row,"Count","",UDim2.fromOffset(12,35),UDim2.new(1,-116,0,22),11,muted);count.TextXAlignment=Enum.TextXAlignment.Left
-    local action=Instance.new("TextButton");action.Name="Equip";action.Size=UDim2.fromOffset(90,34);action.Position=UDim2.new(1,-101,.5,-17)
-    action.BorderSizePixel=0;action.Font=Enum.Font.GothamBold;action.TextSize=11;action.TextColor3=white;action.Parent=row;rounded(action,7)
-    rows[i]={title=title,count=count,action=action}
+    local slot=Instance.new("Frame");slot.Name="Slot"..i;slot.LayoutOrder=i
+    slot.BackgroundColor3=Color3.fromRGB(29,36,52);slot.BorderSizePixel=0;slot.Parent=list;rounded(slot,10)
+    local border=Instance.new("UIStroke");border.Thickness=1;border.Color=Color3.fromRGB(57,65,85);border.Parent=slot
+    local icon=Instance.new("Frame");icon.Name="AuraIcon";icon.AnchorPoint=Vector2.new(.5,.5)
+    icon.Position=UDim2.fromScale(.5,.18);icon.Size=UDim2.fromScale(.13,.13);icon.Rotation=45
+    icon.BorderSizePixel=0;icon.BackgroundColor3=muted;icon.Parent=slot;rounded(icon,2)
+    local title=label(slot,"Name","??? ??????",UDim2.new(0,5,.33,0),UDim2.new(1,-10,.18,0),16,muted)
+    title.TextScaled=true
+    local textLimit=Instance.new("UITextSizeConstraint");textLimit.MinTextSize=10;textLimit.MaxTextSize=17;textLimit.Parent=title
+    local count=label(slot,"Count","??? ??",UDim2.new(0,4,.53,0),UDim2.new(1,-8,.19,0),11,muted)
+    count.TextWrapped=true
+    local action=Instance.new("TextButton");action.Name="Equip";action.AnchorPoint=Vector2.new(.5,1)
+    action.Size=UDim2.new(1,-16,0,26);action.Position=UDim2.new(.5,0,1,-7)
+    action.BorderSizePixel=0;action.Font=Enum.Font.GothamBold;action.TextSize=10;action.TextColor3=white;action.Parent=slot;rounded(action,6)
+    rows[i]={title=title,count=count,action=action,icon=icon,border=border}
 end
+resizeGrid()
 
 local function apply(data)
     if not data then return end
@@ -99,7 +122,10 @@ local function apply(data)
         local count=owned[i] or 0
         row.title.Text=count>0 and config[i].Name or "??? ??????"
         row.title.TextColor3=count>0 and config[i].Color or muted
-        row.count.Text=count>0 and (config[i].Chance.."  |  Owned: "..count) or "??? ??"
+        row.count.Text=count>0 and (config[i].Chance.."  |  x"..count) or "??? ??"
+        row.icon.BackgroundColor3=count>0 and config[i].Color or Color3.fromRGB(79,89,108)
+        row.border.Color=equipped==i and config[i].Color or Color3.fromRGB(57,65,85)
+        row.border.Thickness=equipped==i and 2 or 1
         row.action.Visible=count>0
         row.action.Text=count==0 and "LOCKED" or (equipped==i and "UNEQUIP" or "EQUIP")
         row.action.BackgroundColor3=count==0 and Color3.fromRGB(42,46,57) or (equipped==i and Color3.fromRGB(96,65,55) or Color3.fromRGB(52,79,119))
