@@ -1,5 +1,8 @@
 {
   "files": [
-    "default.project.json"
+    "default.project.json",
+    "src/reactor/Config.luau",
+    "src/reactor/Server.server.luau",
+    "src/reactor/Client.client.luau"
   ]
 }
