@@ -1,11 +1,13 @@
 # Camera simulator prototype
 
-Daylight road with31static roadside props and collisions. Streetlamp fixtures retained, lights off in daytime.
+Two connected daylight rooms with windows, ceilings, wall collision and a walkable doorway. Road and roadside objects removed from the active map. Static room geometry batched by material.
 
-PS1-inspired look:480p, low-poly models, small textures and5bit colors. No dithering, vertex jitter, camera sway or shutter flashes. MSAA, mip filtering and cached soft daylight shadows reduce shimmer.
+Exactly one photo point spawns randomly on accessible floor in either room. Approach within3meters, aim and photograph it; walls block objective completion. No replacement until reload.
 
-Right-side camera has live display. Left click prints an instant photo that develops without downloads. Exactly one photo objective spawns at a random accessible roadside location on each load, excluding large prop collision bounds. Approach within3meters and aim to complete it; no replacement spawns until reload.
+Right-side single-surface camera, live display and developing instant photographs. No file downloads or text HUD.
 
-Click to capture mouse; WASD move; Shift faster; Escape cursor. No HUD text or hands.
+480p low-poly retro look without vertex jitter, dithering, shutter flashes or camera sway.
 
-Node22 server, LAN and Windows auto-updater. npm start or START.bat, port3000.
+Click to capture mouse; WASD move; Shift faster; Escape cursor.
+
+Node22 server, LAN access, Windows auto-updater. npm start or START.bat, default port3000.
