@@ -254,7 +254,10 @@ function Visuals.Build(character, id, color)
     end
     -- Slightly reduce density while preserving all textures, sizes and shapes.
     for _,instance in model:GetDescendants() do
-        if instance:IsA("ParticleEmitter") then instance.Rate*=.75 end
+        if instance:IsA("ParticleEmitter") then
+            instance.Rate*=.75
+            instance.LightEmission*=.65
+        end
     end
     particles:Destroy()
     return model

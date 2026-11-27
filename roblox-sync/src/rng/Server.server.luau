@@ -30,7 +30,7 @@ local function equip(player)
     for _,other in config do if other.Weight>aura.Weight then rank+=1 end end
     local light=Instance.new("PointLight")
     light.Name="AuraLight";light.Color=aura.Color
-    light.Brightness=1+rank*.25;light.Range=9+rank*1.5
+    light.Brightness=(1+rank*.25)*.55;light.Range=(9+rank*1.5)*.85
     light.Shadows=false;light.Parent=root
     local title = Instance.new("BillboardGui")
     title.Name = "AuraTitle"
