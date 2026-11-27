@@ -3,6 +3,7 @@
     "default.project.json",
     "src/TreeClicks.server.luau",
     "src/SpawnSetup.server.luau",
-    "src/TreeInventory.client.luau"
+    "src/TreeInventory.client.luau",
+    "src/CaseVisuals.luau"
   ]
 }

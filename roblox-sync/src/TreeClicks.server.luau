@@ -6,6 +6,7 @@ local origin=Vector3.new(trunk.Position.X,0,trunk.Position.Z)
 local caseButton=workspace:WaitForChild("TreeCaseButton")
 local random=Random.new()
 local inventory=game:GetService("ReplicatedStorage"):WaitForChild("TreeInventory")
+local caseVisuals=require(game:GetService("ReplicatedStorage"):WaitForChild("CaseVisuals"))
 local owned={1,0,0}
 local equipped=true
 local types={
@@ -50,7 +51,7 @@ local function refresh()
     xpText.Text="XP "..state.xp.." / "..string.format("%.0f",required())
     if fillTween then fillTween:Cancel() end
     fillTween=TweenService:Create(fill,TweenInfo.new(.18),{Size=UDim2.fromScale(math.clamp(state.xp/required(),0,1),1)});fillTween:Play()
-    caseText.Text=busy and "OPENING..." or "TREE CASE - 50 CLICKS\nOak 70% | Birch 25%\nCrystal 5%"
+    caseText.Text=busy and "OPENING..." or "OPEN TREE CASE\n50 CLICKS"
     caseButton.Color=balance>=50 and Color3.fromRGB(85,184,108) or Color3.fromRGB(218,170,64)
     tree:SetAttribute("Clicks",balance);tree:SetAttribute("Level",state.level)
     tree:SetAttribute("XP",state.xp);tree:SetAttribute("ClickPower",power());tree:SetAttribute("TreeType",types[current].name)
@@ -131,14 +132,14 @@ local function rebuild(index)
     for _,part in tree:GetChildren() do if part:IsA("BasePart") then part.CanCollide=true end end
 end
 local caseDetector=Instance.new("ClickDetector");caseDetector.MaxActivationDistance=20;caseDetector.Parent=caseButton
-caseDetector.MouseClick:Connect(function(player)
+local function openCase(player)
     if busy or balance<50 or not nearby(player,caseButton.Position,24) then return end
     busy=true;balance-=50;refresh()
     local roll=random:NextInteger(1,100)
     local chosen=roll<=70 and 1 or (roll<=95 and 2 or 3)
     local old=current
     local ok,err=pcall(function()
-        task.wait(.4)
+        caseVisuals.Open(types[chosen],chosen)
         if owned[chosen]>0 then
             caseText.Text="ROLLED: "..types[chosen].name.."\nALREADY OWNED - NO REWARD"
         else
@@ -150,7 +151,14 @@ caseDetector.MouseClick:Connect(function(player)
     end)
     if not ok then balance+=50;warn("Tree case failed: "..tostring(err)) end
     busy=false;refresh()
-end)
+end
+caseDetector.MouseClick:Connect(openCase)
+for _,part in workspace:WaitForChild("TreeChest"):GetDescendants() do
+    if part:IsA("BasePart") then
+        local detector=Instance.new("ClickDetector");detector.MaxActivationDistance=20
+        detector.Parent=part;detector.MouseClick:Connect(openCase)
+    end
+end
 Players.PlayerRemoving:Connect(function(player) cooldown[player]=nil end)
 refresh()
 

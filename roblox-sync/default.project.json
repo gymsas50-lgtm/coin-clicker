@@ -387,6 +387,452 @@
           "TopSurface": "Studs",
           "BottomSurface": "Smooth"
         }
+      },
+      "TreeChest": {
+        "$className": "Model",
+        "$ignoreUnknownInstances": true,
+        "Floor": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              5,
+              0.4,
+              3.6
+            ],
+            "Position": [
+              42,
+              0.4,
+              -4
+            ],
+            "Color": [
+              0.4,
+              0.25,
+              0.13
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "Front": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              5,
+              2,
+              0.35
+            ],
+            "Position": [
+              42,
+              1.5,
+              -2.35
+            ],
+            "Color": [
+              0.4,
+              0.25,
+              0.13
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "Back": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              5,
+              2,
+              0.35
+            ],
+            "Position": [
+              42,
+              1.5,
+              -5.65
+            ],
+            "Color": [
+              0.4,
+              0.25,
+              0.13
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "Left": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              0.35,
+              2,
+              3
+            ],
+            "Position": [
+              39.65,
+              1.5,
+              -4
+            ],
+            "Color": [
+              0.4,
+              0.25,
+              0.13
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "Right": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              0.35,
+              2,
+              3
+            ],
+            "Position": [
+              44.35,
+              1.5,
+              -4
+            ],
+            "Color": [
+              0.4,
+              0.25,
+              0.13
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "BandFront40.6": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              0.22,
+              2.1,
+              0.12
+            ],
+            "Position": [
+              40.6,
+              1.5,
+              -2.12
+            ],
+            "Color": [
+              0.85,
+              0.64,
+              0.22
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "BandBack40.6": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              0.22,
+              2.1,
+              0.12
+            ],
+            "Position": [
+              40.6,
+              1.5,
+              -5.88
+            ],
+            "Color": [
+              0.85,
+              0.64,
+              0.22
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "BandFront43.4": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              0.22,
+              2.1,
+              0.12
+            ],
+            "Position": [
+              43.4,
+              1.5,
+              -2.12
+            ],
+            "Color": [
+              0.85,
+              0.64,
+              0.22
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "BandBack43.4": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              0.22,
+              2.1,
+              0.12
+            ],
+            "Position": [
+              43.4,
+              1.5,
+              -5.88
+            ],
+            "Color": [
+              0.85,
+              0.64,
+              0.22
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "Lock": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              0.55,
+              0.65,
+              0.2
+            ],
+            "Position": [
+              42,
+              2.1,
+              -2.06
+            ],
+            "Color": [
+              0.85,
+              0.64,
+              0.22
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "LidAssembly": {
+          "$className": "Model",
+          "$ignoreUnknownInstances": true,
+          "Lid": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Size": [
+                5.2,
+                0.5,
+                3.8
+              ],
+              "Position": [
+                42,
+                2.75,
+                -4
+              ],
+              "Color": [
+                0.4,
+                0.25,
+                0.13
+              ],
+              "Material": "Plastic",
+              "TopSurface": "Studs",
+              "BottomSurface": "Smooth"
+            }
+          },
+          "LidBand0": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Size": [
+                0.24,
+                0.12,
+                3.85
+              ],
+              "Position": [
+                40.6,
+                3.06,
+                -4
+              ],
+              "Color": [
+                0.85,
+                0.64,
+                0.22
+              ],
+              "Material": "Plastic",
+              "TopSurface": "Studs",
+              "BottomSurface": "Smooth"
+            }
+          },
+          "LidBand1": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Size": [
+                0.24,
+                0.12,
+                3.85
+              ],
+              "Position": [
+                43.4,
+                3.06,
+                -4
+              ],
+              "Color": [
+                0.85,
+                0.64,
+                0.22
+              ],
+              "Material": "Plastic",
+              "TopSurface": "Studs",
+              "BottomSurface": "Smooth"
+            }
+          }
+        }
+      },
+      "TreeOddsSign": {
+        "$className": "Model",
+        "$ignoreUnknownInstances": true,
+        "Post": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              0.35,
+              3,
+              0.35
+            ],
+            "Position": [
+              36,
+              1.5,
+              -4
+            ],
+            "Color": [
+              0.4,
+              0.25,
+              0.13
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "Board": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              4.2,
+              2.6,
+              0.3
+            ],
+            "Position": [
+              36,
+              3.3,
+              -4
+            ],
+            "Color": [
+              0.4,
+              0.25,
+              0.13
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          },
+          "OddsFront": {
+            "$className": "SurfaceGui",
+            "$properties": {
+              "Face": "Front",
+              "CanvasSize": [
+                480,
+                300
+              ],
+              "LightInfluence": 0
+            },
+            "Text": {
+              "$className": "TextLabel",
+              "$properties": {
+                "Size": {
+                  "UDim2": [
+                    [
+                      1,
+                      0
+                    ],
+                    [
+                      1,
+                      0
+                    ]
+                  ]
+                },
+                "BackgroundTransparency": 1,
+                "Font": "GothamBold",
+                "TextSize": 36,
+                "TextColor3": [
+                  1,
+                  0.94,
+                  0.76
+                ],
+                "Text": "TREE CASE\n50 CLICKS\nOak 70%\nBirch 25%\nCrystal 5%"
+              }
+            }
+          },
+          "OddsBack": {
+            "$className": "SurfaceGui",
+            "$properties": {
+              "Face": "Back",
+              "CanvasSize": [
+                480,
+                300
+              ],
+              "LightInfluence": 0
+            },
+            "Text": {
+              "$className": "TextLabel",
+              "$properties": {
+                "Size": {
+                  "UDim2": [
+                    [
+                      1,
+                      0
+                    ],
+                    [
+                      1,
+                      0
+                    ]
+                  ]
+                },
+                "BackgroundTransparency": 1,
+                "Font": "GothamBold",
+                "TextSize": 36,
+                "TextColor3": [
+                  1,
+                  0.94,
+                  0.76
+                ],
+                "Text": "TREE CASE\n50 CLICKS\nOak 70%\nBirch 25%\nCrystal 5%"
+              }
+            }
+          }
+        }
       }
     },
     "StarterPack": {
@@ -443,6 +889,9 @@
       "$ignoreUnknownInstances": false,
       "TreeInventory": {
         "$className": "RemoteFunction"
+      },
+      "CaseVisuals": {
+        "$path": "src/CaseVisuals.luau"
       }
     },
     "ServerStorage": {
