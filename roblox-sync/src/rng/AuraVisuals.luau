@@ -300,6 +300,12 @@ function Visuals.Build(character, id, color)
     local e=body:FindFirstChildOfClass("ParticleEmitter")
     e.Shape=Enum.ParticleEmitterShape.Ellipsoid
     e.ShapeStyle=Enum.ParticleEmitterShapeStyle.Surface
+    -- Opaque star particles; keep all geometry and emission settings unchanged.
+    for _,instance in model:GetDescendants() do
+        if instance:IsA("ParticleEmitter") then
+            instance.Transparency=NumberSequence.new(0)
+        end
+    end
     return model
 end
 return Visuals
