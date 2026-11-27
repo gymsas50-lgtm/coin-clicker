@@ -175,25 +175,28 @@ function Visuals.Build(character, id, color)
         e:SetAttribute("WarmCount",math.ceil(rate*2*1.5))
         e.Parent=parent
     end
-    -- Sample along each stroke/shard, not only its center.
-    local contour={}
-    for _,part in surfaces do
+    -- Emit continuously through each contour segment, avoiding dotted attachment grids.
+    local budget=650+level*90
+    for i,part in surfaces do
         local size=part.Size
-        local axis= size.Z>=size.Y and size.Z>=size.X and Vector3.new(0,0,1) or (size.Y>=size.X and Vector3.new(0,1,0) or Vector3.new(1,0,0))
         local length=math.max(size.X,size.Y,size.Z)
-        local samples=math.max(1,math.ceil(length/.14))
-        for j=1,samples do
-            local attachment=Instance.new("Attachment")
-            attachment.Name="ContourPoint"
-            attachment.Position=axis*(((j-.5)/samples-.5)*length)
-            attachment.Parent=part
-            table.insert(contour,attachment)
+        local wing=part.Name=="Faceted shard"
+        if wing then
+            -- Broad feather/crystal clouds rather than pencil-thin dotted rods.
+            part.Size=Vector3.new(math.max(size.X,.24),size.Y,math.max(size.Z,.20))
         end
-    end
-    -- Distribute emission across the complete contour with overlapping small motes.
-    local budget=math.max(300+level*45,#contour*2.5)
-    for i,attachment in contour do
-        emitter(attachment,budget/math.max(1,#contour),({.10,.13,.16,.18,.12})[(i-1)%5+1],false)
+        local radius=wing and .20 or .11
+        emitter(part,budget/math.max(1,#surfaces),radius,false)
+        local e=part:FindFirstChildOfClass("ParticleEmitter")
+        e.Shape=Enum.ParticleEmitterShape.Box
+        e.ShapeStyle=Enum.ParticleEmitterShapeStyle.Volume
+        e.Speed=NumberRange.new(.025,wing and .18 or .085)
+        e.SpreadAngle=Vector2.new(180,180)
+        e.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,.035),NumberSequenceKeypoint.new(.22,radius,.04),NumberSequenceKeypoint.new(.7,radius*.7,.025),NumberSequenceKeypoint.new(1,0)})
+        e.Lifetime=NumberRange.new(.85,1.6)
+        e.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.2,.48),NumberSequenceKeypoint.new(.65,.55),NumberSequenceKeypoint.new(1,1)})
+        e.RotSpeed=NumberRange.new(-15,15)
+        e:SetAttribute("WarmCount",math.ceil(e.Rate))
     end
     local limbs={}
     for _,name in {"Torso","UpperTorso","Left Arm","Right Arm","Left Leg","Right Leg","LeftUpperArm","RightUpperArm","LeftUpperLeg","RightUpperLeg"} do
