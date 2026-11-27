@@ -175,14 +175,25 @@ function Visuals.Build(character, id, color)
         e:SetAttribute("WarmCount",math.ceil(rate*2*1.5))
         e.Parent=parent
     end
-    local count=#surfaces
-    local budget=300+level*45
-    for i=1,count do
-        local part=surfaces[math.floor((i-1)*#surfaces/count)+1]
-        -- Keep each particle source on the designed contour, not across a box volume.
-        local attachment=Instance.new("Attachment")
-        attachment.Name="ContourPoint";attachment.Parent=part
-        emitter(attachment,budget/count,({.065,.10,.14,.20,.12})[(i-1)%5+1],false)
+    -- Sample along each stroke/shard, not only its center.
+    local contour={}
+    for _,part in surfaces do
+        local size=part.Size
+        local axis= size.Z>=size.Y and size.Z>=size.X and Vector3.new(0,0,1) or (size.Y>=size.X and Vector3.new(0,1,0) or Vector3.new(1,0,0))
+        local length=math.max(size.X,size.Y,size.Z)
+        local samples=math.max(1,math.ceil(length/.14))
+        for j=1,samples do
+            local attachment=Instance.new("Attachment")
+            attachment.Name="ContourPoint"
+            attachment.Position=axis*(((j-.5)/samples-.5)*length)
+            attachment.Parent=part
+            table.insert(contour,attachment)
+        end
+    end
+    -- Distribute emission across the complete contour with overlapping small motes.
+    local budget=math.max(300+level*45,#contour*2.5)
+    for i,attachment in contour do
+        emitter(attachment,budget/math.max(1,#contour),({.10,.13,.16,.18,.12})[(i-1)%5+1],false)
     end
     local limbs={}
     for _,name in {"Torso","UpperTorso","Left Arm","Right Arm","Left Leg","Right Leg","LeftUpperArm","RightUpperArm","LeftUpperLeg","RightUpperLeg"} do
