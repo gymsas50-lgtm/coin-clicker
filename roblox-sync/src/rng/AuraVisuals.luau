@@ -246,6 +246,37 @@ function Visuals.Build(character, id, color)
             line(snow,dir*.3,dir*2.9,.055,color,.25)
             for j=1,2 do local v=dir*(1+j*.65);line(snow,v,v-dir*.4+side*.4,.035,white,.3);line(snow,v,v-dir*.4-side*.4,.035,white,.3) end
         end
+        -- Ice-exclusive crown, drifting shards and branching frost engravings.
+        local blue=Color3.fromRGB(96,188,255)
+        local frostWhite=Color3.fromRGB(225,250,255)
+        local crown=pivot("Glacial crown",CFrame.new(0,2.65,0),-.16)
+        polygon(crown,.86,0,6,color,.045)
+        polygon(crown,1.02,.12,6,frostWhite,.025,math.pi/6)
+        for i=1,6 do
+            local a=i*math.pi/3
+            local center=Vector3.new(math.cos(a)*.86,.28,math.sin(a)*.86)
+            diamond(crown,CFrame.new(center),i%2==0 and .34 or .23,i%2==0 and frostWhite or blue)
+        end
+        local shards=pivot("Glacial satellites",CFrame.new(0,-.55,0),.17)
+        for i=1,6 do
+            local a=i*math.pi/3+math.pi/6
+            local cf=CFrame.new(math.cos(a)*2.5,math.sin(a*2)*.4,math.sin(a)*2.5)*CFrame.Angles(0,a,.22)
+            diamond(shards,cf,i%2==0 and .58 or .38,i%2==0 and color or frostWhite)
+        end
+        local etching=pivot("Outer frost engravings",CFrame.new(0,-2.52,0),-.12)
+        for i=1,6 do
+            local a=i*math.pi/3
+            local d=Vector3.new(math.cos(a),0,math.sin(a))
+            local t=Vector3.new(-d.Z,0,d.X)
+            local endPoint=d*3.05
+            line(etching,endPoint-t*.15,endPoint+d*.25,.035,frostWhite,.2)
+            line(etching,endPoint+t*.15,endPoint+d*.25,.035,frostWhite,.2)
+            for j=1,3 do
+                local center=d*(1+j*.48)
+                line(etching,center,center-d*.24+t*.22,.025,blue,.24)
+                line(etching,center,center-d*.24-t*.22,.025,blue,.24)
+            end
+        end
     end
     -- Secondary detail layer complements the existing silhouettes.
     local ranks={Common=1,InDev=2,Uncommon=3,Rare=4,SuperRare=5,Epic=6,Lucky=7,Legendary=8,Ice=9}
