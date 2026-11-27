@@ -118,7 +118,7 @@ resizeGrid()
 
 local rarityOrder={}
 for i=1,#config do table.insert(rarityOrder,i) end
-table.sort(rarityOrder,function(a,b) return config[a].Weight>config[b].Weight end)
+table.sort(rarityOrder,function(a,b) return config[a].BaseOdds<config[b].BaseOdds end)
 local rarityRank={}
 for rank,index in rarityOrder do rarityRank[index]=rank end
 local function apply(data)

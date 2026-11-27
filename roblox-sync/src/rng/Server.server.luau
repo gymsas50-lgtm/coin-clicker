@@ -7,8 +7,15 @@ local request, result = folder:WaitForChild("RollRequest"), folder:WaitForChild(
 local inventory = folder:WaitForChild("Inventory")
 local random = Random.new()
 local data = {}
-local totalWeight = 0
-for _, aura in config do totalWeight += aura.Weight end
+local rarityOrder={}
+local commonIndex
+for index,aura in config do
+    if aura.Id=="Common" then commonIndex=index else table.insert(rarityOrder,index) end
+end
+assert(commonIndex,"Common fallback is required")
+table.sort(rarityOrder,function(a,b)
+    return config[a].BaseOdds>config[b].BaseOdds
+end)
 local function equip(player)
     local state, character = data[player], player.Character
     if not state or not character then return end
@@ -27,7 +34,7 @@ local function equip(player)
     local aura = config[state.equipped]
     visuals.Build(character,aura.Id,aura.Color)
     local rank=1
-    for _,other in config do if other.Weight>aura.Weight then rank+=1 end end
+    for _,other in config do if other.BaseOdds<aura.BaseOdds then rank+=1 end end
     local light=Instance.new("PointLight")
     light.Name="AuraLight";light.Color=aura.Color
     light.Brightness=(1+rank*.25)*.55;light.Range=(9+rank*1.5)*.85
@@ -110,10 +117,14 @@ request.OnServerEvent:Connect(function(player)
         return
     end
     state.nextAt = now+3
-    local value,index = random:NextInteger(1,totalWeight),#config
-    for i,aura in config do
-        value -= aura.Weight
-        if value <= 0 then index=i;break end
+    -- First successful rare-to-common check wins; never normalize base odds.
+    -- Common is the guaranteed fallback, not an independent final probability.
+    local index=commonIndex
+    for _,candidate in rarityOrder do
+        if random:NextInteger(1,config[candidate].BaseOdds)==1 then
+            index=candidate
+            break
+        end
     end
     state.sequence += 1
     state.pending = {index=index,token=state.sequence,readyAt=now+3}
