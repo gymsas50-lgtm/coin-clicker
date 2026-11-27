@@ -7,6 +7,7 @@ $lastRevision = ''
 $utf8 = New-Object Text.UTF8Encoding($false)
 function Get-Text([string]$url) {
     $wc = New-Object Net.WebClient
+    $wc.Encoding = [Text.Encoding]::UTF8
     try {
         $wc.Headers['User-Agent'] = 'RobloxStudioSync/1'
         $wc.Headers['Cache-Control'] = 'no-cache'
