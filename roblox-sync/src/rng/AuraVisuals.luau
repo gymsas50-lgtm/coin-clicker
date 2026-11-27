@@ -66,82 +66,155 @@ function Visuals.Build(character, id, color)
             end
         end
     end
+    -- New sculpted collection: each tier has a distinct silhouette.
+    local function polygon(parent,radius,y,n,tint,width,phase)
+        phase=phase or 0
+        for i=1,n do
+            local a=(i-1)*math.pi*2/n+phase;local b=i*math.pi*2/n+phase
+            line(parent,Vector3.new(math.cos(a)*radius,y,math.sin(a)*radius),Vector3.new(math.cos(b)*radius,y,math.sin(b)*radius),width or .05,tint,.22)
+        end
+    end
+    local function diamond(parent,cf,size,tint)
+        local points={Vector3.new(0,size,0),Vector3.new(size*.45,0,0),Vector3.new(0,0,size*.45),Vector3.new(-size*.45,0,0),Vector3.new(0,0,-size*.45),Vector3.new(0,-size,0)}
+        for i=2,5 do
+            local j=i==5 and 2 or i+1
+            line(parent,cf:PointToWorldSpace(points[1]),cf:PointToWorldSpace(points[i]),.045,tint,.15)
+            line(parent,cf:PointToWorldSpace(points[6]),cf:PointToWorldSpace(points[i]),.045,tint,.15)
+            line(parent,cf:PointToWorldSpace(points[i]),cf:PointToWorldSpace(points[j]),.035,tint,.3)
+        end
+        piece(parent,"Crystal heart",Vector3.new(size*.24,size*.8,size*.24),cf*CFrame.Angles(0,math.pi/4,0),tint,.35)
+    end
     if id=="Common" then
-        local circle=ring(1.65,-2.65,color,.2,nil,.035,.5)
-        orbiters(circle,1.65,4,.08,color,.10)
+        -- Four separated floating silver corner brackets, no full ring.
+        local base=pivot("Silver brackets",CFrame.new(0,-2.4,0),.16)
+        for i=1,4 do
+            local a=i*math.pi/2+math.pi/4
+            local center=Vector3.new(math.cos(a)*1.65,0,math.sin(a)*1.65)
+            local tangent=Vector3.new(-math.sin(a),0,math.cos(a))
+            line(base,center-tangent*.30,center+tangent*.30,.065,color,.3)
+            line(base,center,center+Vector3.new(0,.25,0),.05,white,.4)
+        end
     elseif id=="InDev" then
-        local cube=pivot("Amber wireframe",CFrame.new(0,0,0),.35)
-        local s=1.45
-        for _,a in {-1,1} do for _,b in {-1,1} do
-            line(cube,Vector3.new(-s,a*s,b*s),Vector3.new(s,a*s,b*s),.035,color,.4)
-            line(cube,Vector3.new(a*s,-s,b*s),Vector3.new(a*s,s,b*s),.035,color,.4)
-            line(cube,Vector3.new(a*s,b*s,-s),Vector3.new(a*s,b*s,s),.035,color,.4)
-        end end
-        ring(1.9,-2.6,color,-.25,nil,.04,.4)
+        -- Open amber gyroscope made of broken rectangular frames.
+        for i=1,2 do
+            local frame=pivot("Amber broken frame",CFrame.new(0,0,0)*CFrame.Angles(.35*i,0,(i==1 and .6 or -.6)),i==1 and .24 or -.2)
+            local r=1.7+i*.16
+            for _,side in {-1,1} do
+                line(frame,Vector3.new(side*r,-1.2,0),Vector3.new(side*r,1.2,0),.055,color,.27)
+                line(frame,Vector3.new(side*r,1.2,0),Vector3.new(side*.55,1.2,0),.055,white,.4)
+                line(frame,Vector3.new(side*r,-1.2,0),Vector3.new(side*.55,-1.2,0),.055,color,.3)
+            end
+        end
     elseif id=="Uncommon" then
-        local base=ring(2,-2.65,color,.35,nil,.045,.35)
-        orbiters(base,2,6,.2,color,.15)
-        local leaves=pivot("Leaf orbit",CFrame.new(0,-.7,0),-.5)
-        for i=1,5 do
-            local a=i*math.pi*2/5
-            piece(leaves,"Leaf",Vector3.new(.17,.55,.13),CFrame.new(math.cos(a)*1.6,math.sin(a*2)*.45,math.sin(a)*1.6)*CFrame.Angles(.3,a,.7),color,.3)
+        -- A growing emerald double vine wrapping upward, with sculpted leaves.
+        local vine=pivot("Emerald vines",CFrame.identity,.19)
+        for branch=0,1 do
+            for j=1,20 do
+                local a=(j-1)/20*math.pi*2+branch*math.pi
+                local b=j/20*math.pi*2+branch*math.pi
+                local y=-2.4+(j-1)*.19
+                local v=Vector3.new(math.cos(a)*1.7,y,math.sin(a)*1.7)
+                local nextV=Vector3.new(math.cos(b)*1.7,y+.19,math.sin(b)*1.7)
+                line(vine,v,nextV,.045,color,.3)
+                if j%5==0 then
+                    piece(vine,"Emerald leaf",Vector3.new(.13,.55,.27),CFrame.new(v)*CFrame.Angles(.4,a,.65),color,.22)
+                end
+            end
         end
     elseif id=="Rare" then
-        ring(2.25,-2.65,color,.35,nil,.06,.2)
-        local outer=ring(2.1,0,color,-.5,CFrame.Angles(.4,0,.25),.045,.35)
-        orbiters(outer,2.1,4,0,white,.18)
-        local halo=ring(.8,2.35,white,.45,nil,.045,.25)
-        orbiters(halo,.8,3,0,color,.12)
-    elseif id=="SuperRare" then
-        local one=ring(2.45,-.15,color,.55,CFrame.Angles(.8,0,.3),.055,.3)
-        ring(2.45,-.15,white,-.45,CFrame.Angles(-.8,0,-.3),.035,.45)
-        orbiters(one,2.45,6,0,color,.22)
-        ring(2.6,-2.65,color,.2,nil,.07,.3)
-    elseif id=="Epic" then
-        wings(color,false)
-        local base=ring(2.7,-2.65,color,.3,nil,.065,.2)
-        orbiters(base,2.7,8,.1,color,.17)
-        local crown=ring(.8,2.5,color,-.5,nil,.055,.2)
-        for i=1,5 do local a=i*math.pi*2/5;shard(crown,CFrame.new(math.cos(a)*.8,.3,math.sin(a)*.8),.55,.11,white,.25) end
-    elseif id=="Lucky" then
-        local floor=ring(2.8,-2.65,color,.35,nil,.065,.22)
-        orbiters(floor,2.8,8,.15,gold,.21)
-        ring(2.45,-2.55,gold,-.3,nil,.035,.4)
-        local charms=pivot("Lucky charms",CFrame.new(0,.45,0),.55)
+        -- A blue compass astrolabe behind the shoulders and four satellite needles.
+        local compass=pivot("Azure compass",CFrame.new(0,.55,1)*CFrame.Angles(math.pi/2,0,0),.20)
+        polygon(compass,1.85,0,8,color,.055)
+        polygon(compass,1.58,0,8,white,.025,math.pi/8)
         for i=1,4 do
-            local a=i*math.pi/2;local cf=CFrame.new(math.cos(a)*2.15,math.sin(a*2)*.25,math.sin(a)*2.15)
-            for _,v in {Vector3.new(.14,.13,0),Vector3.new(-.14,.13,0),Vector3.new(.14,-.13,0),Vector3.new(-.14,-.13,0)} do
-                piece(charms,"Clover leaf",Vector3.new(.30,.30,.14),cf*CFrame.new(v),color,.22,Enum.PartType.Ball)
+            local a=i*math.pi/2
+            diamond(compass,CFrame.new(math.cos(a)*2.1,0,math.sin(a)*2.1)*CFrame.Angles(0,0,math.pi/2),.35,color)
+        end
+    elseif id=="SuperRare" then
+        -- Cyan floating obelisks above a triangular energy seal.
+        local temple=pivot("Cyan obelisks",CFrame.new(0,-.6,0),-.22)
+        for i=1,3 do
+            local a=i*math.pi*2/3
+            diamond(temple,CFrame.new(math.cos(a)*2.05,math.sin(a)*.2,math.sin(a)*2.05),.9,color)
+        end
+        local seal=pivot("Triangular seal",CFrame.new(0,-2.55,0),.18)
+        polygon(seal,2.5,0,3,color,.065)
+        polygon(seal,2.1,.05,3,white,.03,math.pi)
+    elseif id=="Epic" then
+        -- A violet crescent throne: sweeping ribs, not feather/pole wings.
+        local throne=pivot("Amethyst crescent",CFrame.new(0,.1,1.05),0)
+        for _,side in {-1,1} do
+            for rib=1,3 do
+                local radius=1.55+rib*.38
+                local previous
+                for j=0,16 do
+                    local a=-.75+j/16*2.1
+                    local v=Vector3.new(side*(.25+math.cos(a)*radius),math.sin(a)*radius*.95,.15+rib*.1)
+                    if previous then line(throne,previous,v,rib==3 and .075 or .035,rib==2 and white or color,.24) end
+                    previous=v
+                end
             end
-            piece(charms,"Gold diamond",Vector3.new(.17,.17,.17),cf*CFrame.new(0,.65,0)*CFrame.Angles(0,0,math.pi/4),gold,.1)
+            diamond(throne,CFrame.new(side*2.3,1.5,.4),.45,color)
         end
-        ring(.95,2.6,gold,-.45,nil,.06,.25)
+        local sigil=pivot("Amethyst star seal",CFrame.new(0,-2.5,0),-.15)
+        polygon(sigil,2.45,0,3,color,.045)
+        polygon(sigil,2.45,0,3,color,.045,math.pi)
+    elseif id=="Lucky" then
+        -- Four sculpted clover hearts orbit an emerald/gold coin constellation.
+        local luck=pivot("Fortune constellation",CFrame.new(0,.2,0),.27)
+        for i=1,4 do
+            local a=i*math.pi/2
+            local center=Vector3.new(math.cos(a)*2.25,math.sin(a)*.35,math.sin(a)*2.25)
+            for petal=1,4 do
+                local t=petal*math.pi/2
+                piece(luck,"Clover petal",Vector3.new(.3,.3,.13),CFrame.new(center+Vector3.new(math.cos(t)*.20,math.sin(t)*.20,0)),color,.15,Enum.PartType.Ball)
+            end
+            line(luck,center,center+Vector3.new(-.15,-.65,0),.04,gold,.18)
+            diamond(luck,CFrame.new(center+Vector3.new(0,.8,0)),.2,gold)
+        end
+        local seal=pivot("Fortune square",CFrame.new(0,-2.5,0),-.18)
+        polygon(seal,2.5,0,4,gold,.055,math.pi/4)
+        polygon(seal,2.1,.06,4,color,.045)
     elseif id=="Legendary" then
-        wings(gold,false)
-        local sun=pivot("Solar crown",CFrame.new(0,1.1,1.0)*CFrame.Angles(math.pi/2,0,0),.15)
-        for i=1,16 do
-            local a=i*math.pi*2/16;local radius=2.0
-            local v=Vector3.new(math.cos(a),0,math.sin(a))
-            line(sun,v*radius,v*(radius+(i%2==0 and .8 or .4)),.085,gold,.18)
+        -- A layered solar cathedral with tapering rays and suspended gold prisms.
+        local sun=pivot("Solar cathedral",CFrame.new(0,.65,1.2)*CFrame.Angles(math.pi/2,0,0),.10)
+        polygon(sun,2.05,0,12,gold,.065)
+        polygon(sun,1.7,0,12,white,.025,math.pi/12)
+        for i=1,12 do
+            local a=i*math.pi/6
+            local dir=Vector3.new(math.cos(a),0,math.sin(a));local tangent=Vector3.new(-dir.Z,0,dir.X)
+            local start=dir*2.05;local tip=dir*(i%2==0 and 3.0 or 2.6)
+            line(sun,start-tangent*.13,tip,.045,gold,.2)
+            line(sun,start+tangent*.13,tip,.045,gold,.2)
         end
-        ring(3,-2.65,gold,.3,nil,.07,.2)
-        local halo=ring(1,2.85,gold,-.5,nil,.065,.12)
-        orbiters(halo,1,8,.1,white,.14)
-        ring(2.65,-2.54,white,-.25,nil,.035,.5)
+        local gems=pivot("Royal prisms",CFrame.new(0,-.6,0),-.20)
+        for i=1,4 do local a=i*math.pi/2;diamond(gems,CFrame.new(math.cos(a)*2.4,0,math.sin(a)*2.4),.65,gold) end
+        local floor=pivot("Royal seal",CFrame.new(0,-2.55,0),.12)
+        polygon(floor,2.9,0,6,gold,.06);polygon(floor,2.55,.05,6,white,.03,math.pi/6)
     elseif id=="Ice" then
-        wings(color,true)
-        local base=ring(3.1,-2.65,color,.2,nil,.065,.3)
-        for i=1,6 do
-            local a=i*math.pi/3;local direction=Vector3.new(math.cos(a),0,math.sin(a))
-            line(base,direction*.4,direction*2.8,.06,white,.35)
-            local tip=direction*1.9;local side=Vector3.new(-direction.Z,0,direction.X)
-            line(base,tip,tip-direction*.5+side*.4,.045,color,.25)
-            line(base,tip,tip-direction*.5-side*.4,.045,color,.25)
+        -- Six branching frost antlers, a suspended snow jewel and a snowflake seal.
+        local frost=pivot("Frost antlers",CFrame.new(0,.35,1.15),0)
+        for _,side in {-1,1} do
+            for k=1,3 do
+                local base=Vector3.new(side*.65,-.45,.1*k)
+                local tip=Vector3.new(side*(1.3+k*.55),1.3+k*.4,.15*k)
+                line(frost,base,tip,.06,color,.23)
+                local delta=tip-base
+                for j=1,3 do
+                    local v=base+delta*(.25+j*.16)
+                    line(frost,v,v+Vector3.new(side*.4,.25,0),.035,white,.25)
+                    line(frost,v,v+Vector3.new(-side*.16,.45,0),.035,color,.25)
+                end
+            end
         end
-        local ice=pivot("Ice satellites",CFrame.new(0,0,0),-.35)
-        for i=1,7 do local a=i*math.pi*2/7;shard(ice,CFrame.new(math.cos(a)*2.6,math.sin(a*2)*.55,math.sin(a)*2.6),.8,.18,color,.22) end
-        local crown=ring(.9,2.8,color,.4,nil,.06,.18)
-        for i=1,6 do local a=i*math.pi/3;shard(crown,CFrame.new(math.cos(a)*.9,.35,math.sin(a)*.9),.7,.11,white,.2) end
+        local jewel=pivot("Frozen heart",CFrame.new(0,2.8,0),.23)
+        diamond(jewel,CFrame.identity,.7,white)
+        local snow=pivot("Snowflake seal",CFrame.new(0,-2.55,0),-.12)
+        for i=1,6 do
+            local a=i*math.pi/3;local dir=Vector3.new(math.cos(a),0,math.sin(a));local side=Vector3.new(-dir.Z,0,dir.X)
+            line(snow,dir*.3,dir*2.9,.055,color,.25)
+            for j=1,2 do local v=dir*(1+j*.65);line(snow,v,v-dir*.4+side*.4,.035,white,.3);line(snow,v,v-dir*.4-side*.4,.035,white,.3) end
+        end
     end
     return model
 end
