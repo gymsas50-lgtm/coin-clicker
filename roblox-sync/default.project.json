@@ -59,6 +59,285 @@
             0
           ]
         }
+      },
+      "LittleStudTree": {
+        "$className": "Model",
+        "$ignoreUnknownInstances": false,
+        "Trunk": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              1.5,
+              5,
+              1.5
+            ],
+            "Position": [
+              17,
+              2.5,
+              -14
+            ],
+            "Color": [
+              0.4,
+              0.25,
+              0.13
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Inlet",
+            "CanCollide": true
+          }
+        },
+        "RootWest": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              2.5,
+              0.5,
+              1
+            ],
+            "Position": [
+              16.35,
+              0.25,
+              -14
+            ],
+            "Color": [
+              0.35,
+              0.22,
+              0.12
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Inlet",
+            "CanCollide": true
+          }
+        },
+        "RootEast": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              1,
+              0.5,
+              2.5
+            ],
+            "Position": [
+              17.45,
+              0.25,
+              -13.6
+            ],
+            "Color": [
+              0.35,
+              0.22,
+              0.12
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Inlet",
+            "CanCollide": true
+          }
+        },
+        "BranchLeft": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              2,
+              0.75,
+              0.75
+            ],
+            "Position": [
+              16.1,
+              3.7,
+              -14
+            ],
+            "Color": [
+              0.43,
+              0.28,
+              0.15
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Inlet",
+            "CanCollide": true
+          }
+        },
+        "BranchRight": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              0.75,
+              0.75,
+              2
+            ],
+            "Position": [
+              17.35,
+              4.4,
+              -14.6
+            ],
+            "Color": [
+              0.43,
+              0.28,
+              0.15
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Inlet",
+            "CanCollide": true
+          }
+        },
+        "CrownLower": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              5,
+              1.5,
+              4.5
+            ],
+            "Position": [
+              17,
+              5.25,
+              -14
+            ],
+            "Color": [
+              0.19,
+              0.45,
+              0.2
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Inlet",
+            "CanCollide": true
+          }
+        },
+        "CrownMiddle": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              4,
+              1.5,
+              3.5
+            ],
+            "Position": [
+              16.75,
+              6.75,
+              -14.15
+            ],
+            "Color": [
+              0.25,
+              0.57,
+              0.23
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Inlet",
+            "CanCollide": true
+          }
+        },
+        "CrownTop": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              2.5,
+              1,
+              2.5
+            ],
+            "Position": [
+              16.5,
+              8,
+              -14.4
+            ],
+            "Color": [
+              0.37,
+              0.66,
+              0.28
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Inlet",
+            "CanCollide": true
+          }
+        },
+        "LeafClusterLeft": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              2,
+              1.5,
+              2.5
+            ],
+            "Position": [
+              15,
+              5.75,
+              -13.75
+            ],
+            "Color": [
+              0.29,
+              0.55,
+              0.2
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Inlet",
+            "CanCollide": true
+          }
+        },
+        "LeafClusterRight": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              2,
+              1.5,
+              2
+            ],
+            "Position": [
+              18.8,
+              6.1,
+              -14.5
+            ],
+            "Color": [
+              0.31,
+              0.6,
+              0.25
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Inlet",
+            "CanCollide": true
+          }
+        },
+        "LeafHighlight": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Size": [
+              1.5,
+              0.5,
+              1.5
+            ],
+            "Position": [
+              17.7,
+              7.75,
+              -13.85
+            ],
+            "Color": [
+              0.45,
+              0.7,
+              0.31
+            ],
+            "Material": "Plastic",
+            "TopSurface": "Studs",
+            "BottomSurface": "Inlet",
+            "CanCollide": true
+          }
+        }
       }
     },
     "StarterPack": {
