@@ -252,6 +252,10 @@ function Visuals.Build(character, id, color)
             if variant>1 then stream.Parent=emitter.Parent end
         end
     end
+    -- Slightly reduce density while preserving all textures, sizes and shapes.
+    for _,instance in model:GetDescendants() do
+        if instance:IsA("ParticleEmitter") then instance.Rate*=.75 end
+    end
     particles:Destroy()
     return model
 end
