@@ -145,7 +145,7 @@ function Visuals.Build(character, id, color)
         local crown=ring(.9,2.8,color,.4,nil,.06,.18)
         for i=1,6 do local a=i*math.pi/3;shard(crown,CFrame.new(math.cos(a)*.9,.35,math.sin(a)*.9),.7,.11,white,.2) end
     end
-    -- Fixed budget: at most24 shape emitters and5 body emitters on R6.
+    -- All contour points share one fixed rate budget; body effects are secondary.
     -- No stacked multipliers or cloned texture layers.
     local levels={Common=1,InDev=2,Uncommon=3,Rare=4,SuperRare=5,Epic=6,Lucky=7,Legendary=8,Ice=9}
     local level=levels[id] or 1
@@ -162,21 +162,23 @@ function Visuals.Build(character, id, color)
         e.Color=ColorSequence.new(color,color:Lerp(white,.2))
         e.Enabled=true;e.Rate=rate;e.Lifetime=NumberRange.new(1.5,2)
         e.LightEmission=.1;e.LightInfluence=0
-        e.Speed=body and NumberRange.new(.25,.65) or NumberRange.new(0,.04)
-        e.Acceleration=body and Vector3.new(0,.3,0) or Vector3.zero
-        e.LockedToPart=not body;e.SpreadAngle=Vector2.new(180,180)
+        e.Speed=body and NumberRange.new(.08,.22) or NumberRange.new(0)
+        e.Acceleration=body and Vector3.new(0,.08,0) or Vector3.zero
+        e.LockedToPart=true;e.SpreadAngle=Vector2.new(10,10)
         e.Rotation=NumberRange.new(0,360);e.RotSpeed=NumberRange.new(-8,8)
         e.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,size*.3),NumberSequenceKeypoint.new(.15,size),NumberSequenceKeypoint.new(.8,size),NumberSequenceKeypoint.new(1,0)})
         e.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.15,.35),NumberSequenceKeypoint.new(.8,.35),NumberSequenceKeypoint.new(1,1)})
         e:SetAttribute("WarmCount",math.ceil(rate*1.5))
         e.Parent=parent
     end
-    local count=math.min(24,#surfaces)
-    local budget=220+level*35
+    local count=#surfaces
+    local budget=300+level*45
     for i=1,count do
         local part=surfaces[math.floor((i-1)*#surfaces/count)+1]
-        -- Emit throughout each selected helper rather than a single point.
-        emitter(part,budget/count,({.09,.16,.25})[(i-1)%3+1],false)
+        -- Keep each particle source on the designed contour, not across a box volume.
+        local attachment=Instance.new("Attachment")
+        attachment.Name="ContourPoint";attachment.Parent=part
+        emitter(attachment,budget/count,({.10,.13,.16})[(i-1)%3+1],false)
     end
     local limbs={}
     for _,name in {"Torso","UpperTorso","Left Arm","Right Arm","Left Leg","Right Leg","LeftUpperArm","RightUpperArm","LeftUpperLeg","RightUpperLeg"} do
@@ -189,7 +191,7 @@ function Visuals.Build(character, id, color)
         holder.CanTouch=false;holder.CanQuery=false;holder.Massless=true;holder.CastShadow=false
         holder.CFrame=limb.CFrame;holder.Parent=model
         local weld=Instance.new("WeldConstraint");weld.Part0=limb;weld.Part1=holder;weld.Parent=holder
-        emitter(holder,(60+level*8)/math.max(1,#limbs),i%2==0 and .12 or .2,true)
+        emitter(holder,(25+level*4)/math.max(1,#limbs),i%2==0 and .12 or .2,true)
     end
     return model
 end
