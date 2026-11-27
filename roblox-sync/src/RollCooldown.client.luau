@@ -118,7 +118,7 @@ resizeGrid()
 
 local rarityOrder={}
 for i=1,#config do table.insert(rarityOrder,i) end
-table.sort(rarityOrder,function(a,b) return config[a].Weight<config[b].Weight end)
+table.sort(rarityOrder,function(a,b) return config[a].Weight>config[b].Weight end)
 local rarityRank={}
 for rank,index in rarityOrder do rarityRank[index]=rank end
 local function apply(data)
@@ -129,7 +129,7 @@ local function apply(data)
     equippedText.TextColor3=white
     for i,row in rows do
         local count=owned[i] or 0
-        row.frame.LayoutOrder=(count>0 and 0 or 100)+rarityRank[i]
+        row.frame.LayoutOrder=rarityRank[i]
         row.title.Text=count>0 and config[i].Name or "??? ??????"
         row.title.TextColor3=count>0 and config[i].Color or muted
         row.count.Text=count>0 and (config[i].Chance.."  |  x"..count) or "??? ??"
