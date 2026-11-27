@@ -1,0 +1,16 @@
+{
+  "name": "AutoUpdateTest",
+  "serveAddress": "127.0.0.1",
+  "servePort": 34872,
+  "tree": {
+    "$className": "DataModel",
+    "$ignoreUnknownInstances": true,
+    "Workspace": {
+      "$className": "Workspace",
+      "$ignoreUnknownInstances": true,
+      "LiveSyncTest": {
+        "$path": "src"
+      }
+    }
+  }
+}
