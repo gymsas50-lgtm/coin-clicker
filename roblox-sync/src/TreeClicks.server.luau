@@ -61,7 +61,7 @@ local function nearby(player,target,range)
     return root and h and h.Health>0 and (root.Position-target).Magnitude<=range
 end
 local function clicked(player)
-    if busy or not equipped or not nearby(player,origin,26) then return end
+    if busy or not equipped then return end
     local now=os.clock();if cooldown[player] and now-cooldown[player]<.08 then return end
     cooldown[player]=now;balance+=power()
     local state=progress[current];state.xp+=1
@@ -139,9 +139,13 @@ caseDetector.MouseClick:Connect(function(player)
     local old=current
     local ok,err=pcall(function()
         task.wait(.4)
-        owned[chosen]+=1
-        table.insert(items,{kind=chosen,state={level=1,xp=0}})
-        caseText.Text="ROLLED: "..types[chosen].name.."\nADDED TO INVENTORY"
+        if owned[chosen]>0 then
+            caseText.Text="ROLLED: "..types[chosen].name.."\nALREADY OWNED - NO REWARD"
+        else
+            owned[chosen]=1
+            table.insert(items,{kind=chosen,state={level=1,xp=0}})
+            caseText.Text="ROLLED: "..types[chosen].name.."\nADDED TO INVENTORY"
+        end
         task.wait(1.3)
     end)
     if not ok then balance+=50;warn("Tree case failed: "..tostring(err)) end
@@ -179,13 +183,12 @@ inventory.OnServerInvoke=function(player,action,id)
     end
     return snapshot()
 end
--- One shared tick, not multiplied by the number of players standing nearby.
+-- One shared tick, regardless of player location or character state.
 task.spawn(function()
     while task.wait(1) do
         if equipped and not busy then
-            for _,player in Players:GetPlayers() do
-                if nearby(player,origin,32) then clicked(player);break end
-            end
+            local player=Players:GetPlayers()[1]
+            if player then clicked(player) end
         end
     end
 end)
