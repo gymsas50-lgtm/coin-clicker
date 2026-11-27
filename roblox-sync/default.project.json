@@ -59,6 +59,9 @@
           "Anchored": true,
           "Neutral": true
         }
+      },
+      "Garden": {
+        "$path": "src/Garden.model.json"
       }
     }
   }

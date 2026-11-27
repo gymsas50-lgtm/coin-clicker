@@ -1,0 +1,7705 @@
+{
+  "ClassName": "Model",
+  "Children": [
+    {
+      "ClassName": "Part",
+      "Name": "Garden base",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          31,
+          0.15,
+          0
+        ],
+        "Size": [
+          36,
+          0.3,
+          36
+        ],
+        "Color": [
+          0.39215686274509803,
+          0.5647058823529412,
+          0.24313725490196078
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Main path",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          31,
+          0.34,
+          0
+        ],
+        "Size": [
+          4,
+          0.35,
+          34
+        ],
+        "Color": [
+          0.7725490196078432,
+          0.6745098039215687,
+          0.45098039215686275
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cross path",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          31,
+          0.34,
+          0
+        ],
+        "Size": [
+          34,
+          0.35,
+          3
+        ],
+        "Color": [
+          0.7725490196078432,
+          0.6745098039215687,
+          0.45098039215686275
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          1.6,
+          -16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          1.6,
+          -12
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          1.6,
+          -8
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          1.6,
+          -4
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          1.6,
+          4
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          1.6,
+          8
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          1.6,
+          12
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          1.6,
+          16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          1,
+          -9.25
+        ],
+        "Size": [
+          0.24,
+          0.28,
+          13.5
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          1,
+          9.25
+        ],
+        "Size": [
+          0.24,
+          0.28,
+          13.5
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          2.25,
+          -9.25
+        ],
+        "Size": [
+          0.24,
+          0.28,
+          13.5
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          2.25,
+          9.25
+        ],
+        "Size": [
+          0.24,
+          0.28,
+          13.5
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          47,
+          1.6,
+          -16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          47,
+          1.6,
+          -12
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          47,
+          1.6,
+          -8
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          47,
+          1.6,
+          -4
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          47,
+          1.6,
+          0
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          47,
+          1.6,
+          4
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          47,
+          1.6,
+          8
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          47,
+          1.6,
+          12
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          47,
+          1.6,
+          16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          47,
+          1,
+          0
+        ],
+        "Size": [
+          0.24,
+          0.28,
+          32
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          47,
+          2.25,
+          0
+        ],
+        "Size": [
+          0.24,
+          0.28,
+          32
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          1.6,
+          -16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          18,
+          1.6,
+          -16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          21,
+          1.6,
+          -16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          24,
+          1.6,
+          -16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          27,
+          1.6,
+          -16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          21.5,
+          1,
+          -16
+        ],
+        "Size": [
+          13,
+          0.28,
+          0.24
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          21.5,
+          2.25,
+          -16
+        ],
+        "Size": [
+          13,
+          0.28,
+          0.24
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          34,
+          1.6,
+          -16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          37,
+          1.6,
+          -16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          40,
+          1.6,
+          -16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          43,
+          1.6,
+          -16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          46,
+          1.6,
+          -16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          40.5,
+          1,
+          -16
+        ],
+        "Size": [
+          13,
+          0.28,
+          0.24
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          40.5,
+          2.25,
+          -16
+        ],
+        "Size": [
+          13,
+          0.28,
+          0.24
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          15,
+          1.6,
+          16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          18,
+          1.6,
+          16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          21,
+          1.6,
+          16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          24,
+          1.6,
+          16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          27,
+          1.6,
+          16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          21.5,
+          1,
+          16
+        ],
+        "Size": [
+          13,
+          0.28,
+          0.24
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          21.5,
+          2.25,
+          16
+        ],
+        "Size": [
+          13,
+          0.28,
+          0.24
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          34,
+          1.6,
+          16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          37,
+          1.6,
+          16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          40,
+          1.6,
+          16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          43,
+          1.6,
+          16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence post",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          46,
+          1.6,
+          16
+        ],
+        "Size": [
+          0.55,
+          3.2,
+          0.55
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          40.5,
+          1,
+          16
+        ],
+        "Size": [
+          13,
+          0.28,
+          0.24
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Fence rail",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          40.5,
+          2.25,
+          16
+        ],
+        "Size": [
+          13,
+          0.28,
+          0.24
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Soil bed 0",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          22,
+          0.57,
+          -8
+        ],
+        "Size": [
+          10,
+          0.65,
+          10
+        ],
+        "Color": [
+          0.3568627450980392,
+          0.24313725490196078,
+          0.1568627450980392
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed side",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          16.8,
+          0.67,
+          -8
+        ],
+        "Size": [
+          0.4,
+          0.85,
+          10.8
+        ],
+        "Color": [
+          0.3803921568627451,
+          0.25098039215686274,
+          0.15294117647058825
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed side",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          27.2,
+          0.67,
+          -8
+        ],
+        "Size": [
+          0.4,
+          0.85,
+          10.8
+        ],
+        "Color": [
+          0.3803921568627451,
+          0.25098039215686274,
+          0.15294117647058825
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed end",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          22,
+          0.67,
+          -13.2
+        ],
+        "Size": [
+          10,
+          0.85,
+          0.4
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed end",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          22,
+          0.67,
+          -2.8
+        ],
+        "Size": [
+          10,
+          0.85,
+          0.4
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          1.205425165360054,
+          -11
+        ],
+        "Size": [
+          0.65,
+          0.8,
+          0.65
+        ],
+        "Color": [
+          0.9372549019607843,
+          0.5176470588235295,
+          0.13725490196078433
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          1.8054251653600542,
+          -11
+        ],
+        "Size": [
+          0.35,
+          0.8,
+          1.25
+        ],
+        "Color": [
+          0.24705882352941178,
+          0.5803921568627451,
+          0.22745098039215686
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          1.8054251653600542,
+          -11
+        ],
+        "Size": [
+          1.25,
+          0.75,
+          0.35
+        ],
+        "Color": [
+          0.3254901960784314,
+          0.6588235294117647,
+          0.2549019607843137
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          1.226982271217422,
+          -11
+        ],
+        "Size": [
+          0.65,
+          0.8,
+          0.65
+        ],
+        "Color": [
+          0.9372549019607843,
+          0.5176470588235295,
+          0.13725490196078433
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          1.8269822712174222,
+          -11
+        ],
+        "Size": [
+          0.35,
+          0.8,
+          1.25
+        ],
+        "Color": [
+          0.24705882352941178,
+          0.5803921568627451,
+          0.22745098039215686
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          1.8269822712174222,
+          -11
+        ],
+        "Size": [
+          1.25,
+          0.75,
+          0.35
+        ],
+        "Color": [
+          0.3254901960784314,
+          0.6588235294117647,
+          0.2549019607843137
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          1.1740932314406163,
+          -11
+        ],
+        "Size": [
+          0.65,
+          0.8,
+          0.65
+        ],
+        "Color": [
+          0.9372549019607843,
+          0.5176470588235295,
+          0.13725490196078433
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          1.7740932314406164,
+          -11
+        ],
+        "Size": [
+          0.35,
+          0.8,
+          1.25
+        ],
+        "Color": [
+          0.24705882352941178,
+          0.5803921568627451,
+          0.22745098039215686
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          1.7740932314406164,
+          -11
+        ],
+        "Size": [
+          1.25,
+          0.75,
+          0.35
+        ],
+        "Color": [
+          0.3254901960784314,
+          0.6588235294117647,
+          0.2549019607843137
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          1.172298340498652,
+          -8
+        ],
+        "Size": [
+          0.65,
+          0.8,
+          0.65
+        ],
+        "Color": [
+          0.9372549019607843,
+          0.5176470588235295,
+          0.13725490196078433
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          1.772298340498652,
+          -8
+        ],
+        "Size": [
+          0.35,
+          0.8,
+          1.25
+        ],
+        "Color": [
+          0.24705882352941178,
+          0.5803921568627451,
+          0.22745098039215686
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          1.772298340498652,
+          -8
+        ],
+        "Size": [
+          1.25,
+          0.75,
+          0.35
+        ],
+        "Color": [
+          0.3254901960784314,
+          0.6588235294117647,
+          0.2549019607843137
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          1.1487069325851929,
+          -8
+        ],
+        "Size": [
+          0.65,
+          0.8,
+          0.65
+        ],
+        "Color": [
+          0.9372549019607843,
+          0.5176470588235295,
+          0.13725490196078433
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          1.748706932585193,
+          -8
+        ],
+        "Size": [
+          0.35,
+          0.8,
+          1.25
+        ],
+        "Color": [
+          0.24705882352941178,
+          0.5803921568627451,
+          0.22745098039215686
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          1.748706932585193,
+          -8
+        ],
+        "Size": [
+          1.25,
+          0.75,
+          0.35
+        ],
+        "Color": [
+          0.3254901960784314,
+          0.6588235294117647,
+          0.2549019607843137
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          1.2693633874195798,
+          -8
+        ],
+        "Size": [
+          0.65,
+          0.8,
+          0.65
+        ],
+        "Color": [
+          0.9372549019607843,
+          0.5176470588235295,
+          0.13725490196078433
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          1.8693633874195799,
+          -8
+        ],
+        "Size": [
+          0.35,
+          0.8,
+          1.25
+        ],
+        "Color": [
+          0.24705882352941178,
+          0.5803921568627451,
+          0.22745098039215686
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          1.8693633874195799,
+          -8
+        ],
+        "Size": [
+          1.25,
+          0.75,
+          0.35
+        ],
+        "Color": [
+          0.3254901960784314,
+          0.6588235294117647,
+          0.2549019607843137
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          1.127872989154914,
+          -5
+        ],
+        "Size": [
+          0.65,
+          0.8,
+          0.65
+        ],
+        "Color": [
+          0.9372549019607843,
+          0.5176470588235295,
+          0.13725490196078433
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          1.727872989154914,
+          -5
+        ],
+        "Size": [
+          0.35,
+          0.8,
+          1.25
+        ],
+        "Color": [
+          0.24705882352941178,
+          0.5803921568627451,
+          0.22745098039215686
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          1.727872989154914,
+          -5
+        ],
+        "Size": [
+          1.25,
+          0.75,
+          0.35
+        ],
+        "Color": [
+          0.3254901960784314,
+          0.6588235294117647,
+          0.2549019607843137
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          1.0996519586369389,
+          -5
+        ],
+        "Size": [
+          0.65,
+          0.8,
+          0.65
+        ],
+        "Color": [
+          0.9372549019607843,
+          0.5176470588235295,
+          0.13725490196078433
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          1.699651958636939,
+          -5
+        ],
+        "Size": [
+          0.35,
+          0.8,
+          1.25
+        ],
+        "Color": [
+          0.24705882352941178,
+          0.5803921568627451,
+          0.22745098039215686
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          1.699651958636939,
+          -5
+        ],
+        "Size": [
+          1.25,
+          0.75,
+          0.35
+        ],
+        "Color": [
+          0.3254901960784314,
+          0.6588235294117647,
+          0.2549019607843137
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          1.1222157149131116,
+          -5
+        ],
+        "Size": [
+          0.65,
+          0.8,
+          0.65
+        ],
+        "Color": [
+          0.9372549019607843,
+          0.5176470588235295,
+          0.13725490196078433
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          1.7222157149131117,
+          -5
+        ],
+        "Size": [
+          0.35,
+          0.8,
+          1.25
+        ],
+        "Color": [
+          0.24705882352941178,
+          0.5803921568627451,
+          0.22745098039215686
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Carrot leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          1.7222157149131117,
+          -5
+        ],
+        "Size": [
+          1.25,
+          0.75,
+          0.35
+        ],
+        "Color": [
+          0.3254901960784314,
+          0.6588235294117647,
+          0.2549019607843137
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Soil bed 1",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          40,
+          0.57,
+          -8
+        ],
+        "Size": [
+          10,
+          0.65,
+          10
+        ],
+        "Color": [
+          0.3568627450980392,
+          0.24313725490196078,
+          0.1568627450980392
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed side",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          34.8,
+          0.67,
+          -8
+        ],
+        "Size": [
+          0.4,
+          0.85,
+          10.8
+        ],
+        "Color": [
+          0.3803921568627451,
+          0.25098039215686274,
+          0.15294117647058825
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed side",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          45.2,
+          0.67,
+          -8
+        ],
+        "Size": [
+          0.4,
+          0.85,
+          10.8
+        ],
+        "Color": [
+          0.3803921568627451,
+          0.25098039215686274,
+          0.15294117647058825
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed end",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          40,
+          0.67,
+          -13.2
+        ],
+        "Size": [
+          10,
+          0.85,
+          0.4
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed end",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          40,
+          0.67,
+          -2.8
+        ],
+        "Size": [
+          10,
+          0.85,
+          0.4
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          1.092087438720266,
+          -11
+        ],
+        "Size": [
+          1.9,
+          0.55,
+          1.9
+        ],
+        "Color": [
+          0.20784313725490197,
+          0.4666666666666667,
+          0.2235294117647059
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          1.572087438720266,
+          -11
+        ],
+        "Size": [
+          1.45,
+          0.65,
+          1.45
+        ],
+        "Color": [
+          0.396078431372549,
+          0.6470588235294118,
+          0.28627450980392155
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage heart",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          1.9720874387202658,
+          -11
+        ],
+        "Size": [
+          0.85,
+          0.3,
+          0.85
+        ],
+        "Color": [
+          0.6,
+          0.7333333333333333,
+          0.36470588235294116
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          1.1054734029889222,
+          -11
+        ],
+        "Size": [
+          1.9,
+          0.55,
+          1.9
+        ],
+        "Color": [
+          0.20784313725490197,
+          0.4666666666666667,
+          0.2235294117647059
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          1.5854734029889221,
+          -11
+        ],
+        "Size": [
+          1.45,
+          0.65,
+          1.45
+        ],
+        "Color": [
+          0.396078431372549,
+          0.6470588235294118,
+          0.28627450980392155
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage heart",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          1.985473402988922,
+          -11
+        ],
+        "Size": [
+          0.85,
+          0.3,
+          0.85
+        ],
+        "Color": [
+          0.6,
+          0.7333333333333333,
+          0.36470588235294116
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          1.0935821688689427,
+          -11
+        ],
+        "Size": [
+          1.9,
+          0.55,
+          1.9
+        ],
+        "Color": [
+          0.20784313725490197,
+          0.4666666666666667,
+          0.2235294117647059
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          1.5735821688689426,
+          -11
+        ],
+        "Size": [
+          1.45,
+          0.65,
+          1.45
+        ],
+        "Color": [
+          0.396078431372549,
+          0.6470588235294118,
+          0.28627450980392155
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage heart",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          1.9735821688689426,
+          -11
+        ],
+        "Size": [
+          0.85,
+          0.3,
+          0.85
+        ],
+        "Color": [
+          0.6,
+          0.7333333333333333,
+          0.36470588235294116
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          1.0615287875731292,
+          -8
+        ],
+        "Size": [
+          1.9,
+          0.55,
+          1.9
+        ],
+        "Color": [
+          0.20784313725490197,
+          0.4666666666666667,
+          0.2235294117647059
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          1.5415287875731292,
+          -8
+        ],
+        "Size": [
+          1.45,
+          0.65,
+          1.45
+        ],
+        "Color": [
+          0.396078431372549,
+          0.6470588235294118,
+          0.28627450980392155
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage heart",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          1.941528787573129,
+          -8
+        ],
+        "Size": [
+          0.85,
+          0.3,
+          0.85
+        ],
+        "Color": [
+          0.6,
+          0.7333333333333333,
+          0.36470588235294116
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          1.1050999484914563,
+          -8
+        ],
+        "Size": [
+          1.9,
+          0.55,
+          1.9
+        ],
+        "Color": [
+          0.20784313725490197,
+          0.4666666666666667,
+          0.2235294117647059
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          1.5850999484914563,
+          -8
+        ],
+        "Size": [
+          1.45,
+          0.65,
+          1.45
+        ],
+        "Color": [
+          0.396078431372549,
+          0.6470588235294118,
+          0.28627450980392155
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage heart",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          1.9850999484914562,
+          -8
+        ],
+        "Size": [
+          0.85,
+          0.3,
+          0.85
+        ],
+        "Color": [
+          0.6,
+          0.7333333333333333,
+          0.36470588235294116
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          1.1022130141002844,
+          -8
+        ],
+        "Size": [
+          1.9,
+          0.55,
+          1.9
+        ],
+        "Color": [
+          0.20784313725490197,
+          0.4666666666666667,
+          0.2235294117647059
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          1.5822130141002844,
+          -8
+        ],
+        "Size": [
+          1.45,
+          0.65,
+          1.45
+        ],
+        "Color": [
+          0.396078431372549,
+          0.6470588235294118,
+          0.28627450980392155
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage heart",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          1.9822130141002843,
+          -8
+        ],
+        "Size": [
+          0.85,
+          0.3,
+          0.85
+        ],
+        "Color": [
+          0.6,
+          0.7333333333333333,
+          0.36470588235294116
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          1.153848003175264,
+          -5
+        ],
+        "Size": [
+          1.9,
+          0.55,
+          1.9
+        ],
+        "Color": [
+          0.20784313725490197,
+          0.4666666666666667,
+          0.2235294117647059
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          1.633848003175264,
+          -5
+        ],
+        "Size": [
+          1.45,
+          0.65,
+          1.45
+        ],
+        "Color": [
+          0.396078431372549,
+          0.6470588235294118,
+          0.28627450980392155
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage heart",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          2.033848003175264,
+          -5
+        ],
+        "Size": [
+          0.85,
+          0.3,
+          0.85
+        ],
+        "Color": [
+          0.6,
+          0.7333333333333333,
+          0.36470588235294116
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          1.0803261868344927,
+          -5
+        ],
+        "Size": [
+          1.9,
+          0.55,
+          1.9
+        ],
+        "Color": [
+          0.20784313725490197,
+          0.4666666666666667,
+          0.2235294117647059
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          1.5603261868344926,
+          -5
+        ],
+        "Size": [
+          1.45,
+          0.65,
+          1.45
+        ],
+        "Color": [
+          0.396078431372549,
+          0.6470588235294118,
+          0.28627450980392155
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage heart",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          1.9603261868344926,
+          -5
+        ],
+        "Size": [
+          0.85,
+          0.3,
+          0.85
+        ],
+        "Color": [
+          0.6,
+          0.7333333333333333,
+          0.36470588235294116
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage leaves",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          1.0541575439578301,
+          -5
+        ],
+        "Size": [
+          1.9,
+          0.55,
+          1.9
+        ],
+        "Color": [
+          0.20784313725490197,
+          0.4666666666666667,
+          0.2235294117647059
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          1.53415754395783,
+          -5
+        ],
+        "Size": [
+          1.45,
+          0.65,
+          1.45
+        ],
+        "Color": [
+          0.396078431372549,
+          0.6470588235294118,
+          0.28627450980392155
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Cabbage heart",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          1.93415754395783,
+          -5
+        ],
+        "Size": [
+          0.85,
+          0.3,
+          0.85
+        ],
+        "Color": [
+          0.6,
+          0.7333333333333333,
+          0.36470588235294116
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Soil bed 2",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          22,
+          0.57,
+          8
+        ],
+        "Size": [
+          10,
+          0.65,
+          10
+        ],
+        "Color": [
+          0.3568627450980392,
+          0.24313725490196078,
+          0.1568627450980392
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed side",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          16.8,
+          0.67,
+          8
+        ],
+        "Size": [
+          0.4,
+          0.85,
+          10.8
+        ],
+        "Color": [
+          0.3803921568627451,
+          0.25098039215686274,
+          0.15294117647058825
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed side",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          27.2,
+          0.67,
+          8
+        ],
+        "Size": [
+          0.4,
+          0.85,
+          10.8
+        ],
+        "Color": [
+          0.3803921568627451,
+          0.25098039215686274,
+          0.15294117647058825
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed end",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          22,
+          0.67,
+          2.8
+        ],
+        "Size": [
+          10,
+          0.85,
+          0.4
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed end",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          22,
+          0.67,
+          13.2
+        ],
+        "Size": [
+          10,
+          0.85,
+          0.4
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stake",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19.5,
+          2,
+          5
+        ],
+        "Size": [
+          0.15,
+          2.6,
+          0.15
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stem",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          1.8,
+          5
+        ],
+        "Size": [
+          0.2,
+          2,
+          0.2
+        ],
+        "Color": [
+          0.22745098039215686,
+          0.4549019607843137,
+          0.17254901960784313
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          18.5,
+          1.7,
+          5
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          18.5,
+          1.47,
+          5.3
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19.45,
+          2.3,
+          5.1
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19.45,
+          2.07,
+          5.3999999999999995
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          2.65,
+          4.55
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          2.42,
+          4.85
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stake",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22.5,
+          2,
+          5
+        ],
+        "Size": [
+          0.15,
+          2.6,
+          0.15
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stem",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          1.8,
+          5
+        ],
+        "Size": [
+          0.2,
+          2,
+          0.2
+        ],
+        "Color": [
+          0.22745098039215686,
+          0.4549019607843137,
+          0.17254901960784313
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          21.5,
+          1.7,
+          5
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          21.5,
+          1.47,
+          5.3
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22.45,
+          2.3,
+          5.1
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22.45,
+          2.07,
+          5.3999999999999995
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          2.65,
+          4.55
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          2.42,
+          4.85
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stake",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25.5,
+          2,
+          5
+        ],
+        "Size": [
+          0.15,
+          2.6,
+          0.15
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stem",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          1.8,
+          5
+        ],
+        "Size": [
+          0.2,
+          2,
+          0.2
+        ],
+        "Color": [
+          0.22745098039215686,
+          0.4549019607843137,
+          0.17254901960784313
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          24.5,
+          1.7,
+          5
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          24.5,
+          1.47,
+          5.3
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25.45,
+          2.3,
+          5.1
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25.45,
+          2.07,
+          5.3999999999999995
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          2.65,
+          4.55
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          2.42,
+          4.85
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stake",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19.5,
+          2,
+          8
+        ],
+        "Size": [
+          0.15,
+          2.6,
+          0.15
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stem",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          1.8,
+          8
+        ],
+        "Size": [
+          0.2,
+          2,
+          0.2
+        ],
+        "Color": [
+          0.22745098039215686,
+          0.4549019607843137,
+          0.17254901960784313
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          18.5,
+          1.7,
+          8
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          18.5,
+          1.47,
+          8.3
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19.45,
+          2.3,
+          8.1
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19.45,
+          2.07,
+          8.4
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          2.65,
+          7.55
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          2.42,
+          7.85
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stake",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22.5,
+          2,
+          8
+        ],
+        "Size": [
+          0.15,
+          2.6,
+          0.15
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stem",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          1.8,
+          8
+        ],
+        "Size": [
+          0.2,
+          2,
+          0.2
+        ],
+        "Color": [
+          0.22745098039215686,
+          0.4549019607843137,
+          0.17254901960784313
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          21.5,
+          1.7,
+          8
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          21.5,
+          1.47,
+          8.3
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22.45,
+          2.3,
+          8.1
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22.45,
+          2.07,
+          8.4
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          2.65,
+          7.55
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          2.42,
+          7.85
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stake",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25.5,
+          2,
+          8
+        ],
+        "Size": [
+          0.15,
+          2.6,
+          0.15
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stem",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          1.8,
+          8
+        ],
+        "Size": [
+          0.2,
+          2,
+          0.2
+        ],
+        "Color": [
+          0.22745098039215686,
+          0.4549019607843137,
+          0.17254901960784313
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          24.5,
+          1.7,
+          8
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          24.5,
+          1.47,
+          8.3
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25.45,
+          2.3,
+          8.1
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25.45,
+          2.07,
+          8.4
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          2.65,
+          7.55
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          2.42,
+          7.85
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stake",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19.5,
+          2,
+          11
+        ],
+        "Size": [
+          0.15,
+          2.6,
+          0.15
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stem",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          1.8,
+          11
+        ],
+        "Size": [
+          0.2,
+          2,
+          0.2
+        ],
+        "Color": [
+          0.22745098039215686,
+          0.4549019607843137,
+          0.17254901960784313
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          18.5,
+          1.7,
+          11
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          18.5,
+          1.47,
+          11.3
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19.45,
+          2.3,
+          11.1
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19.45,
+          2.07,
+          11.4
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          2.65,
+          10.55
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          19,
+          2.42,
+          10.850000000000001
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stake",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22.5,
+          2,
+          11
+        ],
+        "Size": [
+          0.15,
+          2.6,
+          0.15
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stem",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          1.8,
+          11
+        ],
+        "Size": [
+          0.2,
+          2,
+          0.2
+        ],
+        "Color": [
+          0.22745098039215686,
+          0.4549019607843137,
+          0.17254901960784313
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          21.5,
+          1.7,
+          11
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          21.5,
+          1.47,
+          11.3
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22.45,
+          2.3,
+          11.1
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22.45,
+          2.07,
+          11.4
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          2.65,
+          10.55
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          22,
+          2.42,
+          10.850000000000001
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stake",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25.5,
+          2,
+          11
+        ],
+        "Size": [
+          0.15,
+          2.6,
+          0.15
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato stem",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          1.8,
+          11
+        ],
+        "Size": [
+          0.2,
+          2,
+          0.2
+        ],
+        "Color": [
+          0.22745098039215686,
+          0.4549019607843137,
+          0.17254901960784313
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          24.5,
+          1.7,
+          11
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          24.5,
+          1.47,
+          11.3
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25.45,
+          2.3,
+          11.1
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25.45,
+          2.07,
+          11.4
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Tomato foliage",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          2.65,
+          10.55
+        ],
+        "Size": [
+          1.1,
+          0.35,
+          0.8
+        ],
+        "Color": [
+          0.2,
+          0.5215686274509804,
+          0.20784313725490197
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Ripe tomato",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25,
+          2.42,
+          10.850000000000001
+        ],
+        "Size": [
+          0.55,
+          0.55,
+          0.55
+        ],
+        "Color": [
+          0.8235294117647058,
+          0.22745098039215686,
+          0.16862745098039217
+        ],
+        "Material": "Plastic",
+        "Shape": "Ball",
+        "TopSurface": "Smooth",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Soil bed 3",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          40,
+          0.57,
+          8
+        ],
+        "Size": [
+          10,
+          0.65,
+          10
+        ],
+        "Color": [
+          0.3568627450980392,
+          0.24313725490196078,
+          0.1568627450980392
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed side",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          34.8,
+          0.67,
+          8
+        ],
+        "Size": [
+          0.4,
+          0.85,
+          10.8
+        ],
+        "Color": [
+          0.3803921568627451,
+          0.25098039215686274,
+          0.15294117647058825
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed side",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          45.2,
+          0.67,
+          8
+        ],
+        "Size": [
+          0.4,
+          0.85,
+          10.8
+        ],
+        "Color": [
+          0.3803921568627451,
+          0.25098039215686274,
+          0.15294117647058825
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed end",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          40,
+          0.67,
+          2.8
+        ],
+        "Size": [
+          10,
+          0.85,
+          0.4
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Bed end",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          40,
+          0.67,
+          13.2
+        ],
+        "Size": [
+          10,
+          0.85,
+          0.4
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn stalk",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          2,
+          5
+        ],
+        "Size": [
+          0.23,
+          2.5,
+          0.23
+        ],
+        "Color": [
+          0.396078431372549,
+          0.5843137254901961,
+          0.1803921568627451
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          36.5,
+          1.5,
+          5
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37.5,
+          2.1,
+          5
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          36.6,
+          2.7,
+          5
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn cob",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37.3,
+          2.4,
+          5.12
+        ],
+        "Size": [
+          0.48,
+          1.1,
+          0.48
+        ],
+        "Color": [
+          0.9529411764705882,
+          0.7686274509803922,
+          0.23529411764705882
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn tassel",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          3.4,
+          5
+        ],
+        "Size": [
+          0.6,
+          0.35,
+          0.45
+        ],
+        "Color": [
+          0.807843137254902,
+          0.6941176470588235,
+          0.3333333333333333
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn stalk",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          2,
+          5
+        ],
+        "Size": [
+          0.23,
+          2.5,
+          0.23
+        ],
+        "Color": [
+          0.396078431372549,
+          0.5843137254901961,
+          0.1803921568627451
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          39.5,
+          1.5,
+          5
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40.5,
+          2.1,
+          5
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          39.6,
+          2.7,
+          5
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn cob",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40.3,
+          2.4,
+          5.12
+        ],
+        "Size": [
+          0.48,
+          1.1,
+          0.48
+        ],
+        "Color": [
+          0.9529411764705882,
+          0.7686274509803922,
+          0.23529411764705882
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn tassel",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          3.4,
+          5
+        ],
+        "Size": [
+          0.6,
+          0.35,
+          0.45
+        ],
+        "Color": [
+          0.807843137254902,
+          0.6941176470588235,
+          0.3333333333333333
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn stalk",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          2,
+          5
+        ],
+        "Size": [
+          0.23,
+          2.5,
+          0.23
+        ],
+        "Color": [
+          0.396078431372549,
+          0.5843137254901961,
+          0.1803921568627451
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          42.5,
+          1.5,
+          5
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43.5,
+          2.1,
+          5
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          42.6,
+          2.7,
+          5
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn cob",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43.3,
+          2.4,
+          5.12
+        ],
+        "Size": [
+          0.48,
+          1.1,
+          0.48
+        ],
+        "Color": [
+          0.9529411764705882,
+          0.7686274509803922,
+          0.23529411764705882
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn tassel",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          3.4,
+          5
+        ],
+        "Size": [
+          0.6,
+          0.35,
+          0.45
+        ],
+        "Color": [
+          0.807843137254902,
+          0.6941176470588235,
+          0.3333333333333333
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn stalk",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          2,
+          8
+        ],
+        "Size": [
+          0.23,
+          2.5,
+          0.23
+        ],
+        "Color": [
+          0.396078431372549,
+          0.5843137254901961,
+          0.1803921568627451
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          36.5,
+          1.5,
+          8
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37.5,
+          2.1,
+          8
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          36.6,
+          2.7,
+          8
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn cob",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37.3,
+          2.4,
+          8.12
+        ],
+        "Size": [
+          0.48,
+          1.1,
+          0.48
+        ],
+        "Color": [
+          0.9529411764705882,
+          0.7686274509803922,
+          0.23529411764705882
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn tassel",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          3.4,
+          8
+        ],
+        "Size": [
+          0.6,
+          0.35,
+          0.45
+        ],
+        "Color": [
+          0.807843137254902,
+          0.6941176470588235,
+          0.3333333333333333
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn stalk",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          2,
+          8
+        ],
+        "Size": [
+          0.23,
+          2.5,
+          0.23
+        ],
+        "Color": [
+          0.396078431372549,
+          0.5843137254901961,
+          0.1803921568627451
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          39.5,
+          1.5,
+          8
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40.5,
+          2.1,
+          8
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          39.6,
+          2.7,
+          8
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn cob",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40.3,
+          2.4,
+          8.12
+        ],
+        "Size": [
+          0.48,
+          1.1,
+          0.48
+        ],
+        "Color": [
+          0.9529411764705882,
+          0.7686274509803922,
+          0.23529411764705882
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn tassel",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          3.4,
+          8
+        ],
+        "Size": [
+          0.6,
+          0.35,
+          0.45
+        ],
+        "Color": [
+          0.807843137254902,
+          0.6941176470588235,
+          0.3333333333333333
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn stalk",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          2,
+          8
+        ],
+        "Size": [
+          0.23,
+          2.5,
+          0.23
+        ],
+        "Color": [
+          0.396078431372549,
+          0.5843137254901961,
+          0.1803921568627451
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          42.5,
+          1.5,
+          8
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43.5,
+          2.1,
+          8
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          42.6,
+          2.7,
+          8
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn cob",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43.3,
+          2.4,
+          8.12
+        ],
+        "Size": [
+          0.48,
+          1.1,
+          0.48
+        ],
+        "Color": [
+          0.9529411764705882,
+          0.7686274509803922,
+          0.23529411764705882
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn tassel",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          3.4,
+          8
+        ],
+        "Size": [
+          0.6,
+          0.35,
+          0.45
+        ],
+        "Color": [
+          0.807843137254902,
+          0.6941176470588235,
+          0.3333333333333333
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn stalk",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          2,
+          11
+        ],
+        "Size": [
+          0.23,
+          2.5,
+          0.23
+        ],
+        "Color": [
+          0.396078431372549,
+          0.5843137254901961,
+          0.1803921568627451
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          36.5,
+          1.5,
+          11
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37.5,
+          2.1,
+          11
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          36.6,
+          2.7,
+          11
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn cob",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37.3,
+          2.4,
+          11.12
+        ],
+        "Size": [
+          0.48,
+          1.1,
+          0.48
+        ],
+        "Color": [
+          0.9529411764705882,
+          0.7686274509803922,
+          0.23529411764705882
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn tassel",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          37,
+          3.4,
+          11
+        ],
+        "Size": [
+          0.6,
+          0.35,
+          0.45
+        ],
+        "Color": [
+          0.807843137254902,
+          0.6941176470588235,
+          0.3333333333333333
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn stalk",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          2,
+          11
+        ],
+        "Size": [
+          0.23,
+          2.5,
+          0.23
+        ],
+        "Color": [
+          0.396078431372549,
+          0.5843137254901961,
+          0.1803921568627451
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          39.5,
+          1.5,
+          11
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40.5,
+          2.1,
+          11
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          39.6,
+          2.7,
+          11
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn cob",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40.3,
+          2.4,
+          11.12
+        ],
+        "Size": [
+          0.48,
+          1.1,
+          0.48
+        ],
+        "Color": [
+          0.9529411764705882,
+          0.7686274509803922,
+          0.23529411764705882
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn tassel",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          40,
+          3.4,
+          11
+        ],
+        "Size": [
+          0.6,
+          0.35,
+          0.45
+        ],
+        "Color": [
+          0.807843137254902,
+          0.6941176470588235,
+          0.3333333333333333
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn stalk",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          2,
+          11
+        ],
+        "Size": [
+          0.23,
+          2.5,
+          0.23
+        ],
+        "Color": [
+          0.396078431372549,
+          0.5843137254901961,
+          0.1803921568627451
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          42.5,
+          1.5,
+          11
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43.5,
+          2.1,
+          11
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn leaf",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          42.6,
+          2.7,
+          11
+        ],
+        "Size": [
+          1.35,
+          0.23,
+          0.45
+        ],
+        "Color": [
+          0.34509803921568627,
+          0.5882352941176471,
+          0.18823529411764706
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn cob",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43.3,
+          2.4,
+          11.12
+        ],
+        "Size": [
+          0.48,
+          1.1,
+          0.48
+        ],
+        "Color": [
+          0.9529411764705882,
+          0.7686274509803922,
+          0.23529411764705882
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Corn tassel",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          43,
+          3.4,
+          11
+        ],
+        "Size": [
+          0.6,
+          0.35,
+          0.45
+        ],
+        "Color": [
+          0.807843137254902,
+          0.6941176470588235,
+          0.3333333333333333
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Approach stepping stone",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          5,
+          0.18,
+          0
+        ],
+        "Size": [
+          2.25,
+          0.35,
+          2.6
+        ],
+        "Color": [
+          0.6666666666666666,
+          0.6470588235294118,
+          0.5490196078431373
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Approach stepping stone",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          8,
+          0.18,
+          0
+        ],
+        "Size": [
+          2.25,
+          0.35,
+          2.6
+        ],
+        "Color": [
+          0.6666666666666666,
+          0.6470588235294118,
+          0.5490196078431373
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Approach stepping stone",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          11,
+          0.18,
+          0
+        ],
+        "Size": [
+          2.25,
+          0.35,
+          2.6
+        ],
+        "Color": [
+          0.6666666666666666,
+          0.6470588235294118,
+          0.5490196078431373
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Crate base",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          26,
+          0.35,
+          19
+        ],
+        "Size": [
+          2.4,
+          0.45,
+          2.2
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Crate side",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          24.9,
+          0.85,
+          19
+        ],
+        "Size": [
+          0.2,
+          1.2,
+          2.2
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Crate side",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          27.1,
+          0.85,
+          19
+        ],
+        "Size": [
+          0.2,
+          1.2,
+          2.2
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Crate end",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          26,
+          0.85,
+          18
+        ],
+        "Size": [
+          2.2,
+          1.2,
+          0.2
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Crate end",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          26,
+          0.85,
+          20
+        ],
+        "Size": [
+          2.2,
+          1.2,
+          0.2
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Stored pumpkin",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          26.323928132286703,
+          1.1,
+          19.361769084995924
+        ],
+        "Size": [
+          0.8,
+          0.7,
+          0.8
+        ],
+        "Color": [
+          0.8784313725490196,
+          0.5607843137254902,
+          0.16470588235294117
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Stored pumpkin",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          25.846392149240664,
+          1.1,
+          18.566252202999483
+        ],
+        "Size": [
+          0.8,
+          0.7,
+          0.8
+        ],
+        "Color": [
+          0.8784313725490196,
+          0.5607843137254902,
+          0.16470588235294117
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Stored pumpkin",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          26.176844235439777,
+          1.1,
+          18.525570230608125
+        ],
+        "Size": [
+          0.8,
+          0.7,
+          0.8
+        ],
+        "Color": [
+          0.8784313725490196,
+          0.5607843137254902,
+          0.16470588235294117
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Stored pumpkin",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          26.287503800103792,
+          1.1,
+          18.408345880719775
+        ],
+        "Size": [
+          0.8,
+          0.7,
+          0.8
+        ],
+        "Color": [
+          0.8784313725490196,
+          0.5607843137254902,
+          0.16470588235294117
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Crate base",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          36,
+          0.35,
+          19
+        ],
+        "Size": [
+          2.4,
+          0.45,
+          2.2
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Crate side",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          34.9,
+          0.85,
+          19
+        ],
+        "Size": [
+          0.2,
+          1.2,
+          2.2
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Crate side",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          37.1,
+          0.85,
+          19
+        ],
+        "Size": [
+          0.2,
+          1.2,
+          2.2
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Crate end",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          36,
+          0.85,
+          18
+        ],
+        "Size": [
+          2.2,
+          1.2,
+          0.2
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Crate end",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": true,
+        "CanTouch": false,
+        "Position": [
+          36,
+          0.85,
+          20
+        ],
+        "Size": [
+          2.2,
+          1.2,
+          0.2
+        ],
+        "Color": [
+          0.5372549019607843,
+          0.3568627450980392,
+          0.21176470588235294
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Stored pumpkin",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          35.936299807341946,
+          1.1,
+          18.975705360717768
+        ],
+        "Size": [
+          0.8,
+          0.7,
+          0.8
+        ],
+        "Color": [
+          0.8784313725490196,
+          0.5607843137254902,
+          0.16470588235294117
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Stored pumpkin",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          35.46771823412362,
+          1.1,
+          18.976232103925238
+        ],
+        "Size": [
+          0.8,
+          0.7,
+          0.8
+        ],
+        "Color": [
+          0.8784313725490196,
+          0.5607843137254902,
+          0.16470588235294117
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Stored pumpkin",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          36.00009286024871,
+          1.1,
+          18.842885828867256
+        ],
+        "Size": [
+          0.8,
+          0.7,
+          0.8
+        ],
+        "Color": [
+          0.8784313725490196,
+          0.5607843137254902,
+          0.16470588235294117
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Stored pumpkin",
+      "Properties": {
+        "Anchored": true,
+        "CanCollide": false,
+        "CanTouch": false,
+        "Position": [
+          36.55478239624781,
+          1.1,
+          19.439284201116855
+        ],
+        "Size": [
+          0.8,
+          0.7,
+          0.8
+        ],
+        "Color": [
+          0.8784313725490196,
+          0.5607843137254902,
+          0.16470588235294117
+        ],
+        "Material": "Plastic",
+        "Shape": "Block",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    }
+  ]
+}
