@@ -6,6 +6,9 @@ parts=[(0,1.47,0,.13,.40,.23),(0,1.88,0,.075,.22,.09),(-.035,2.17,.025,.145,.205
 for a,b,c,rx,ry,rz in parts:
  d=(np.sqrt(((X-a)/rx)**2+((Y-b)/ry)**2+((Z-c)/rz)**2)-1)*min(rx,ry,rz)
  k=.055;h=np.maximum(k-np.abs(f-d),0)/k;f=np.minimum(f,d)-h*h*k*.25
+# Jagged split in the top of the head, still joined at the jaw and neck.
+cut=np.maximum(np.abs(Z-.009*np.sin(Y*95))-.028,2.075-Y)
+f=np.maximum(f,-cut)
 v,faces,n,_=marching_cubes(f,0,spacing=(x[1]-x[0],y[1]-y[0],z[1]-z[0]),step_size=2);v+=np.array([x[0],y[0],z[0]])
 # Longer legs, shorter upper body; forward-leaning neck and a rounded upper back.
 old_y=v[:,1].copy();v[:,1]=np.where(old_y<1.1,old_y*1.25,1.375+(old_y-1.1)*.86)
