@@ -5,6 +5,9 @@ local trunk=tree:WaitForChild("Trunk")
 local origin=Vector3.new(trunk.Position.X,0,trunk.Position.Z)
 local caseButton=workspace:WaitForChild("TreeCaseButton")
 local random=Random.new()
+local inventory=game:GetService("ReplicatedStorage"):WaitForChild("TreeInventory")
+local owned={1,0,0}
+local equipped=true
 local types={
     {name="Oak",weight=70,power=1,leaf=Color3.fromRGB(69,144,65),wood=Color3.fromRGB(108,70,40)},
     {name="Birch",weight=25,power=2,leaf=Color3.fromRGB(159,185,65),wood=Color3.fromRGB(226,222,205)},
@@ -40,8 +43,8 @@ local caseText=label(caseGui,UDim2.fromScale(0,0),UDim2.fromScale(1,1),16)
 local fillTween
 local function refresh()
     local state=progress[current]
-    title.Text=types[current].name.." | Lv. "..state.level
-    clicks.Text="Clicks: "..string.format("%.0f",balance).." | +"..string.format("%.0f",power())
+    title.Text=equipped and (types[current].name.." | Lv. "..state.level) or "No tree equipped"
+    clicks.Text="Clicks: "..string.format("%.0f",balance).." | +"..string.format("%.0f",power()).." / sec"
     xpText.Text="XP "..state.xp.." / "..string.format("%.0f",required())
     if fillTween then fillTween:Cancel() end
     fillTween=TweenService:Create(fill,TweenInfo.new(.18),{Size=UDim2.fromScale(math.clamp(state.xp/required(),0,1),1)});fillTween:Play()
@@ -56,24 +59,28 @@ local function nearby(player,target,range)
     return root and h and h.Health>0 and (root.Position-target).Magnitude<=range
 end
 local function clicked(player)
-    if busy or not nearby(player,origin,26) then return end
+    if busy or not equipped or not nearby(player,origin,26) then return end
     local now=os.clock();if cooldown[player] and now-cooldown[player]<.08 then return end
     cooldown[player]=now;balance+=power()
     local state=progress[current];state.xp+=1
     while state.xp>=required() do state.xp-=required();state.level+=1 end
     refresh()
 end
-local function clickable(part)
-    local detector=Instance.new("ClickDetector");detector.MaxActivationDistance=24;detector.Parent=part
-    detector.MouseClick:Connect(clicked)
-end
+local function clickable(part) end -- Passive income replaces manual clicking.
 for _,part in tree:GetDescendants() do if part:IsA("BasePart") then clickable(part) end end
 local top=tree:WaitForChild("CrownTop")
 anchor.Position=Vector3.new(origin.X,top.Position.Y+top.Size.Y/2+1.8,origin.Z)
 local function rebuild(index)
     local specs={};local kind=types[index]
     local function block(name,size,offset,color)
-        table.insert(specs,{name=name,size=size,pos=origin+offset,color=color})
+        -- Three separate studded pieces per original block, without increasing footprint.
+        for section=1,3 do
+            local axis=name=="Trunk" and Vector3.new(0,1,0) or Vector3.new(1,0,0)
+            local span=name=="Trunk" and size.Y or size.X
+            local pieceSize=name=="Trunk" and Vector3.new(size.X,size.Y/3,size.Z) or Vector3.new(size.X/3,size.Y,size.Z)
+            local tint=color:Lerp(Color3.new(1,1,1),(section-1)*.025)
+            table.insert(specs,{name=name,size=pieceSize,pos=origin+offset+axis*((section-2)*span/3),color=tint})
+        end
     end
     block("Trunk",Vector3.new(.95,3.5,.95),Vector3.new(0,1.75,0),kind.wood)
     if index==1 then
@@ -97,6 +104,16 @@ local function rebuild(index)
         block("CrystalCore",Vector3.new(1.9,1.9,1.9),Vector3.new(0,4.9,0),kind.leaf)
         block("CrownTop",Vector3.new(.9,1.4,.9),Vector3.new(0,6.2,0),Color3.fromRGB(200,239,255))
     end
+    for side=1,4 do
+        local a=side*math.pi/2
+        block("Root",Vector3.new(.8,.3,.8),Vector3.new(math.cos(a)*.7,.15,math.sin(a)*.7),kind.wood)
+        block("Branch",Vector3.new(1.2,.3,.4),Vector3.new(math.cos(a)*.65,2.7+side*.12,math.sin(a)*.65),kind.wood)
+    end
+    for i=1,6 do
+        local a=i*math.pi/3
+        local tint=index==3 and Color3.fromRGB(211,238,255) or (index==2 and Color3.fromRGB(221,195,79) or Color3.fromRGB(203,77,50))
+        block(index==3 and "SmallCrystal" or "Fruit",Vector3.new(.24,.32,.24),Vector3.new(math.cos(a)*1.5,3.8+i%2*.5,math.sin(a)*1.5),tint)
+    end
     for _,part in tree:GetChildren() do if part:IsA("BasePart") then part:Destroy() end end
     for _,spec in specs do
         local part=Instance.new("Part");part.Name=spec.name;part.Anchored=true;part.CanCollide=false
@@ -106,7 +123,7 @@ local function rebuild(index)
         TweenService:Create(part,TweenInfo.new(.5,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=spec.pos,Size=spec.size}):Play()
         clickable(part)
         if spec.name=="CrownTop" then anchor.Position=spec.pos+Vector3.new(0,spec.size.Y/2+1.8,0) end
-        task.wait(.035)
+        task.wait(.006)
     end
     task.wait(.55)
     for _,part in tree:GetChildren() do if part:IsA("BasePart") then part.CanCollide=true end end
@@ -120,9 +137,8 @@ caseDetector.MouseClick:Connect(function(player)
     local old=current
     local ok,err=pcall(function()
         task.wait(.4)
-        if chosen~=current then rebuild(chosen) end
-        current=chosen
-        caseText.Text="ROLLED: "..types[chosen].name..(chosen==old and "\nDUPLICATE - XP KEPT" or "")
+        owned[chosen]+=1
+        caseText.Text="ROLLED: "..types[chosen].name.."\nADDED TO INVENTORY"
         task.wait(1.3)
     end)
     if not ok then balance+=50;warn("Tree case failed: "..tostring(err)) end
@@ -130,3 +146,40 @@ caseDetector.MouseClick:Connect(function(player)
 end)
 Players.PlayerRemoving:Connect(function(player) cooldown[player]=nil end)
 refresh()
+
+local function snapshot()
+    local entries={}
+    for i,kind in types do
+        table.insert(entries,{Name=kind.name,Owned=owned[i],Level=progress[i].level,Power=kind.power*2^(progress[i].level-1),Equipped=equipped and current==i})
+    end
+    return {Balance=balance,Entries=entries,Busy=busy}
+end
+inventory.OnServerInvoke=function(player,action,index)
+    if action=="Get" then return snapshot() end
+    if busy or type(index)~="number" or index%1~=0 or not types[index] or owned[index]<1 then return snapshot() end
+    if action=="Unequip" and equipped and index==current then
+        equipped=false
+        for _,part in tree:GetChildren() do if part:IsA("BasePart") then part:Destroy() end end
+        refresh()
+    elseif action=="Equip" and not (equipped and index==current) then
+        busy=true;refresh()
+        local ok,err=pcall(function() rebuild(index) end)
+        if ok then current=index;equipped=true else warn(err) end
+        busy=false;refresh()
+    end
+    return snapshot()
+end
+-- One shared tick, not multiplied by the number of players standing nearby.
+task.spawn(function()
+    while task.wait(1) do
+        if equipped and not busy then
+            for _,player in Players:GetPlayers() do
+                if nearby(player,origin,32) then clicked(player);break end
+            end
+        end
+    end
+end)
+-- Apply the detailed starting design on launch as well.
+busy=true
+rebuild(current)
+busy=false;refresh()

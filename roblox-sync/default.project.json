@@ -374,7 +374,7 @@
             4
           ],
           "Position": [
-            -9,
+            42,
             0.3,
             0
           ],
@@ -427,11 +427,23 @@
     },
     "StarterGui": {
       "$className": "StarterGui",
-      "$ignoreUnknownInstances": false
+      "$ignoreUnknownInstances": false,
+      "TreeInventoryUI": {
+        "$className": "ScreenGui",
+        "$properties": {
+          "ResetOnSpawn": false
+        },
+        "Controller": {
+          "$path": "src/TreeInventory.client.luau"
+        }
+      }
     },
     "ReplicatedStorage": {
       "$className": "ReplicatedStorage",
-      "$ignoreUnknownInstances": false
+      "$ignoreUnknownInstances": false,
+      "TreeInventory": {
+        "$className": "RemoteFunction"
+      }
     },
     "ServerStorage": {
       "$className": "ServerStorage",

@@ -2,6 +2,7 @@
   "files": [
     "default.project.json",
     "src/TreeClicks.server.luau",
-    "src/SpawnSetup.server.luau"
+    "src/SpawnSetup.server.luau",
+    "src/TreeInventory.client.luau"
   ]
 }
