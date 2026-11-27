@@ -1,9 +1,9 @@
-# PS1 camera prototype
+# Camera horror-simulator prototype
 
-Empty platform with a right-side first-person camera. No hands, on-screen labels or screenshot downloads.
+Retro480p scene, single connected camera model on the right with a live rear display.
 
-Retro rendering:480p framebuffer, nearest textures, low-poly surfaces,clean color without dithering and mild vertex snapping.
+One photograph point appears on the platform. Get within3meters, aim at its camera icon and left-click to photograph it. The point disappears. No rewards or further missions yet.
 
-Click the screen to capture the mouse. WASD to move, Shift to move faster, Escape to release.
+Click to capture mouse, WASD to move, Shift to move faster, Escape to release. No screenshot files or text HUD.
 
-Node.js22 server, LAN access and existing Windows auto-updater. Run npm start or START.bat. Default port3000.
+Node22 server with LAN access and Windows auto-updater. Run npm start or START.bat, port3000 by default.
