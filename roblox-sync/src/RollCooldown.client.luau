@@ -127,10 +127,10 @@ local function apply(data)
         local count=owned[i] or 0
         row.frame.LayoutOrder=(count>0 and 0 or 100)+rarityRank[i]
         row.title.Text=count>0 and config[i].Name or "??? ??????"
-        row.title.TextColor3=count>0 and white or muted
+        row.title.TextColor3=count>0 and config[i].Color or muted
         row.count.Text=count>0 and (config[i].Chance.."  |  x"..count) or "??? ??"
-        row.icon.BackgroundColor3=count>0 and white or Color3.fromRGB(88,88,88)
-        row.border.Color=equipped==i and white or Color3.fromRGB(65,65,65)
+        row.icon.BackgroundColor3=count>0 and config[i].Color or Color3.fromRGB(88,88,88)
+        row.border.Color=equipped==i and config[i].Color or Color3.fromRGB(65,65,65)
         row.border.Thickness=equipped==i and 2 or 1
         row.action.Visible=count>0
         row.action.Text=count==0 and "LOCKED" or (equipped==i and "UNEQUIP" or "EQUIP")
@@ -188,13 +188,13 @@ result.OnClientEvent:Connect(function(data)
     local stopIndex=19
     for i=0,stopIndex+1 do
         local item=i==stopIndex and aura or config[math.random(1,#config)]
-        local text=label(strip,"ReelName",item.Name,UDim2.fromOffset(0,i*48),UDim2.new(1,0,0,48),28,white)
+        local text=label(strip,"ReelName",item.Name,UDim2.fromOffset(0,i*48),UDim2.new(1,0,0,48),28,item.Color)
         text.TextStrokeTransparency=.55
     end
     local spin=TweenService:Create(strip,TweenInfo.new(3,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=UDim2.fromOffset(0,8-stopIndex*48)})
     spin:Play();spin.Completed:Wait()
     reel.Visible=false;auraName.Visible=true
-    auraName.Text=aura.Name;auraName.TextColor3=white
+    auraName.Text=aura.Name;auraName.TextColor3=aura.Color
     chance.Text=aura.Chance
     note.Text=""
     fadeResult(token)
