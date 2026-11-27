@@ -1,11 +1,13 @@
 # Camera horror-simulator prototype
 
-Dark road into fog,12 warm streetlamps with cached shadows,480p retro rendering.
+Dark road with12 steady warm streetlamps, distant fog and a right-side camera with live display.
 
-Right-side single-mesh camera with live display. Left click prints a frozen image: instant photo slides out and develops in3.6seconds. No files/downloads.
+Comfort rendering: no vertex jitter, no camera sway, no shutter flash or dithering. Multisample antialiasing, filtered mipmapped textures, cached soft1024px shadows, resolution up to720p.
 
-Approach the world camera icon within3meters, aim and photograph it to finish the current objective. No rewards or next mission yet.
+Left click prints a frozen image that slides out and develops. No files/downloads.
 
-Click to capture mouse; WASD move; Shift faster; Escape cursor. No text HUD or hands.
+One objective point: get within3meters, aim at its icon and photograph it. No further missions yet.
+
+Click to capture mouse; WASD move; Shift faster; Escape cursor. No HUD text or hands.
 
 Node22 server, LAN access, Windows auto-updater. npm start or START.bat, port3000.
