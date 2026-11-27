@@ -244,14 +244,25 @@ function Visuals.Build(character, id, color)
         local e=Instance.new("ParticleEmitter");e.Name=body and "BodyMotes" or "ObjectMotes"
         e.Texture="rbxasset://textures/particles/sparkles_main.dds"
         e.Color=ColorSequence.new(accent,color);e.LightEmission=.8;e.LightInfluence=0;e.Brightness=1.1
-        e.Rate=rate;e.Lifetime=NumberRange.new(.9,1.6)
+        e.Rate=rate*1.5;e.Lifetime=NumberRange.new(.9,1.6)
         e.Speed=body and NumberRange.new(.15,.4) or NumberRange.new(.025,.12)
         e.Acceleration=Vector3.new(0,body and .18 or .07,0)
         e.SpreadAngle=Vector2.new(40,40);e.LockedToPart=not body
         e.Rotation=NumberRange.new(0,360);e.RotSpeed=NumberRange.new(-15,15)
         e.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.2,size,size*.25),NumberSequenceKeypoint.new(.7,size*.6),NumberSequenceKeypoint.new(1,0)})
         e.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.2,.35),NumberSequenceKeypoint.new(.7,.65),NumberSequenceKeypoint.new(1,1)})
-        e:SetAttribute("WarmCount",math.ceil(rate));e.Parent=parent
+        e:SetAttribute("WarmCount",math.ceil(rate*1.5));e.Parent=parent
+        -- Additional small soft motes: same tint, different silhouette, no large smoke clouds.
+        local soft=e:Clone();soft.Name="SoftLightDots"
+        soft.Texture="rbxasset://textures/particles/smoke_main.dds"
+        soft.Rate=rate*.85
+        soft.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.2,size*.85,size*.2),NumberSequenceKeypoint.new(.65,size*.6),NumberSequenceKeypoint.new(1,0)})
+        soft.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.2,.25),NumberSequenceKeypoint.new(.7,.6),NumberSequenceKeypoint.new(1,1)})
+        soft:SetAttribute("WarmCount",math.ceil(rate*.85));soft.Parent=parent
+        local large=e:Clone();large.Name="LargerGlints";large.Rate=rate*.25
+        large.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.25,size*1.8,size*.3),NumberSequenceKeypoint.new(.7,size),NumberSequenceKeypoint.new(1,0)})
+        large.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.25,.5),NumberSequenceKeypoint.new(.75,.7),NumberSequenceKeypoint.new(1,1)})
+        large:SetAttribute("WarmCount",math.ceil(rate*.25));large.Parent=parent
     end
     -- Emit directly from selected moving strokes, including their full length.
     local emitCount=math.min(#strokes,18)
