@@ -264,11 +264,26 @@ function Visuals.Build(character, id, color)
         large.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.25,.5),NumberSequenceKeypoint.new(.75,.7),NumberSequenceKeypoint.new(1,1)})
         large:SetAttribute("WarmCount",math.ceil(rate*.25));large.Parent=parent
     end
-    -- Emit directly from selected moving strokes, including their full length.
-    local emitCount=math.min(#strokes,18)
+    -- Visible emission from the complete object silhouette, including leaves/gems.
+    local objects={}
+    for _,part in model:GetChildren() do
+        if part:IsA("BasePart") and part.Transparency<.95 then table.insert(objects,part) end
+    end
+    local emitCount=math.min(#objects,32)
     for i=1,emitCount do
-        local part=strokes[math.floor((i-1)*#strokes/emitCount)+1]
-        motes(part,(40+rank*9)/math.max(1,emitCount),i%3==0 and .14 or .075,false)
+        local part=objects[math.floor((i-1)*#objects/emitCount)+1]
+        local attachment=Instance.new("Attachment");attachment.Name="ObjectSparkSource"
+        attachment.Position=Vector3.new(0,0,part.Size.Z*.35);attachment.Parent=part
+        motes(attachment,6+rank*.55,i%3==0 and .19 or .13,false)
+        for _,emitter in attachment:GetChildren() do
+            if emitter:IsA("ParticleEmitter") then
+                emitter.LockedToPart=false
+                emitter.Speed=NumberRange.new(.18,.45)
+                emitter.Acceleration=Vector3.new(0,.18,0)
+                emitter.SpreadAngle=Vector2.new(180,180)
+                emitter.LightEmission=1;emitter.Brightness=1.7
+            end
+        end
     end
     local body=pivot("Body particle envelope",CFrame.new(0,-.5,0),0)
     body.Size=Vector3.new(2.8,3.5,2)
