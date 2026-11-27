@@ -241,13 +241,13 @@ function Visuals.Build(character, id, color)
             local stream=variant==1 and emitter or emitter:Clone()
             local textureIndex=(index+variant)%3+1
             stream.Texture="rbxasset://textures/particles/smoke_main.dds"
-            local scale=variant==1 and .065 or (variant==2 and .20 or .62)
+            local scale=variant==1 and .16 or (variant==2 and .32 or .72)
             scale*=1+level*.025
             stream.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.18,scale),NumberSequenceKeypoint.new(.65,scale*.75),NumberSequenceKeypoint.new(1,0)})
             stream.Rate=rate*(variant==1 and .6 or (variant==2 and .3 or .1))
             stream.Rotation=NumberRange.new(0,360)
             stream.RotSpeed=NumberRange.new(-12,12)
-            local alpha=textureIndex==1 and .82 or (textureIndex==2 and .78 or .72)
+            local alpha=textureIndex==1 and .55 or (textureIndex==2 and .50 or .60)
             stream.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.18,alpha),NumberSequenceKeypoint.new(.7,math.min(.9,alpha+.15)),NumberSequenceKeypoint.new(1,1)})
             if variant>1 then stream.Parent=emitter.Parent end
         end
@@ -256,8 +256,14 @@ function Visuals.Build(character, id, color)
     for _,instance in model:GetDescendants() do
         if instance:IsA("ParticleEmitter") then
             instance.Rate*=.75
-            instance.Lifetime=NumberRange.new(1.8,2.6)
-            instance.LockedToPart=false
+            instance.Lifetime=NumberRange.new(2.4,3.2)
+            local isBody=instance.Name=="BodyRadiance"
+            instance.LockedToPart=not isBody
+            if not isBody and instance.Name~="SoftMist" then
+                instance.Speed=NumberRange.new(0,.035)
+                instance.Acceleration=Vector3.zero
+                instance.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.12,.5),NumberSequenceKeypoint.new(.82,.5),NumberSequenceKeypoint.new(1,1)})
+            end
             instance.LightEmission=.15
             instance.RotSpeed=NumberRange.new(-4,4)
             instance.LightEmission*=.65
