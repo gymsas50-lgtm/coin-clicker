@@ -1,12 +1,8 @@
 {
-  "name": "messenger",
-  "version": "1.0.0",
+  "name": "game-server-base",
+  "version": "2.0.0",
   "private": true,
-  "description": "Messenger web server",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "engines": {
-    "node": "22.x"
-  }
+  "description": "Clean server foundation for a new game",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": "22.x" }
 }

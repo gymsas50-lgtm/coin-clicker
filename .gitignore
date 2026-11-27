@@ -1,5 +1,9 @@
-# Private player saves remain on the game server, never in the update package.
-player-data.json
-player-data.json.tmp
-world-data.json
-world-data.json.tmp
+# Local runtime state and private data
+runtime/
+server-base-version.json
+player-data.json*
+world-data.json*
+progress-reset-version.json
+index.previous.html
+*.download.*
+update-status.txt
