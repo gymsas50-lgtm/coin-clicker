@@ -3,9 +3,9 @@
   "Properties": {
     "Anchored": true,
     "Size": [
-      6,
-      2,
-      6
+      5,
+      5,
+      5
     ],
     "Position": [
       0,
@@ -13,9 +13,9 @@
       0
     ],
     "Color": [
-      1,
-      0.32,
-      0.08
+      0,
+      0.25,
+      1
     ],
     "Material": "SmoothPlastic",
     "TopSurface": "Smooth",
