@@ -148,8 +148,6 @@ function Visuals.Build(character, id, color)
     -- Supplemental drifting motes; geometry remains the main silhouette.
     local levels={Common=1,InDev=2,Uncommon=3,Rare=4,SuperRare=5,Epic=6,Lucky=7,Legendary=8,Ice=9}
     local level=levels[id] or 1
-    local source=pivot("Particle core",CFrame.new(0,-1,0),.25)
-    local attachment=Instance.new("Attachment");attachment.Name="AuraMotes";attachment.Parent=source
     local particles=Instance.new("ParticleEmitter");particles.Name="DriftingMotes"
     particles.Texture="rbxasset://textures/particles/sparkles_main.dds"
     particles.Color=ColorSequence.new(color,color:Lerp(white,.6))
@@ -161,20 +159,37 @@ function Visuals.Build(character, id, color)
     particles.ShapeStyle=Enum.ParticleEmitterShapeStyle.Volume
     particles.ShapeInOut=Enum.ParticleEmitterShapeInOut.Outward
     particles.ShapePartial=1
-    source.Size=Vector3.new(2.5,.3,2.5)
     particles.Acceleration=Vector3.new(0,.45,0);particles.Drag=.7
     particles.Rotation=NumberRange.new(0,360);particles.RotSpeed=NumberRange.new(-45,45)
     particles.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.2,.10+level*.012),NumberSequenceKeypoint.new(1,0)})
     particles.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.15,.25),NumberSequenceKeypoint.new(.7,.5),NumberSequenceKeypoint.new(1,1)})
-    particles.Parent=attachment
-    if level>=6 then
-        local mist=particles:Clone();mist.Name="SoftMist"
-        mist.Texture="rbxasset://textures/particles/smoke_main.dds"
-        mist.Rate=level;mist.Speed=NumberRange.new(.15,.45)
-        mist.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,.3),NumberSequenceKeypoint.new(.5,1.1),NumberSequenceKeypoint.new(1,1.6)})
-        mist.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.3,.9),NumberSequenceKeypoint.new(1,1)})
-        mist.LightEmission=.35;mist.Parent=attachment
+    -- Emit from the actual orbiting geometry, never from the avatar core.
+    -- Sample distributed pieces and cap total rate independently of part count.
+    local surfaces={}
+    for _,part in model:GetChildren() do
+        if part:IsA("BasePart") and part.Transparency<.95 then table.insert(surfaces,part) end
     end
+    local count=math.min(#surfaces,level>=6 and 12 or 8)
+    for i=1,count do
+        local part=surfaces[math.floor((i-1)*#surfaces/count)+1]
+        local attachment=Instance.new("Attachment");attachment.Name="SurfaceMotes";attachment.Parent=part
+        local emitter=particles:Clone()
+        emitter.Color=ColorSequence.new(part.Color,part.Color:Lerp(white,.5))
+        emitter.Rate=(3+level*2)/count
+        emitter.Shape=Enum.ParticleEmitterShape.Box
+        emitter.Speed=NumberRange.new(.15,.65)
+        emitter.SpreadAngle=Vector2.new(180,180)
+        emitter.Parent=attachment
+        if level>=6 and i%3==0 then
+            local mist=emitter:Clone();mist.Name="SoftMist"
+            mist.Texture="rbxasset://textures/particles/smoke_main.dds"
+            mist.Rate=level/math.max(1,math.floor(count/3));mist.Speed=NumberRange.new(.1,.3)
+            mist.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,.2),NumberSequenceKeypoint.new(.5,.7),NumberSequenceKeypoint.new(1,1)})
+            mist.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.3,.9),NumberSequenceKeypoint.new(1,1)})
+            mist.LightEmission=.35;mist.Parent=attachment
+        end
+    end
+    particles:Destroy()
     return model
 end
 return Visuals
