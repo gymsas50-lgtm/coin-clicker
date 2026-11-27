@@ -1,11 +1,11 @@
-# Camera horror-simulator prototype
+# Camera simulator prototype
 
-Dark road with steady warm streetlamps and distant fog.31static roadside objects: two parked cars, bins, trash bags, crates, benches, a bus shelter, signs, cones and railings. Major props have collision bounds; static geometry is batched by material.
+Daylight road with31static roadside props and collisions. Streetlamp fixtures retained, lights off in daytime.
 
-No intentional flicker, vertex jitter, camera sway, dithering or shutter flash. MSAA, mip filtering and cached soft shadows.
+PS1-inspired look:480p, low-poly models, small textures and5bit colors. No dithering, vertex jitter, camera sway or shutter flashes. MSAA, mip filtering and cached soft daylight shadows reduce shimmer.
 
-Camera on right with live display; left click prints an instant photo that develops without creating files. Approach world icon within3meters, aim and photograph it.
+Right-side camera has live display. Left click prints an instant photo that develops without downloads. Approach photo icon within3meters and aim to complete the one current objective.
 
-Click to capture mouse; WASD move; Shift faster; Escape cursor.
+Click to capture mouse; WASD move; Shift faster; Escape cursor. No HUD text or hands.
 
-Node22 server, LAN access and Windows auto-updater. npm start or START.bat, port3000.
+Node22 server, LAN and Windows auto-updater. npm start or START.bat, port3000.
