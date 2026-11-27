@@ -182,14 +182,7 @@ function Visuals.Build(character, id, color)
         emitter.Speed=NumberRange.new(.015,.12)
         emitter.SpreadAngle=Vector2.new(180,180)
         emitter.Parent=attachment
-        if level>=6 and i%3==0 then
-            local mist=emitter:Clone();mist.Name="SoftMist"
-            mist.Texture="rbxasset://textures/particles/smoke_main.dds"
-            mist.Rate=(level*1.5)*12/math.max(1,math.floor(count/3));mist.Speed=NumberRange.new(.1,.3)
-            mist.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,.2),NumberSequenceKeypoint.new(.5,.7),NumberSequenceKeypoint.new(1,1)})
-            mist.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.3,.9),NumberSequenceKeypoint.new(1,1)})
-            mist.LightEmission=.35;mist.LockedToPart=false;mist.Parent=attachment
-        end
+
     end
     -- Helpers are invisible: no solid neon meshes/parts remain on screen.
     for _,part in model:GetChildren() do
@@ -226,8 +219,8 @@ function Visuals.Build(character, id, color)
     end
     -- Mix textures and scales without changing the total emission budget.
     local textures={
-        "rbxasset://textures/particles/smoke_main.dds",
-        "rbxasset://textures/particles/fire_main.dds",
+        "rbxasset://textures/particles/sparkles_main.dds",
+        "rbxasset://textures/particles/sparkles_main.dds",
         "rbxasset://textures/particles/sparkles_main.dds",
     }
     local sources={}
@@ -240,8 +233,8 @@ function Visuals.Build(character, id, color)
         for variant=1,3 do
             local stream=variant==1 and emitter or emitter:Clone()
             local textureIndex=(index+variant)%3+1
-            stream.Texture="rbxasset://textures/particles/smoke_main.dds"
-            local scale=variant==1 and .16 or (variant==2 and .32 or .72)
+            stream.Texture="rbxasset://textures/particles/sparkles_main.dds"
+            local scale=variant==1 and .055 or (variant==2 and .12 or .24)
             scale*=1+level*.025
             stream.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.18,scale),NumberSequenceKeypoint.new(.65,scale*.75),NumberSequenceKeypoint.new(1,0)})
             stream.Rate=rate*(variant==1 and .6 or (variant==2 and .3 or .1))
@@ -265,7 +258,7 @@ function Visuals.Build(character, id, color)
                 instance.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.12,.5),NumberSequenceKeypoint.new(.82,.5),NumberSequenceKeypoint.new(1,1)})
             end
             instance.LightEmission=.15
-            instance.RotSpeed=NumberRange.new(-4,4)
+            instance.RotSpeed=NumberRange.new(-18,18)
             instance.LightEmission*=.65
         end
     end
