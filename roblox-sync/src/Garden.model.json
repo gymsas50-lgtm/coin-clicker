@@ -2428,70 +2428,20 @@
     },
     {
       "ClassName": "Part",
-      "Name": "Cross aisle",
+      "Name": "Empty bed Left",
       "Properties": {
         "Anchored": true,
         "Size": [
-          7,
-          0.28,
-          66
+          76,
+          0.7,
+          24
         ],
         "Position": [
           61,
-          0.24,
-          0
-        ],
-        "Color": [
-          0.7568627450980392,
-          0.6666666666666666,
-          0.4627450980392157
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Left inner walkway",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          86,
-          0.28,
-          2
-        ],
-        "Position": [
-          61,
-          0.24,
+          0.55,
           -18.5
         ],
         "Color": [
-          0.7568627450980392,
-          0.6666666666666666,
-          0.4627450980392157
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Empty bed Left 1_1",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.7,
-          10
-        ],
-        "Position": [
-          39,
-          0.55,
-          -11.5
-        ],
-        "Color": [
           0.34901960784313724,
           0.24313725490196078,
           0.16862745098039217
@@ -2509,12 +2459,12 @@
         "Size": [
           0.4,
           0.95,
-          10.8
+          24.8
         ],
         "Position": [
           22.8,
           0.67,
-          -11.5
+          -18.5
         ],
         "Color": [
           0.5607843137254902,
@@ -2534,137 +2484,12 @@
         "Size": [
           0.4,
           0.95,
-          10.8
-        ],
-        "Position": [
-          55.2,
-          0.67,
-          -11.5
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.95,
-          0.4
-        ],
-        "Position": [
-          39,
-          0.67,
-          -16.7
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.95,
-          0.4
-        ],
-        "Position": [
-          39,
-          0.67,
-          -6.3
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Empty bed Left 1_2",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.7,
-          10
-        ],
-        "Position": [
-          83,
-          0.55,
-          -11.5
-        ],
-        "Color": [
-          0.34901960784313724,
-          0.24313725490196078,
-          0.16862745098039217
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          0.4,
-          0.95,
-          10.8
-        ],
-        "Position": [
-          66.8,
-          0.67,
-          -11.5
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          0.4,
-          0.95,
-          10.8
+          24.8
         ],
         "Position": [
           99.2,
           0.67,
-          -11.5
+          -18.5
         ],
         "Color": [
           0.5607843137254902,
@@ -2682,341 +2507,66 @@
       "Properties": {
         "Anchored": true,
         "Size": [
-          32,
+          76,
           0.95,
           0.4
-        ],
-        "Position": [
-          83,
-          0.67,
-          -16.7
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.95,
-          0.4
-        ],
-        "Position": [
-          83,
-          0.67,
-          -6.3
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Empty bed Left 2_1",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.7,
-          10
-        ],
-        "Position": [
-          39,
-          0.55,
-          -25.5
-        ],
-        "Color": [
-          0.34901960784313724,
-          0.24313725490196078,
-          0.16862745098039217
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          0.4,
-          0.95,
-          10.8
-        ],
-        "Position": [
-          22.8,
-          0.67,
-          -25.5
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          0.4,
-          0.95,
-          10.8
-        ],
-        "Position": [
-          55.2,
-          0.67,
-          -25.5
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.95,
-          0.4
-        ],
-        "Position": [
-          39,
-          0.67,
-          -30.7
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.95,
-          0.4
-        ],
-        "Position": [
-          39,
-          0.67,
-          -20.3
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Empty bed Left 2_2",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.7,
-          10
-        ],
-        "Position": [
-          83,
-          0.55,
-          -25.5
-        ],
-        "Color": [
-          0.34901960784313724,
-          0.24313725490196078,
-          0.16862745098039217
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          0.4,
-          0.95,
-          10.8
-        ],
-        "Position": [
-          66.8,
-          0.67,
-          -25.5
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          0.4,
-          0.95,
-          10.8
-        ],
-        "Position": [
-          99.2,
-          0.67,
-          -25.5
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.95,
-          0.4
-        ],
-        "Position": [
-          83,
-          0.67,
-          -30.7
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.95,
-          0.4
-        ],
-        "Position": [
-          83,
-          0.67,
-          -20.3
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Right inner walkway",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          86,
-          0.28,
-          2
         ],
         "Position": [
           61,
-          0.24,
+          0.67,
+          -30.7
+        ],
+        "Color": [
+          0.5607843137254902,
+          0.3843137254901961,
+          0.23137254901960785
+        ],
+        "Material": "Plastic",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Wooden bed edge",
+      "Properties": {
+        "Anchored": true,
+        "Size": [
+          76,
+          0.95,
+          0.4
+        ],
+        "Position": [
+          61,
+          0.67,
+          -6.3
+        ],
+        "Color": [
+          0.5607843137254902,
+          0.3843137254901961,
+          0.23137254901960785
+        ],
+        "Material": "Plastic",
+        "TopSurface": "Studs",
+        "BottomSurface": "Smooth"
+      }
+    },
+    {
+      "ClassName": "Part",
+      "Name": "Empty bed Right",
+      "Properties": {
+        "Anchored": true,
+        "Size": [
+          76,
+          0.7,
+          24
+        ],
+        "Position": [
+          61,
+          0.55,
           18.5
         ],
         "Color": [
-          0.7568627450980392,
-          0.6666666666666666,
-          0.4627450980392157
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Empty bed Right 1_1",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.7,
-          10
-        ],
-        "Position": [
-          39,
-          0.55,
-          11.5
-        ],
-        "Color": [
           0.34901960784313724,
           0.24313725490196078,
           0.16862745098039217
@@ -3034,12 +2584,12 @@
         "Size": [
           0.4,
           0.95,
-          10.8
+          24.8
         ],
         "Position": [
           22.8,
           0.67,
-          11.5
+          18.5
         ],
         "Color": [
           0.5607843137254902,
@@ -3059,12 +2609,12 @@
         "Size": [
           0.4,
           0.95,
-          10.8
+          24.8
         ],
         "Position": [
-          55.2,
+          99.2,
           0.67,
-          11.5
+          18.5
         ],
         "Color": [
           0.5607843137254902,
@@ -3082,12 +2632,12 @@
       "Properties": {
         "Anchored": true,
         "Size": [
-          32,
+          76,
           0.95,
           0.4
         ],
         "Position": [
-          39,
+          61,
           0.67,
           6.3
         ],
@@ -3107,387 +2657,12 @@
       "Properties": {
         "Anchored": true,
         "Size": [
-          32,
+          76,
           0.95,
           0.4
         ],
         "Position": [
-          39,
-          0.67,
-          16.7
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Empty bed Right 1_2",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.7,
-          10
-        ],
-        "Position": [
-          83,
-          0.55,
-          11.5
-        ],
-        "Color": [
-          0.34901960784313724,
-          0.24313725490196078,
-          0.16862745098039217
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          0.4,
-          0.95,
-          10.8
-        ],
-        "Position": [
-          66.8,
-          0.67,
-          11.5
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          0.4,
-          0.95,
-          10.8
-        ],
-        "Position": [
-          99.2,
-          0.67,
-          11.5
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.95,
-          0.4
-        ],
-        "Position": [
-          83,
-          0.67,
-          6.3
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.95,
-          0.4
-        ],
-        "Position": [
-          83,
-          0.67,
-          16.7
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Empty bed Right 2_1",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.7,
-          10
-        ],
-        "Position": [
-          39,
-          0.55,
-          25.5
-        ],
-        "Color": [
-          0.34901960784313724,
-          0.24313725490196078,
-          0.16862745098039217
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          0.4,
-          0.95,
-          10.8
-        ],
-        "Position": [
-          22.8,
-          0.67,
-          25.5
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          0.4,
-          0.95,
-          10.8
-        ],
-        "Position": [
-          55.2,
-          0.67,
-          25.5
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.95,
-          0.4
-        ],
-        "Position": [
-          39,
-          0.67,
-          20.3
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.95,
-          0.4
-        ],
-        "Position": [
-          39,
-          0.67,
-          30.7
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Empty bed Right 2_2",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.7,
-          10
-        ],
-        "Position": [
-          83,
-          0.55,
-          25.5
-        ],
-        "Color": [
-          0.34901960784313724,
-          0.24313725490196078,
-          0.16862745098039217
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          0.4,
-          0.95,
-          10.8
-        ],
-        "Position": [
-          66.8,
-          0.67,
-          25.5
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          0.4,
-          0.95,
-          10.8
-        ],
-        "Position": [
-          99.2,
-          0.67,
-          25.5
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.95,
-          0.4
-        ],
-        "Position": [
-          83,
-          0.67,
-          20.3
-        ],
-        "Color": [
-          0.5607843137254902,
-          0.3843137254901961,
-          0.23137254901960785
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
-      "ClassName": "Part",
-      "Name": "Wooden bed edge",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          32,
-          0.95,
-          0.4
-        ],
-        "Position": [
-          83,
+          61,
           0.67,
           30.7
         ],
