@@ -147,9 +147,9 @@
             "$className": "UIStroke",
             "$properties": {
               "Color": [
-                1,
-                1,
-                1
+                0.0784313725490196,
+                0.0784313725490196,
+                0.0784313725490196
               ],
               "Thickness": 2,
               "ApplyStrokeMode": "Border"

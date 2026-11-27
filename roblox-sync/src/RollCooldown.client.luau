@@ -151,17 +151,41 @@ for i,row in rows do
     end)
 end
 button.Size=UDim2.fromOffset(140,52);button.BackgroundColor3=Color3.fromRGB(242,242,242);button.TextColor3=Color3.fromRGB(15,15,15)
+local rollOutline=button:FindFirstChildOfClass("UIStroke")
+if not rollOutline then rollOutline=Instance.new("UIStroke");rollOutline.Parent=button end
+rollOutline.ApplyStrokeMode=Enum.ApplyStrokeMode.Border;rollOutline.Thickness=2
+rollOutline.Color=Color3.fromRGB(20,20,20);rollOutline.Transparency=0
+local progressTrack=Instance.new("Frame");progressTrack.Name="RollProgress"
+progressTrack.Position=UDim2.new(0,10,1,-9);progressTrack.Size=UDim2.new(1,-20,0,4)
+progressTrack.BackgroundColor3=Color3.fromRGB(196,196,196);progressTrack.BorderSizePixel=0
+progressTrack.Visible=false;progressTrack.ClipsDescendants=true;progressTrack.Parent=button;rounded(progressTrack,2)
+local progressFill=Instance.new("Frame");progressFill.Name="Remaining"
+progressFill.Size=UDim2.fromScale(1,1);progressFill.BackgroundColor3=Color3.fromRGB(25,25,25)
+progressFill.BorderSizePixel=0;progressFill.Parent=progressTrack;rounded(progressFill,2)
+local progressTween
+local function resetProgress()
+    if progressTween then progressTween:Cancel();progressTween=nil end
+    progressTrack.Visible=false;progressFill.Size=UDim2.fromScale(1,1)
+end
+local function startProgress()
+    if progressTween then progressTween:Cancel() end
+    progressTrack.Visible=true;progressFill.Size=UDim2.fromScale(1,1)
+    progressTween=TweenService:Create(progressFill,TweenInfo.new(3,Enum.EasingStyle.Linear),{Size=UDim2.fromScale(0,1)})
+    progressTween:Play()
+end
 local autoButton=Instance.new("TextButton");autoButton.AnchorPoint=Vector2.new(.5,1);autoButton.Position=UDim2.new(.5,-118,1,-24);autoButton.Size=UDim2.fromOffset(76,52)
 autoButton.BackgroundColor3=Color3.fromRGB(32,32,32);autoButton.BorderSizePixel=0;autoButton.Text="AUTO: OFF";autoButton.TextSize=11;autoButton.Font=Enum.Font.GothamBold;autoButton.TextColor3=white;autoButton.Parent=ui;rounded(autoButton)
 
 local roll
 local function finish()
+    resetProgress()
     busy=false;button.Active=true;button.AutoButtonColor=true;button.Text="ROLL";cooldown.Visible=false
     if auto then task.delay(.08,function() if auto then roll() end end) end
 end
 roll=function()
     if busy then return end
-    busy=true;started=os.clock();button.Active=false;button.AutoButtonColor=false;button.Text="...";cooldown.Visible=false
+    busy=true;started=os.clock();button.Active=false;button.AutoButtonColor=false;button.Text="ROLL";cooldown.Visible=false
+    progressTrack.Visible=true;progressFill.Size=UDim2.fromScale(1,1)
     request:FireServer()
     local token=started
     task.delay(10,function() if busy and started==token then auto=false;autoButton.Text="AUTO: OFF";note.Text="Server unavailable. Try again.";finish() end end)
@@ -199,6 +223,7 @@ result.OnClientEvent:Connect(function(data)
         text.TextStrokeTransparency=.55
     end
     local spin=TweenService:Create(strip,TweenInfo.new(3,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=UDim2.fromOffset(0,8-stopIndex*48)})
+    startProgress()
     spin:Play();spin.Completed:Wait()
     reel.Visible=false;auraName.Visible=true
     auraName.Text=aura.Name;auraName.TextColor3=aura.Color
