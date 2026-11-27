@@ -151,6 +151,53 @@
               "Thickness": 2,
               "ApplyStrokeMode": "Border"
             }
+          },
+          "CooldownController": {
+            "$path": "src/RollCooldown.client.luau"
+          }
+        },
+        "Cooldown": {
+          "$className": "TextLabel",
+          "$properties": {
+            "AnchorPoint": [
+              0.5,
+              1
+            ],
+            "Position": {
+              "UDim2": [
+                [
+                  0.5,
+                  0
+                ],
+                [
+                  1,
+                  -84
+                ]
+              ]
+            },
+            "Size": {
+              "UDim2": [
+                [
+                  0,
+                  160
+                ],
+                [
+                  0,
+                  28
+                ]
+              ]
+            },
+            "BackgroundTransparency": 1,
+            "Text": "",
+            "TextColor3": [
+              1,
+              1,
+              1
+            ],
+            "TextSize": 22,
+            "Font": "GothamBold",
+            "TextStrokeTransparency": 0.45,
+            "Visible": false
           }
         }
       }
