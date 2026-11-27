@@ -224,6 +224,34 @@ function Visuals.Build(character, id, color)
         body.LockedToPart=false;body.Parent=holder
         for i=2,streams do local extra=body:Clone();extra.Parent=holder end
     end
+    -- Mix textures and scales without changing the total emission budget.
+    local textures={
+        "rbxasset://textures/particles/smoke_main.dds",
+        "rbxasset://textures/particles/fire_main.dds",
+        "rbxasset://textures/particles/sparkles_main.dds",
+    }
+    local sources={}
+    for _,instance in model:GetDescendants() do
+        if instance:IsA("ParticleEmitter") and instance.Name~="SoftMist" then table.insert(sources,instance) end
+    end
+    for index,emitter in sources do
+        local rate=emitter.Rate
+        -- Most particles are small; large wisps are slower and more transparent.
+        for variant=1,3 do
+            local stream=variant==1 and emitter or emitter:Clone()
+            local textureIndex=(index+variant)%3+1
+            stream.Texture=textures[textureIndex]
+            local scale=variant==1 and .065 or (variant==2 and .20 or .62)
+            scale*=1+level*.025
+            stream.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.18,scale),NumberSequenceKeypoint.new(.65,scale*.75),NumberSequenceKeypoint.new(1,0)})
+            stream.Rate=rate*(variant==1 and .6 or (variant==2 and .3 or .1))
+            stream.Rotation=NumberRange.new(0,360)
+            stream.RotSpeed=NumberRange.new(-70,70)
+            local alpha=textureIndex==1 and .65 or (textureIndex==2 and .5 or .25)
+            stream.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.18,alpha),NumberSequenceKeypoint.new(.7,math.min(.9,alpha+.15)),NumberSequenceKeypoint.new(1,1)})
+            if variant>1 then stream.Parent=emitter.Parent end
+        end
+    end
     particles:Destroy()
     return model
 end
