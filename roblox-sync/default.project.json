@@ -218,6 +218,9 @@
         },
         "RollResult": {
           "$className": "RemoteEvent"
+        },
+        "Inventory": {
+          "$className": "RemoteFunction"
         }
       }
     }

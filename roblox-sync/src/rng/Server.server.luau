@@ -3,11 +3,12 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local folder = ReplicatedStorage:WaitForChild("AuraRNG")
 local config = require(folder:WaitForChild("Config"))
 local request, result = folder:WaitForChild("RollRequest"), folder:WaitForChild("RollResult")
+local inventory = folder:WaitForChild("Inventory")
 local random = Random.new()
 local data = {}
 local function equip(player)
     local state, character = data[player], player.Character
-    if not state or not character or state.best == 0 then return end
+    if not state or not character then return end
     local root = character:FindFirstChild("HumanoidRootPart")
     local head = character:FindFirstChild("Head")
     if not root or not head then return end
@@ -17,7 +18,8 @@ local function equip(player)
     end
     local old = head:FindFirstChild("AuraTitle")
     if old then old:Destroy() end
-    local aura = config[state.best]
+    if state.equipped == 0 then return end
+    local aura = config[state.equipped]
     local attachment = Instance.new("Attachment")
     attachment.Name = "AuraParticles"
     attachment.Parent = root
@@ -33,7 +35,7 @@ local function equip(player)
     particles.Size = NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.25,.22),NumberSequenceKeypoint.new(1,0)})
     particles.Transparency = NumberSequence.new({NumberSequenceKeypoint.new(0,.3),NumberSequenceKeypoint.new(.7,.4),NumberSequenceKeypoint.new(1,1)})
     particles.Parent = attachment
-    if state.best >= 3 then
+    if state.equipped >= 3 then
         local light = Instance.new("PointLight")
         light.Name = "AuraLight"
         light.Color = aura.Color
@@ -60,7 +62,7 @@ local function equip(player)
 end
 local function init(player)
     if data[player] then return end
-    data[player] = {rolls=0,best=0,nextAt=0,owned={}}
+    data[player] = {rolls=0,equipped=0,nextAt=0,owned={}}
     local stats = Instance.new("Folder")
     stats.Name = "leaderstats"
     stats.Parent = player
@@ -76,6 +78,24 @@ end
 Players.PlayerAdded:Connect(init)
 for _, player in Players:GetPlayers() do init(player) end
 Players.PlayerRemoving:Connect(function(player) data[player]=nil end)
+local function snapshot(state)
+    local counts = {}
+    for i = 1, #config do counts[i] = state.owned[i] or 0 end
+    return {Owned=counts, Equipped=state.equipped, Rolls=state.rolls}
+end
+inventory.OnServerInvoke = function(player, action, index)
+    local state = data[player]
+    if not state then return nil end
+    if action == "Equip" then
+        if type(index) ~= "number" or index ~= math.floor(index) or not config[index] or (state.owned[index] or 0) < 1 then return snapshot(state) end
+        state.equipped = index
+        equip(player)
+    elseif action == "Unequip" then
+        state.equipped = 0
+        equip(player)
+    end
+    return snapshot(state)
+end
 request.OnServerEvent:Connect(function(player)
     local state = data[player]
     if not state then return end
@@ -92,10 +112,10 @@ request.OnServerEvent:Connect(function(player)
     end
     state.rolls += 1
     if index > 0 then state.owned[index] = (state.owned[index] or 0)+1 end
-    local previous = state.best
-    state.best = math.max(state.best,index)
     local stats = player:FindFirstChild("leaderstats")
     if stats and stats:FindFirstChild("Rolls") then stats.Rolls.Value=state.rolls end
-    if state.best ~= previous then equip(player) end
-    result:FireClient(player,{Index=index,Rolls=state.rolls,Best=state.best,NewBest=state.best>previous,Count=state.owned[index] or 0})
+    local packet = snapshot(state)
+    packet.Index = index
+    packet.Count = state.owned[index] or 0
+    result:FireClient(player,packet)
 end)

@@ -1,92 +1,123 @@
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local button, ui = script.Parent, script.Parent.Parent
 local cooldown = ui:WaitForChild("Cooldown")
 local folder = ReplicatedStorage:WaitForChild("AuraRNG")
 local config = require(folder:WaitForChild("Config"))
 local request, result = folder:WaitForChild("RollRequest"), folder:WaitForChild("RollResult")
-local busy, auto, started = false, false, 0
+local inventoryRemote = folder:WaitForChild("Inventory")
+local busy, auto, started, inventoryBusy = false, false, 0, false
+local owned, equipped = {}, 0
 local white = Color3.fromRGB(232,237,249)
+local muted = Color3.fromRGB(151,168,193)
+local function rounded(object,radius)
+    local c=Instance.new("UICorner");c.CornerRadius=UDim.new(0,radius or 12);c.Parent=object
+end
 local function label(parent,name,text,pos,size,fontSize,color)
-    local t=Instance.new("TextLabel")
-    t.Name=name;t.BackgroundTransparency=1;t.Position=pos;t.Size=size
-    t.Text=text;t.Font=Enum.Font.GothamMedium;t.TextSize=fontSize;t.TextColor3=color or white
-    t.Parent=parent;return t
+    local t=Instance.new("TextLabel");t.Name=name;t.BackgroundTransparency=1;t.Position=pos;t.Size=size
+    t.Text=text;t.Font=Enum.Font.GothamMedium;t.TextSize=fontSize;t.TextColor3=color or white;t.Parent=parent;return t
 end
 local function panel(name,pos,size)
-    local f=Instance.new("Frame");f.Name=name;f.Position=pos;f.Size=size
-    f.BackgroundColor3=Color3.fromRGB(17,22,34);f.BackgroundTransparency=.12;f.BorderSizePixel=0;f.Parent=ui
-    local corner=Instance.new("UICorner");corner.CornerRadius=UDim.new(0,14);corner.Parent=f
-    local stroke=Instance.new("UIStroke");stroke.Color=Color3.fromRGB(71,88,124);stroke.Transparency=.45;stroke.Parent=f
-    return f
+    local f=Instance.new("Frame");f.Name=name;f.Position=pos;f.Size=size;f.BackgroundColor3=Color3.fromRGB(17,22,34)
+    f.BackgroundTransparency=.08;f.BorderSizePixel=0;f.Parent=ui;rounded(f,14)
+    local stroke=Instance.new("UIStroke");stroke.Color=Color3.fromRGB(71,88,124);stroke.Transparency=.4;stroke.Parent=f;return f
 end
-local stats=panel("SessionStats",UDim2.fromOffset(18,18),UDim2.fromOffset(240,108))
-label(stats,"Heading","A U R A  /  R N G",UDim2.fromOffset(16,10),UDim2.fromOffset(208,24),16)
-local counter=label(stats,"RollCount","\u{420}\u{43e}\u{43b}\u{43b}\u{44b}  \u{b7}  0",UDim2.fromOffset(16,40),UDim2.fromOffset(208,22),14,Color3.fromRGB(165,181,211))
-local best=label(stats,"Best","\u{41b}\u{443}\u{447}\u{448}\u{430}\u{44f}  \u{b7}  \u{2014}",UDim2.fromOffset(12,70),UDim2.fromOffset(216,22),13)
-local card=panel("RollResult",UDim2.new(.5,0,.35,0),UDim2.fromOffset(330,156));card.AnchorPoint=Vector2.new(.5,.5);card.Visible=false
-local cap=label(card,"Caption","\u{422}\u{412}\u{41e}\u{42f} \u{410}\u{423}\u{420}\u{410}",UDim2.fromOffset(10,13),UDim2.new(1,-20,0,22),11,Color3.fromRGB(156,174,204))
-local name=label(card,"AuraName","",UDim2.fromOffset(10,42),UDim2.new(1,-20,0,40),28)
-local chance=label(card,"Chance","",UDim2.fromOffset(10,89),UDim2.new(1,-20,0,22),16)
-local note=label(card,"Note","",UDim2.fromOffset(10,121),UDim2.new(1,-20,0,20),11,Color3.fromRGB(151,168,193))
-button.BackgroundColor3=Color3.fromRGB(65,91,153)
-button.Size=UDim2.fromOffset(140,52)
-local autoButton=Instance.new("TextButton");autoButton.Name="AutoRoll";autoButton.AnchorPoint=Vector2.new(.5,1)
-autoButton.Position=UDim2.new(.5,-118,1,-24);autoButton.Size=UDim2.fromOffset(76,52)
-autoButton.BackgroundColor3=Color3.fromRGB(25,32,47);autoButton.BorderSizePixel=0
-autoButton.Text="AUTO: OFF";autoButton.TextSize=11;autoButton.Font=Enum.Font.GothamBold;autoButton.TextColor3=white;autoButton.Parent=ui
-local ac=Instance.new("UICorner");ac.CornerRadius=UDim.new(0,12);ac.Parent=autoButton
-local hint=label(ui,"Hint","\u{41b}\u{443}\u{447}\u{448}\u{430}\u{44f} \u{430}\u{443}\u{440}\u{430} \u{44d}\u{43a}\u{438}\u{43f}\u{438}\u{440}\u{443}\u{435}\u{442}\u{441}\u{44f} \u{430}\u{432}\u{442}\u{43e}\u{43c}\u{430}\u{442}\u{438}\u{447}\u{435}\u{441}\u{43a}\u{438} \u{b7} \u{43f}\u{440}\u{43e}\u{433}\u{440}\u{435}\u{441}\u{441} \u{442}\u{43e}\u{43b}\u{44c}\u{43a}\u{43e} \u{432} \u{44d}\u{442}\u{43e}\u{439} \u{441}\u{435}\u{441}\u{441}\u{438}\u{438}",UDim2.new(.5,0,1,-125),UDim2.new(.92,0,0,20),11,Color3.fromRGB(173,187,209));hint.AnchorPoint=Vector2.new(.5,1);hint.TextWrapped=true
+local stats=panel("SessionStats",UDim2.fromOffset(18,18),UDim2.fromOffset(230,135))
+label(stats,"Heading","A U R A  /  R N G",UDim2.fromOffset(10,9),UDim2.fromOffset(210,24),16)
+local counter=label(stats,"RollCount","Rolls  :  0",UDim2.fromOffset(10,37),UDim2.fromOffset(210,22),14,muted)
+local equippedText=label(stats,"Equipped","Equipped  :  None",UDim2.fromOffset(8,61),UDim2.fromOffset(214,22),12)
+local inventoryButton=Instance.new("TextButton");inventoryButton.Name="InventoryButton";inventoryButton.Position=UDim2.fromOffset(14,92)
+inventoryButton.Size=UDim2.fromOffset(202,31);inventoryButton.BackgroundColor3=Color3.fromRGB(44,58,85);inventoryButton.BorderSizePixel=0
+inventoryButton.Font=Enum.Font.GothamBold;inventoryButton.TextSize=12;inventoryButton.TextColor3=white;inventoryButton.Text="INVENTORY";inventoryButton.Parent=stats;rounded(inventoryButton,7)
+local card=panel("RollResult",UDim2.new(.5,0,.35,0),UDim2.fromOffset(320,150));card.AnchorPoint=Vector2.new(.5,.5);card.Visible=false
+label(card,"Caption","ROLL RESULT",UDim2.fromOffset(10,13),UDim2.new(1,-20,0,22),11,muted)
+local auraName=label(card,"AuraName","",UDim2.fromOffset(10,43),UDim2.new(1,-20,0,38),28)
+local chance=label(card,"Chance","",UDim2.fromOffset(10,86),UDim2.new(1,-20,0,22),16)
+local note=label(card,"Note","",UDim2.fromOffset(10,117),UDim2.new(1,-20,0,20),11,muted)
+local inv=panel("InventoryPanel",UDim2.fromScale(.5,.45),UDim2.new(.92,0,0,325));inv.AnchorPoint=Vector2.new(.5,.5);inv.Visible=false
+local limit=Instance.new("UISizeConstraint");limit.MaxSize=Vector2.new(420,325);limit.Parent=inv
+label(inv,"Title","AURA INVENTORY",UDim2.fromOffset(18,13),UDim2.new(1,-75,0,30),18)
+label(inv,"Subtitle","Collect auras. Choose what you wear.",UDim2.fromOffset(18,45),UDim2.new(1,-36,0,22),12,muted)
+local close=Instance.new("TextButton");close.Size=UDim2.fromOffset(32,32);close.Position=UDim2.new(1,-44,0,12);close.Text="X";close.Font=Enum.Font.GothamBold;close.TextSize=15;close.TextColor3=white;close.BackgroundTransparency=1;close.Parent=inv
+local rows={}
+for i,aura in config do
+    local row=Instance.new("Frame");row.Name=aura.Id;row.Size=UDim2.new(1,-28,0,66);row.Position=UDim2.fromOffset(14,78+(i-1)*75)
+    row.BackgroundColor3=Color3.fromRGB(29,36,52);row.BorderSizePixel=0;row.Parent=inv;rounded(row,9)
+    local title=label(row,"Name",aura.Name,UDim2.fromOffset(12,8),UDim2.new(1,-116,0,24),17,aura.Color);title.TextXAlignment=Enum.TextXAlignment.Left
+    local count=label(row,"Count",aura.Chance.."  |  Owned: 0",UDim2.fromOffset(12,35),UDim2.new(1,-116,0,22),11,muted);count.TextXAlignment=Enum.TextXAlignment.Left
+    local action=Instance.new("TextButton");action.Name="Equip";action.Size=UDim2.fromOffset(90,34);action.Position=UDim2.new(1,-101,.5,-17)
+    action.BorderSizePixel=0;action.Font=Enum.Font.GothamBold;action.TextSize=11;action.TextColor3=white;action.Parent=row;rounded(action,7)
+    rows[i]={count=count,action=action}
+end
+label(inv,"SessionNote","Session inventory - saving is not enabled yet.",UDim2.new(0,12,1,-24),UDim2.new(1,-24,0,18),10,muted)
+local function apply(data)
+    if not data then return end
+    owned=data.Owned or owned;equipped=data.Equipped or 0
+    counter.Text="Rolls  :  "..tostring(data.Rolls or 0)
+    equippedText.Text="Equipped  :  "..(config[equipped] and config[equipped].Name or "None")
+    equippedText.TextColor3=config[equipped] and config[equipped].Color or white
+    for i,row in rows do
+        local count=owned[i] or 0
+        row.count.Text=config[i].Chance.."  |  Owned: "..count
+        row.action.Text=count==0 and "LOCKED" or (equipped==i and "UNEQUIP" or "EQUIP")
+        row.action.BackgroundColor3=count==0 and Color3.fromRGB(42,46,57) or (equipped==i and Color3.fromRGB(96,65,55) or Color3.fromRGB(52,79,119))
+        row.action.AutoButtonColor=count>0
+    end
+end
+for i,row in rows do
+    row.action.Activated:Connect(function()
+        if inventoryBusy or (owned[i] or 0)<1 then return end
+        inventoryBusy=true
+        local ok,data=pcall(function() return inventoryRemote:InvokeServer(equipped==i and "Unequip" or "Equip",i) end)
+        if ok then apply(data) end
+        inventoryBusy=false
+    end)
+end
+button.Size=UDim2.fromOffset(140,52);button.BackgroundColor3=Color3.fromRGB(65,91,153)
+local autoButton=Instance.new("TextButton");autoButton.AnchorPoint=Vector2.new(.5,1);autoButton.Position=UDim2.new(.5,-118,1,-24);autoButton.Size=UDim2.fromOffset(76,52)
+autoButton.BackgroundColor3=Color3.fromRGB(25,32,47);autoButton.BorderSizePixel=0;autoButton.Text="AUTO: OFF";autoButton.TextSize=11;autoButton.Font=Enum.Font.GothamBold;autoButton.TextColor3=white;autoButton.Parent=ui;rounded(autoButton)
+local hint=label(ui,"Hint","Roll to collect auras. Equip them from your inventory.",UDim2.new(.5,0,1,-125),UDim2.new(.92,0,0,20),11,muted);hint.AnchorPoint=Vector2.new(.5,1)
 local roll
 local function finish()
-    busy=false;button.Active=true;button.AutoButtonColor=true;button.Text="ROLL"
-    cooldown.Visible=false
+    busy=false;button.Active=true;button.AutoButtonColor=true;button.Text="ROLL";cooldown.Visible=false
     if auto then task.delay(.08,function() if auto then roll() end end) end
 end
 roll=function()
     if busy then return end
-    busy=true;started=os.clock();button.Active=false;button.AutoButtonColor=false;button.Text="\u{2026}"
-    cooldown.Visible=true;cooldown.Text="1"
+    inv.Visible=false;busy=true;started=os.clock();button.Active=false;button.AutoButtonColor=false;button.Text="...";cooldown.Visible=true;cooldown.Text="1"
     request:FireServer()
     local token=started
-    task.delay(10,function() if busy and started==token then note.Text="\u{41d}\u{435}\u{442} \u{43e}\u{442}\u{432}\u{435}\u{442}\u{430} \u{441}\u{435}\u{440}\u{432}\u{435}\u{440}\u{430}. \u{41f}\u{43e}\u{43f}\u{440}\u{43e}\u{431}\u{443}\u{439} \u{435}\u{449}\u{451} \u{440}\u{430}\u{437}.";auto=false;autoButton.Text="AUTO: OFF";finish() end end)
+    task.delay(10,function() if busy and started==token then auto=false;autoButton.Text="AUTO: OFF";note.Text="Server unavailable. Try again.";finish() end end)
 end
 button.Activated:Connect(roll)
 autoButton.Activated:Connect(function()
     auto=not auto;autoButton.Text=auto and "AUTO: ON" or "AUTO: OFF"
-    autoButton.BackgroundColor3=auto and Color3.fromRGB(39,93,75) or Color3.fromRGB(25,32,47)
     if auto and not busy then roll() end
 end)
-RunService.RenderStepped:Connect(function()
-    if busy then
-        local remaining=math.max(0,1-(os.clock()-started))
-        cooldown.Text=remaining>.95 and "1" or string.format("%.1f",math.ceil(remaining*10)/10)
+inventoryButton.Activated:Connect(function()
+    inv.Visible=not inv.Visible
+    if inv.Visible then
+        auto=false;autoButton.Text="AUTO: OFF";card.Visible=false
+        task.spawn(function() local ok,data=pcall(function() return inventoryRemote:InvokeServer("Get") end);if ok then apply(data) end end)
     end
+end)
+close.Activated:Connect(function() inv.Visible=false end)
+RunService.RenderStepped:Connect(function()
+    if busy then local remaining=math.max(0,1-(os.clock()-started));cooldown.Text=remaining>.95 and "1" or string.format("%.1f",math.ceil(remaining*10)/10) end
 end)
 result.OnClientEvent:Connect(function(data)
-    if data.Error then
-        task.delay(math.max(.05,data.Remaining or .1),finish)
-        return
-    end
+    if data.Error then task.delay(math.max(.05,data.Remaining or .1),finish);return end
     if not busy then busy=true;started=os.clock() end
-    card.Visible=true;note.Text="";cap.Text="\u{41e}\u{41f}\u{420}\u{415}\u{414}\u{415}\u{41b}\u{42f}\u{415}\u{41c} \u{410}\u{423}\u{420}\u{423}"
+    apply(data);card.Visible=not inv.Visible;note.Text=""
     for i=1,9 do
-        local preview=config[math.random(1,#config)]
-        name.Text=preview.Name;name.TextColor3=preview.Color;chance.Text="\u{b7} \u{b7} \u{b7}"
-        task.wait(.045+i*.003)
+        local preview=config[math.random(1,#config)];auraName.Text=preview.Name;auraName.TextColor3=preview.Color;chance.Text="...";task.wait(.045+i*.003)
     end
-    local aura=config[data.Index] or {Name="NO AURA",Chance="-",Color=Color3.fromRGB(155,165,185)}
-    cap.Text=data.NewBest and "\u{41d}\u{41e}\u{412}\u{410}\u{42f} \u{41b}\u{423}\u{427}\u{428}\u{410}\u{42f} \u{410}\u{423}\u{420}\u{410}" or "\u{420}\u{415}\u{417}\u{423}\u{41b}\u{42c}\u{422}\u{410}\u{422} \u{420}\u{41e}\u{41b}\u{41b}\u{410}"
-    name.Text=aura.Name;name.TextColor3=aura.Color;chance.Text=aura.Chance
-    counter.Text="\u{420}\u{43e}\u{43b}\u{43b}\u{44b}  \u{b7}  "..tostring(data.Rolls)
-    local bestAura=config[data.Best]
-    best.Text="Best  :  "..(bestAura and bestAura.Name or "-");best.TextColor3=bestAura and bestAura.Color or white
-    note.Text=data.Index==0 and "No drop - equipped aura unchanged" or (data.NewBest and "New best aura equipped" or "Your best aura stays equipped")
-    card.BackgroundColor3=aura.Color:Lerp(Color3.fromRGB(17,22,34),.83)
-    TweenService:Create(card,TweenInfo.new(.25),{BackgroundColor3=Color3.fromRGB(17,22,34)}):Play()
-    local remaining=1-(os.clock()-started)
-    if remaining>0 then task.wait(remaining) end
+    local aura=config[data.Index]
+    auraName.Text=aura and aura.Name or "NO AURA";auraName.TextColor3=aura and aura.Color or muted
+    chance.Text=aura and aura.Chance or "No drop"
+    note.Text=aura and ("Added to inventory  |  Owned: "..tostring(data.Count)) or "Your inventory is unchanged."
+    local remaining=1-(os.clock()-started);if remaining>0 then task.wait(remaining) end
     finish()
 end)
+apply({Owned={},Equipped=0,Rolls=0})
+task.spawn(function() local ok,data=pcall(function() return inventoryRemote:InvokeServer("Get") end);if ok then apply(data) end end)
