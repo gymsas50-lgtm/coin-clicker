@@ -2,7 +2,7 @@
 
 Two connected daylight rooms with windows, ceilings, wall collision and a walkable doorway. Road and roadside objects removed from the active map. Static room geometry batched by material.
 
-One active photo point spawns randomly on accessible floor in either room. Approach within3meters, aim and photograph it; walls block completion. After1.2seconds a new random point spawns at least3meters from the old one. The sequence continues indefinitely.
+One active photo point spawns randomly on accessible floor in either room. Photograph from up to20meters, aim and photograph it; walls block completion. After1.2seconds a new random point spawns at least3meters from the old one. The sequence continues indefinitely.
 
 Right-side single-surface camera, live display and developing instant photographs. No file downloads or text HUD.
 
