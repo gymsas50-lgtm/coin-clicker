@@ -30,13 +30,13 @@
             -10,
             0
           ],
-          "Material": "Grass",
+          "Material": "Plastic",
           "Color": [
-            0.32,
-            0.46,
-            0.22
+            0.294,
+            0.592,
+            0.294
           ],
-          "TopSurface": "Smooth",
+          "TopSurface": "Studs",
           "BottomSurface": "Smooth"
         }
       }
