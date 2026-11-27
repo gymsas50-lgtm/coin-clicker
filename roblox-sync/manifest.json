@@ -1,6 +1,8 @@
 {
   "files": [
     "default.project.json",
-    "src/RollCooldown.client.luau"
+    "src/RollCooldown.client.luau",
+    "src/rng/Config.luau",
+    "src/rng/Server.server.luau"
   ]
 }

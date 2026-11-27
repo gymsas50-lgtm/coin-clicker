@@ -67,7 +67,10 @@
     },
     "ServerScriptService": {
       "$className": "ServerScriptService",
-      "$ignoreUnknownInstances": false
+      "$ignoreUnknownInstances": false,
+      "AuraRNG": {
+        "$path": "src/rng/Server.server.luau"
+      }
     },
     "StarterPlayer": {
       "$className": "StarterPlayer",
@@ -199,6 +202,22 @@
             "TextStrokeTransparency": 0.45,
             "Visible": false
           }
+        }
+      }
+    },
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "$ignoreUnknownInstances": true,
+      "AuraRNG": {
+        "$className": "Folder",
+        "Config": {
+          "$path": "src/rng/Config.luau"
+        },
+        "RollRequest": {
+          "$className": "RemoteEvent"
+        },
+        "RollResult": {
+          "$className": "RemoteEvent"
         }
       }
     }
