@@ -1,96 +1,147 @@
-local CollectionService=game:GetService("CollectionService")
-local Visuals={}
-function Visuals.Build(character,id,color)
-    local root=character:FindFirstChild("HumanoidRootPart")
+local CollectionService = game:GetService("CollectionService")
+local Visuals = {}
+
+function Visuals.Build(character, id, color)
+    local root = character:FindFirstChild("HumanoidRootPart")
     if not root then return end
-    local model=Instance.new("Model");model.Name="AuraVisuals";model.Parent=character
-    local pale=color:Lerp(Color3.new(1,1,1),.35)
-    local function source(name,size,offset,speed)
-        local p=Instance.new("Part");p.Name=name;p.Size=size;p.Transparency=1
-        p.CanCollide=false;p.CanTouch=false;p.CanQuery=false;p.Massless=true;p.CastShadow=false
+    local model = Instance.new("Model")
+    model.Name = "AuraVisuals"
+    model.Parent = character
+    local white = Color3.fromRGB(229,245,255)
+    local gold = Color3.fromRGB(255,201,86)
+    local function pivot(name, offset, speed, axis)
+        local p=Instance.new("Part");p.Name=name;p.Size=Vector3.new(.1,.1,.1)
+        p.Transparency=1;p.CanCollide=false;p.CanTouch=false;p.CanQuery=false;p.Massless=true;p.CastShadow=false
         p.CFrame=root.CFrame*offset;p.Parent=model
-        local m=Instance.new("Motor6D");m.Part0=root;m.Part1=p;m.C0=offset
-        m:SetAttribute("BaseOffset",offset);m:SetAttribute("Speed",speed or 0)
-        m:SetAttribute("Bob",.04);m:SetAttribute("Sway",0)
-        m.Parent=p;CollectionService:AddTag(m,"AuraOrbit")
+        local weld=Instance.new("Motor6D");weld.Name="AuraOrbit";weld.Part0=root;weld.Part1=p
+        weld.C0=offset;weld.Parent=p
+        weld:SetAttribute("BaseOffset",offset)
+        weld:SetAttribute("Speed",speed or 0)
+        weld:SetAttribute("Axis",axis or "Y")
+        weld:SetAttribute("Bob",name=="Crown wings" and .08 or .06)
+        weld:SetAttribute("Sway",name=="Crown wings" and .055 or .015)
+        CollectionService:AddTag(weld,"AuraOrbit")
         return p
     end
-    local function emit(parent,rate,size,life,velocity,acceleration,locked)
-        local e=Instance.new("ParticleEmitter");e.Name="AuraParticles"
-        e.Texture="rbxasset://textures/particles/sparkles_main.dds"
-        e.Color=ColorSequence.new(pale,color);e.LightEmission=1;e.LightInfluence=0;e.Brightness=1.5
-        e.Rate=rate;e.Lifetime=NumberRange.new(life*.8,life)
-        e.Speed=NumberRange.new(velocity*.6,velocity);e.Acceleration=acceleration or Vector3.zero
-        e.LockedToPart=locked or false;e.VelocityInheritance=0
-        e.SpreadAngle=Vector2.new(20,20);e.Rotation=NumberRange.new(0,360);e.RotSpeed=NumberRange.new(-12,12)
-        e.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.18,size,size*.25),NumberSequenceKeypoint.new(.7,size*.65),NumberSequenceKeypoint.new(1,0)})
-        e.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.18,.25),NumberSequenceKeypoint.new(.7,.45),NumberSequenceKeypoint.new(1,1)})
-        e:SetAttribute("WarmCount",math.ceil(rate*life*.5));e.Parent=parent
-        return e
+    local function piece(parent, name, size, cf, tint, transparency, shape, material)
+        local p=Instance.new("Part");p.Name=name;p.Size=size;p.Color=tint or color
+        p.Material=material or Enum.Material.Neon;p.Transparency=transparency or .2
+        p.Shape=shape or Enum.PartType.Block;p.CanCollide=false;p.CanTouch=false;p.CanQuery=false
+        p.CastShadow=false;p.Massless=true;p.CFrame=parent.CFrame*cf;p.Parent=model
+        p.TopSurface=Enum.SurfaceType.Smooth;p.BottomSurface=Enum.SurfaceType.Smooth
+        local w=Instance.new("WeldConstraint");w.Part0=parent;w.Part1=p;w.Parent=p
+        return p
     end
-    local function orbit(name,height,radius,speed,tilt,rate,size)
-        local p=source(name,Vector3.new(.1,.1,.1),CFrame.new(0,height,0)*(tilt or CFrame.identity),speed)
-        local a=Instance.new("Attachment");a.Position=Vector3.new(radius,0,0);a.Parent=p
-        emit(a,rate,size,1.2,.04,Vector3.zero,false)
+    local function line(parent,a,b,width,tint,alpha)
+        return piece(parent,"Light stroke",Vector3.new(width,width,(b-a).Magnitude),CFrame.lookAt((a+b)/2,b),tint,alpha)
+    end
+    local function ring(radius,height,tint,speed,tilt,thickness,alpha)
+        local base=pivot("Orbit ring",CFrame.new(0,height,0)*(tilt or CFrame.identity),speed)
+        local n=48
+        for i=0,n-1 do
+            local a=i*math.pi*2/n;local b=(i+1)*math.pi*2/n
+            line(base,Vector3.new(math.cos(a)*radius,0,math.sin(a)*radius),Vector3.new(math.cos(b)*radius,0,math.sin(b)*radius),thickness or .045,tint,alpha or .25)
+        end
+        return base
+    end
+    local function shard(parent,cf,length,width,tint,alpha)
+        return piece(parent,"Faceted shard",Vector3.new(width,length,width),cf*CFrame.Angles(0,math.pi/4,math.pi/8),tint,alpha)
+    end
+    local function orbiters(parent,radius,count,height,tint,size)
+        for i=1,count do
+            local a=i*math.pi*2/count
+            piece(parent,"Orbiting gem",Vector3.new(size,size,size),CFrame.new(math.cos(a)*radius,height,math.sin(a)*radius)*CFrame.Angles(.4,a,.6),tint,.12)
+        end
+    end
+    local function wings(tint,ice)
+        local back=pivot("Crown wings",CFrame.new(0,.25,.65),0)
+        for _,side in {-1,1} do
+            for i=1,6 do
+                local x=side*(.65+i*.44);local y=.35+i*.32
+                local cf=CFrame.new(x,y,.15+i*.08)*CFrame.Angles(0,0,-side*(.38+i*.035))
+                shard(back,cf,1.0+i*.30,.14+i*.012,tint,.18+(i%2)*.12)
+                if ice then
+                    shard(back,cf*CFrame.new(side*.18,-.32,.13),.8+i*.18,.09,white,.32)
+                end
+            end
+        end
     end
     if id=="Common" then
-        -- Quiet silver dust rising close to the avatar.
-        local p=source("Silver dust",Vector3.new(2.5,3.4,1.8),CFrame.new(0,-.4,0))
-        emit(p,95,.09,1.8,.35,Vector3.new(0,.15,0),true)
+        local circle=ring(1.65,-2.65,color,.2,nil,.035,.5)
+        orbiters(circle,1.65,4,.08,color,.10)
     elseif id=="InDev" then
-        -- Amber horizontal scan bands, drifting in opposite directions.
-        for i=1,3 do
-            local p=source("Amber scan",Vector3.new(3.5,.12,2.2),CFrame.new(0,-1.8+i*.9,0),i%2==0 and .32 or -.32)
-            local e=emit(p,55,.13,1.1,.18,Vector3.zero,true)
-            e.EmissionDirection=Enum.NormalId.Right;e.SpreadAngle=Vector2.new(5,5)
-        end
+        local cube=pivot("Amber wireframe",CFrame.new(0,0,0),.35)
+        local s=1.45
+        for _,a in {-1,1} do for _,b in {-1,1} do
+            line(cube,Vector3.new(-s,a*s,b*s),Vector3.new(s,a*s,b*s),.035,color,.4)
+            line(cube,Vector3.new(a*s,-s,b*s),Vector3.new(a*s,s,b*s),.035,color,.4)
+            line(cube,Vector3.new(a*s,b*s,-s),Vector3.new(a*s,b*s,s),.035,color,.4)
+        end end
+        ring(1.9,-2.6,color,-.25,nil,.04,.4)
     elseif id=="Uncommon" then
-        -- Green rising wisps in a broad soft shell.
-        local p=source("Living green",Vector3.new(3.8,3,3),CFrame.new(0,-.8,0))
-        local e=emit(p,155,.16,2.1,.65,Vector3.new(0,.25,0),true)
-        e.Shape=Enum.ParticleEmitterShape.Ellipsoid;e.ShapeStyle=Enum.ParticleEmitterShapeStyle.Surface
-        e.RotSpeed=NumberRange.new(-45,45)
+        local base=ring(2,-2.65,color,.35,nil,.045,.35)
+        orbiters(base,2,6,.2,color,.15)
+        local leaves=pivot("Leaf orbit",CFrame.new(0,-.7,0),-.5)
+        for i=1,5 do
+            local a=i*math.pi*2/5
+            piece(leaves,"Leaf",Vector3.new(.17,.55,.13),CFrame.new(math.cos(a)*1.6,math.sin(a*2)*.45,math.sin(a)*1.6)*CFrame.Angles(.3,a,.7),color,.3)
+        end
     elseif id=="Rare" then
-        -- Two intersecting blue orbital streams.
-        orbit("Blue ascending arc",0,2,.85,CFrame.Angles(.8,0,0),115,.13)
-        orbit("Blue crossing arc",0,2,-.85,CFrame.Angles(-.8,0,0),115,.13)
+        ring(2.25,-2.65,color,.35,nil,.06,.2)
+        local outer=ring(2.1,0,color,-.5,CFrame.Angles(.4,0,.25),.045,.35)
+        orbiters(outer,2.1,4,0,white,.18)
+        local halo=ring(.8,2.35,white,.45,nil,.045,.25)
+        orbiters(halo,.8,3,0,color,.12)
     elseif id=="SuperRare" then
-        -- Cyan double helix, with moving emitters at staggered heights.
-        for i=1,6 do
-            orbit("Cyan helix",-2+(i-1)*.75,1.65,.7,CFrame.Angles(0,i*1.1,0),42,.12)
-        end
+        local one=ring(2.45,-.15,color,.55,CFrame.Angles(.8,0,.3),.055,.3)
+        ring(2.45,-.15,white,-.45,CFrame.Angles(-.8,0,-.3),.035,.45)
+        orbiters(one,2.45,6,0,color,.22)
+        ring(2.6,-2.65,color,.2,nil,.07,.3)
     elseif id=="Epic" then
-        -- A broad violet particle curtain behind the shoulders, no rods or wings.
-        for _,side in {-1,1} do
-            local p=source("Violet veil",Vector3.new(1.4,2.6,.45),CFrame.new(side*1.45,.45,1)*CFrame.Angles(0,0,-side*.4))
-            local e=emit(p,130,.18,1.8,.4,Vector3.new(side*.12,.18,0),true)
-            e.SpreadAngle=Vector2.new(35,35)
-        end
+        wings(color,false)
+        local base=ring(2.7,-2.65,color,.3,nil,.065,.2)
+        orbiters(base,2.7,8,.1,color,.17)
+        local crown=ring(.8,2.5,color,-.5,nil,.055,.2)
+        for i=1,5 do local a=i*math.pi*2/5;shard(crown,CFrame.new(math.cos(a)*.8,.3,math.sin(a)*.8),.55,.11,white,.25) end
     elseif id=="Lucky" then
-        -- Green fountain with sparse gold flecks, not another orbit.
-        local p=source("Lucky fountain",Vector3.new(2.8,.15,2.8),CFrame.new(0,-2.4,0))
-        local e=emit(p,185,.12,2,2.3,Vector3.new(0,-1.5,0),false)
-        e.SpreadAngle=Vector2.new(35,35)
-        local gold=emit(p,42,.23,1.8,1.6,Vector3.new(0,-.9,0),false)
-        gold.Color=ColorSequence.new(Color3.fromRGB(255,237,160),Color3.fromRGB(255,190,65))
-    elseif id=="Legendary" then
-        -- Radial golden sunburst behind the avatar.
-        local p=source("Solar radiance",Vector3.new(.5,.5,.2),CFrame.new(0,.5,1.1),.2)
-        for i=1,10 do
-            local a=Instance.new("Attachment");local angle=i*math.pi*2/10
-            a.CFrame=CFrame.new(math.cos(angle)*.8,math.sin(angle)*.8,0)*CFrame.Angles(0,0,angle-math.pi/2)
-            a.Parent=p
-            local e=emit(a,27,.16,1.4,1.35,Vector3.zero,true)
-            e.SpreadAngle=Vector2.new(7,7)
+        local floor=ring(2.8,-2.65,color,.35,nil,.065,.22)
+        orbiters(floor,2.8,8,.15,gold,.21)
+        ring(2.45,-2.55,gold,-.3,nil,.035,.4)
+        local charms=pivot("Lucky charms",CFrame.new(0,.45,0),.55)
+        for i=1,4 do
+            local a=i*math.pi/2;local cf=CFrame.new(math.cos(a)*2.15,math.sin(a*2)*.25,math.sin(a)*2.15)
+            for _,v in {Vector3.new(.14,.13,0),Vector3.new(-.14,.13,0),Vector3.new(.14,-.13,0),Vector3.new(-.14,-.13,0)} do
+                piece(charms,"Clover leaf",Vector3.new(.30,.30,.14),cf*CFrame.new(v),color,.22,Enum.PartType.Ball)
+            end
+            piece(charms,"Gold diamond",Vector3.new(.17,.17,.17),cf*CFrame.new(0,.65,0)*CFrame.Angles(0,0,math.pi/4),gold,.1)
         end
+        ring(.95,2.6,gold,-.45,nil,.06,.25)
+    elseif id=="Legendary" then
+        wings(gold,false)
+        local sun=pivot("Solar crown",CFrame.new(0,1.1,1.0)*CFrame.Angles(math.pi/2,0,0),.15)
+        for i=1,16 do
+            local a=i*math.pi*2/16;local radius=2.0
+            local v=Vector3.new(math.cos(a),0,math.sin(a))
+            line(sun,v*radius,v*(radius+(i%2==0 and .8 or .4)),.085,gold,.18)
+        end
+        ring(3,-2.65,gold,.3,nil,.07,.2)
+        local halo=ring(1,2.85,gold,-.5,nil,.065,.12)
+        orbiters(halo,1,8,.1,white,.14)
+        ring(2.65,-2.54,white,-.25,nil,.035,.5)
     elseif id=="Ice" then
-        -- Snowfall from above, slow and cool, with a low counter-rotating frost current.
-        local p=source("Snow canopy",Vector3.new(5,.2,4),CFrame.new(0,3,0))
-        local e=emit(p,210,.15,3.2,.45,Vector3.new(0,-.25,0),false)
-        e.EmissionDirection=Enum.NormalId.Bottom;e.SpreadAngle=Vector2.new(10,10)
-        e.Color=ColorSequence.new(Color3.fromRGB(235,252,255),color)
-        e.RotSpeed=NumberRange.new(-45,45)
-        orbit("Ground frost",-2.2,2,-.38,nil,65,.1)
+        wings(color,true)
+        local base=ring(3.1,-2.65,color,.2,nil,.065,.3)
+        for i=1,6 do
+            local a=i*math.pi/3;local direction=Vector3.new(math.cos(a),0,math.sin(a))
+            line(base,direction*.4,direction*2.8,.06,white,.35)
+            local tip=direction*1.9;local side=Vector3.new(-direction.Z,0,direction.X)
+            line(base,tip,tip-direction*.5+side*.4,.045,color,.25)
+            line(base,tip,tip-direction*.5-side*.4,.045,color,.25)
+        end
+        local ice=pivot("Ice satellites",CFrame.new(0,0,0),-.35)
+        for i=1,7 do local a=i*math.pi*2/7;shard(ice,CFrame.new(math.cos(a)*2.6,math.sin(a*2)*.55,math.sin(a)*2.6),.8,.18,color,.22) end
+        local crown=ring(.9,2.8,color,.4,nil,.06,.18)
+        for i=1,6 do local a=i*math.pi/3;shard(crown,CFrame.new(math.cos(a)*.9,.35,math.sin(a)*.9),.7,.11,white,.2) end
     end
     return model
 end
