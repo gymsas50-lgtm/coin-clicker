@@ -50,8 +50,10 @@ local strip=Instance.new("Frame");strip.Name="Names";strip.BackgroundTransparenc
 local note={Text=""}
 auraName.TextStrokeTransparency=.55;chance.TextStrokeTransparency=.65
 local resultToken=0
+local presentationActive=false
 local resultTweens={}
 local function revealResult()
+    presentationActive=true
     resultToken+=1
     for _, tween in resultTweens do tween:Cancel() end
     table.clear(resultTweens)
@@ -66,7 +68,7 @@ local function fadeResult(token)
             local tween=TweenService:Create(text,TweenInfo.new(.65,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{TextTransparency=1,TextStrokeTransparency=1})
             table.insert(resultTweens,tween);tween:Play()
         end
-        task.delay(.65,function() if token==resultToken then card.Visible=false end end)
+        task.delay(.65,function() if token==resultToken then presentationActive=false;card.Visible=false end end)
     end)
 end
 local inv=panel("InventoryPanel",UDim2.fromScale(.5,.45),UDim2.new(.92,0,.68,0));inv.AnchorPoint=Vector2.new(.5,.5);inv.Visible=false
@@ -174,9 +176,14 @@ inventoryButton.Activated:Connect(function()
     if inv.Visible then
         card.Visible=false
         task.spawn(function() local ok,data=pcall(function() return inventoryRemote:InvokeServer("Get") end);if ok then apply(data) end end)
+    else
+        card.Visible=presentationActive
     end
 end)
-close.Activated:Connect(function() inv.Visible=false end)
+close.Activated:Connect(function()
+    inv.Visible=false
+    card.Visible=presentationActive
+end)
 result.OnClientEvent:Connect(function(data)
     if data.Error then task.delay(math.max(.05,data.Remaining or .1),finish);return end
     if not busy then busy=true;started=os.clock() end
