@@ -8,12 +8,6 @@
     "Workspace": {
       "$className": "Workspace",
       "$ignoreUnknownInstances": false,
-      "LiveSyncTest": {
-        "$className": "Folder",
-        "OakTree": {
-          "$path": "src/OakTree.model.json"
-        }
-      },
       "Baseplate": {
         "$className": "Part",
         "$ignoreUnknownInstances": false,
@@ -50,7 +44,21 @@
       },
       "SpawnLocation": {
         "$className": "SpawnLocation",
-        "$ignoreUnknownInstances": true
+        "$ignoreUnknownInstances": true,
+        "$properties": {
+          "Size": [
+            5,
+            1,
+            5
+          ],
+          "Position": [
+            0,
+            0.5,
+            0
+          ],
+          "Anchored": true,
+          "Neutral": true
+        }
       }
     }
   }

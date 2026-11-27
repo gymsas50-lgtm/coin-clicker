@@ -1,6 +1,5 @@
 {
   "files": [
-    "default.project.json",
-    "src/OakTree.model.json"
+    "default.project.json"
   ]
 }
