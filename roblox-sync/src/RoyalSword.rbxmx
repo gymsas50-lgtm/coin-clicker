@@ -23,7 +23,7 @@ tool.Equipped:Connect(function()
             if right.Magnitude &lt; 0.01 then return end
             right = right.Unit
             local up = Vector3.yAxis
-            local upright = CFrame.fromMatrix(at, right, up, right:Cross(up))
+            local upright = CFrame.fromMatrix(at, right, up, right:Cross(up)) * CFrame.Angles(0, math.rad(90), 0)
             grip.C1 = CFrame.identity
             grip.C0 = hand.CFrame:ToObjectSpace(upright)
         end
