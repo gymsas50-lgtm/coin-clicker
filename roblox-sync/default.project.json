@@ -41,42 +41,19 @@
       "Terrain": {
         "$className": "Terrain",
         "$ignoreUnknownInstances": true
-      },
-      "SpawnLocation": {
-        "$className": "SpawnLocation",
-        "$ignoreUnknownInstances": true,
-        "$properties": {
-          "Size": [
-            5,
-            1,
-            5
-          ],
-          "Position": [
-            0,
-            0.5,
-            0
-          ],
-          "Anchored": true,
-          "Neutral": true
-        }
-      }
-    },
-    "ServerScriptService": {
-      "$className": "ServerScriptService",
-      "$ignoreUnknownInstances": true,
-      "GardenCharacterSetup": {
-        "$className": "Folder",
-        "R6Setup": {
-          "$path": "src/server/R6Setup.server.luau"
-        }
       }
     },
     "StarterPack": {
       "$className": "StarterPack",
-      "$ignoreUnknownInstances": true,
-      "RoyalSword": {
-        "$path": "src/RoyalSword.rbxmx"
-      }
+      "$ignoreUnknownInstances": false
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "$ignoreUnknownInstances": false
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "$ignoreUnknownInstances": true
     }
   }
 }

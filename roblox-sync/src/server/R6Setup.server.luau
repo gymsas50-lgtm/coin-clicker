@@ -1,3 +1,0 @@
--- No custom StarterCharacter. Players keep their own Roblox appearance.
--- Enforce R6 using Studio Avatar/Game Settings > Avatar Type > R6.
--- This experience setting is not writable by ordinary runtime scripts.

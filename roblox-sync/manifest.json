@@ -1,7 +1,5 @@
 {
   "files": [
-    "default.project.json",
-    "src/server/R6Setup.server.luau",
-    "src/RoyalSword.rbxmx"
+    "default.project.json"
   ]
 }
