@@ -308,11 +308,9 @@ function Visuals.Build(character, id, color)
             instance.LightEmission=.55
             instance.LightInfluence=0
             instance.Brightness=3
-            local keys={}
-            for _,key in instance.Size.Keypoints do
-                table.insert(keys,NumberSequenceKeypoint.new(key.Time,key.Value*3,key.Envelope*3))
-            end
-            instance.Size=NumberSequence.new(keys)
+            instance.Rate*=3
+            local warm=instance:GetAttribute("WarmCount")
+            if type(warm)=="number" then instance:SetAttribute("WarmCount",warm*3) end
         end
     end
     return model
