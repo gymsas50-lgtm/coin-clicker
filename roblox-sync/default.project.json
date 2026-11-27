@@ -59,6 +59,110 @@
             0
           ]
         }
+      },
+      "Walls": {
+        "$className": "Folder",
+        "$ignoreUnknownInstances": false,
+        "North": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "CanCollide": true,
+            "Size": [
+              104,
+              15,
+              2
+            ],
+            "Position": [
+              0,
+              7.5,
+              -51
+            ],
+            "Material": "Plastic",
+            "Color": [
+              0.45,
+              0.45,
+              0.48
+            ],
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "South": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "CanCollide": true,
+            "Size": [
+              104,
+              15,
+              2
+            ],
+            "Position": [
+              0,
+              7.5,
+              51
+            ],
+            "Material": "Plastic",
+            "Color": [
+              0.45,
+              0.45,
+              0.48
+            ],
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "West": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "CanCollide": true,
+            "Size": [
+              2,
+              15,
+              100
+            ],
+            "Position": [
+              -51,
+              7.5,
+              0
+            ],
+            "Material": "Plastic",
+            "Color": [
+              0.45,
+              0.45,
+              0.48
+            ],
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        },
+        "East": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "CanCollide": true,
+            "Size": [
+              2,
+              15,
+              100
+            ],
+            "Position": [
+              51,
+              7.5,
+              0
+            ],
+            "Material": "Plastic",
+            "Color": [
+              0.45,
+              0.45,
+              0.48
+            ],
+            "TopSurface": "Studs",
+            "BottomSurface": "Smooth"
+          }
+        }
       }
     },
     "StarterPack": {
