@@ -145,124 +145,52 @@ function Visuals.Build(character, id, color)
         local crown=ring(.9,2.8,color,.4,nil,.06,.18)
         for i=1,6 do local a=i*math.pi/3;shard(crown,CFrame.new(math.cos(a)*.9,.35,math.sin(a)*.9),.7,.11,white,.2) end
     end
-    -- Particle-only silhouettes. Invisible non-collidable helpers position emitters.
+    -- Fixed budget: at most24 shape emitters and5 body emitters on R6.
+    -- No stacked multipliers or cloned texture layers.
     local levels={Common=1,InDev=2,Uncommon=3,Rare=4,SuperRare=5,Epic=6,Lucky=7,Legendary=8,Ice=9}
     local level=levels[id] or 1
-    local particles=Instance.new("ParticleEmitter");particles.Name="DriftingMotes"
-    particles.Texture="rbxasset://textures/particles/sparkles_main.dds"
-    particles.Color=ColorSequence.new(color,color:Lerp(white,.6))
-    particles.LightEmission=.7;particles.LightInfluence=.15
-    particles.Rate=3+level*2;particles.Lifetime=NumberRange.new(1.2,2.1)
-    particles.Speed=NumberRange.new(.4,1.1+level*.09)
-    particles.SpreadAngle=Vector2.new(35,35);particles.EmissionDirection=Enum.NormalId.Top
-    particles.Shape=Enum.ParticleEmitterShape.Cylinder
-    particles.ShapeStyle=Enum.ParticleEmitterShapeStyle.Volume
-    particles.ShapeInOut=Enum.ParticleEmitterShapeInOut.Outward
-    particles.ShapePartial=1
-    particles.Acceleration=Vector3.new(0,.45,0);particles.Drag=.7
-    particles.Rotation=NumberRange.new(0,360);particles.RotSpeed=NumberRange.new(-45,45)
-    particles.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.2,.10+level*.012),NumberSequenceKeypoint.new(1,0)})
-    particles.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.15,.25),NumberSequenceKeypoint.new(.7,.5),NumberSequenceKeypoint.new(1,1)})
-    -- Use all shape points so rings, wings and crowns are drawn entirely by particles.
     local surfaces={}
     for _,part in model:GetChildren() do
-        if part:IsA("BasePart") and part.Transparency<.95 then table.insert(surfaces,part) end
-    end
-    local count=#surfaces
-    for i=1,count do
-        local part=surfaces[math.floor((i-1)*#surfaces/count)+1]
-        local attachment=Instance.new("Attachment");attachment.Name="SurfaceMotes";attachment.Parent=part
-        local emitter=particles:Clone()
-        emitter.Color=ColorSequence.new(part.Color,part.Color:Lerp(white,.5))
-        emitter.Rate=(100+level*32)*4*12/math.max(1,count)
-        emitter.LockedToPart=true
-        emitter.Lifetime=NumberRange.new(.65,1.15)
-        emitter.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.15,.12+level*.008),NumberSequenceKeypoint.new(.7,.09),NumberSequenceKeypoint.new(1,0)})
-        emitter.Shape=Enum.ParticleEmitterShape.Box
-        emitter.Speed=NumberRange.new(.015,.12)
-        emitter.SpreadAngle=Vector2.new(180,180)
-        emitter.Parent=attachment
-
-    end
-    -- Helpers are invisible: no solid neon meshes/parts remain on screen.
-    for _,part in model:GetChildren() do
         if part:IsA("BasePart") then
+            if part.Transparency<.95 then table.insert(surfaces,part) end
             part.Transparency=1;part.CastShadow=false
         end
     end
-    -- Body motes supplement the orbit/wing shapes with a rising character aura.
-    local bodyPoints={}
+    local function emitter(parent,rate,size,body)
+        local e=Instance.new("ParticleEmitter");e.Name=body and "BodyRadiance" or "AuraShape"
+        e.Texture="rbxasset://textures/particles/sparkles_main.dds"
+        e.Color=ColorSequence.new(color,color:Lerp(white,.2))
+        e.Enabled=true;e.Rate=rate;e.Lifetime=NumberRange.new(1.5,2)
+        e.LightEmission=.1;e.LightInfluence=0
+        e.Speed=body and NumberRange.new(.25,.65) or NumberRange.new(0,.04)
+        e.Acceleration=body and Vector3.new(0,.3,0) or Vector3.zero
+        e.LockedToPart=not body;e.SpreadAngle=Vector2.new(180,180)
+        e.Rotation=NumberRange.new(0,360);e.RotSpeed=NumberRange.new(-8,8)
+        e.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,size*.3),NumberSequenceKeypoint.new(.15,size),NumberSequenceKeypoint.new(.8,size),NumberSequenceKeypoint.new(1,0)})
+        e.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.15,.35),NumberSequenceKeypoint.new(.8,.35),NumberSequenceKeypoint.new(1,1)})
+        e:SetAttribute("WarmCount",math.ceil(rate*1.5))
+        e.Parent=parent
+    end
+    local count=math.min(24,#surfaces)
+    local budget=220+level*35
+    for i=1,count do
+        local part=surfaces[math.floor((i-1)*#surfaces/count)+1]
+        -- Emit throughout each selected helper rather than a single point.
+        emitter(part,budget/count,({.09,.16,.25})[(i-1)%3+1],false)
+    end
+    local limbs={}
     for _,name in {"Torso","UpperTorso","Left Arm","Right Arm","Left Leg","Right Leg","LeftUpperArm","RightUpperArm","LeftUpperLeg","RightUpperLeg"} do
         local limb=character:FindFirstChild(name)
-        if limb and limb:IsA("BasePart") then
-            local holder=Instance.new("Part");holder.Name="BodyParticleAnchor"
-            holder.Size=limb.Size;holder.Transparency=1;holder.CanCollide=false
-            holder.CanTouch=false;holder.CanQuery=false;holder.Massless=true
-            holder.CastShadow=false;holder.CFrame=limb.CFrame;holder.Parent=model
-            local weld=Instance.new("WeldConstraint");weld.Part0=limb;weld.Part1=holder;weld.Parent=holder
-            table.insert(bodyPoints,holder)
-        end
+        if limb and limb:IsA("BasePart") then table.insert(limbs,limb) end
     end
-    for _,holder in bodyPoints do
-        local body=particles:Clone();body.Name="BodyRadiance"
-        local bodyRate=(80+level*24)*12/math.max(1,#bodyPoints)
-        local streams=math.max(1,math.ceil(bodyRate/350))
-        body.Rate=bodyRate/streams
-        body.Shape=Enum.ParticleEmitterShape.Box
-        body.ShapeStyle=Enum.ParticleEmitterShapeStyle.Volume
-        body.Speed=NumberRange.new(.5,1.6)
-        body.Lifetime=NumberRange.new(.8,1.5)
-        body.SpreadAngle=Vector2.new(45,45)
-        body.Acceleration=Vector3.new(0,.8,0)
-        body.LockedToPart=false;body.Parent=holder
-        for i=2,streams do local extra=body:Clone();extra.Parent=holder end
+    for i,limb in limbs do
+        local holder=Instance.new("Part");holder.Name="BodyParticleAnchor"
+        holder.Size=limb.Size;holder.Transparency=1;holder.CanCollide=false
+        holder.CanTouch=false;holder.CanQuery=false;holder.Massless=true;holder.CastShadow=false
+        holder.CFrame=limb.CFrame;holder.Parent=model
+        local weld=Instance.new("WeldConstraint");weld.Part0=limb;weld.Part1=holder;weld.Parent=holder
+        emitter(holder,(60+level*8)/math.max(1,#limbs),i%2==0 and .12 or .2,true)
     end
-    -- Mix textures and scales without changing the total emission budget.
-    local textures={
-        "rbxasset://textures/particles/sparkles_main.dds",
-        "rbxasset://textures/particles/sparkles_main.dds",
-        "rbxasset://textures/particles/sparkles_main.dds",
-    }
-    local sources={}
-    for _,instance in model:GetDescendants() do
-        if instance:IsA("ParticleEmitter") and instance.Name~="SoftMist" then table.insert(sources,instance) end
-    end
-    for index,emitter in sources do
-        local rate=emitter.Rate
-        -- Most particles are small; large wisps are slower and more transparent.
-        for variant=1,3 do
-            local stream=variant==1 and emitter or emitter:Clone()
-            local textureIndex=(index+variant)%3+1
-            stream.Texture="rbxasset://textures/particles/sparkles_main.dds"
-            local scale=variant==1 and .055 or (variant==2 and .12 or .24)
-            scale*=1+level*.025
-            stream.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.18,scale),NumberSequenceKeypoint.new(.65,scale*.75),NumberSequenceKeypoint.new(1,0)})
-            stream.Rate=rate*(variant==1 and .6 or (variant==2 and .3 or .1))
-            stream.Rotation=NumberRange.new(0,360)
-            stream.RotSpeed=NumberRange.new(-12,12)
-            local alpha=textureIndex==1 and .55 or (textureIndex==2 and .50 or .60)
-            stream.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.18,alpha),NumberSequenceKeypoint.new(.7,math.min(.9,alpha+.15)),NumberSequenceKeypoint.new(1,1)})
-            if variant>1 then stream.Parent=emitter.Parent end
-        end
-    end
-    -- Slightly reduce density while preserving all textures, sizes and shapes.
-    for _,instance in model:GetDescendants() do
-        if instance:IsA("ParticleEmitter") then
-            instance.Rate*=.75
-            instance.Lifetime=NumberRange.new(2.4,3.2)
-            local isBody=instance.Name=="BodyRadiance"
-            instance.LockedToPart=not isBody
-            if not isBody and instance.Name~="SoftMist" then
-                instance.Speed=NumberRange.new(0,.035)
-                instance.Acceleration=Vector3.zero
-                instance.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.12,.5),NumberSequenceKeypoint.new(.82,.5),NumberSequenceKeypoint.new(1,1)})
-            end
-            instance.LightEmission=.15
-            instance.RotSpeed=NumberRange.new(-18,18)
-            instance.LightEmission*=.65
-        end
-    end
-    particles:Destroy()
     return model
 end
 return Visuals

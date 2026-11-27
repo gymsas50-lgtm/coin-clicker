@@ -30,3 +30,20 @@ RunService.PreSimulation:Connect(function()
         end
     end
 end)
+
+-- Prime freshly replicated aura emitters locally; regular Rate sustains them.
+local warmed=setmetatable({}, {__mode="k"})
+local function warm(instance)
+    if not instance:IsA("ParticleEmitter") or warmed[instance] then return end
+    if not instance:FindFirstAncestor("AuraVisuals") then return end
+    task.defer(function()
+        if not instance.Parent or warmed[instance] then return end
+        local count=instance:GetAttribute("WarmCount")
+        if type(count)=="number" then
+            warmed[instance]=true
+            instance:Emit(math.clamp(count,1,80))
+        end
+    end)
+end
+workspace.DescendantAdded:Connect(warm)
+for _,instance in workspace:GetDescendants() do warm(instance) end
