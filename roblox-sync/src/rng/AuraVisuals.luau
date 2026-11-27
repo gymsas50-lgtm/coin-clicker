@@ -165,7 +165,8 @@ function Visuals.Build(character, id, color)
         e.Texture="rbxasset://textures/particles/sparkles_main.dds"
         e.Color=ColorSequence.new(tint,tint:Lerp(white,.15))
         e.Enabled=true;e.Rate=rate*2;e.Lifetime=NumberRange.new(1.5,2)
-        e.LightEmission=.1;e.LightInfluence=0
+        e.LightEmission=1;e.LightInfluence=0
+        e.Brightness=2
         e.Speed=body and NumberRange.new(.08,.22) or NumberRange.new(0)
         e.Acceleration=body and Vector3.new(0,.08,0) or Vector3.zero
         e.LockedToPart=true;e.SpreadAngle=Vector2.new(10,10)
@@ -194,7 +195,7 @@ function Visuals.Build(character, id, color)
         e.SpreadAngle=Vector2.new(180,180)
         e.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,.035),NumberSequenceKeypoint.new(.22,radius,.04),NumberSequenceKeypoint.new(.7,radius*.7,.025),NumberSequenceKeypoint.new(1,0)})
         e.Lifetime=NumberRange.new(.85,1.6)
-        e.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.2,.48),NumberSequenceKeypoint.new(.65,.55),NumberSequenceKeypoint.new(1,1)})
+        e.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.2,.24),NumberSequenceKeypoint.new(.65,.38),NumberSequenceKeypoint.new(1,1)})
         e.RotSpeed=NumberRange.new(-15,15)
         e:SetAttribute("WarmCount",math.ceil(e.Rate))
     end
