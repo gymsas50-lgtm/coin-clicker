@@ -304,6 +304,15 @@ function Visuals.Build(character, id, color)
     for _,instance in model:GetDescendants() do
         if instance:IsA("ParticleEmitter") then
             instance.Transparency=NumberSequence.new(0)
+            -- Preserve saturated cores instead of purely additive washed-out stars.
+            instance.LightEmission=.55
+            instance.LightInfluence=0
+            instance.Brightness=3
+            local keys={}
+            for _,key in instance.Size.Keypoints do
+                table.insert(keys,NumberSequenceKeypoint.new(key.Time,key.Value*3,key.Envelope*3))
+            end
+            instance.Size=NumberSequence.new(keys)
         end
     end
     return model

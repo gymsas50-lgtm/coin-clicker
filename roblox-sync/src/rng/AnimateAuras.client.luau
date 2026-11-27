@@ -47,3 +47,15 @@ local function warm(instance)
 end
 workspace.DescendantAdded:Connect(warm)
 for _,instance in workspace:GetDescendants() do warm(instance) end
+
+-- Gentle bloom provides a luminous halo without increasing world-light brightness.
+local Lighting=game:GetService("Lighting")
+local bloom=Lighting:FindFirstChild("AuraStarGlow")
+if not bloom then
+    bloom=Instance.new("BloomEffect")
+    bloom.Name="AuraStarGlow"
+    bloom.Intensity=.28
+    bloom.Size=16
+    bloom.Threshold=1.1
+    bloom.Parent=Lighting
+end
