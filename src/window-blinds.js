@@ -1,0 +1,3 @@
+// Closed horizontal blinds on all four existing windows, steady dim lighting.
+const blindMaterial=new THREE.MeshStandardMaterial({color:'#8c9087',roughness:1}),blindCordMaterial=new THREE.MeshStandardMaterial({color:'#514f45',roughness:1});let blindWindowCount=0;
+for(const side of[-1,1])for(const z of[2.5,-6.5]){const x=side*5.925;buildingBox('Blind top rail',x,2.82,z,.14,.10,3.24,trimMat);for(let i=0;i<17;i++){const slat=buildingBox('Closed blind slat',x,1.145+i*.098,z,.065,.105,3.12,blindMaterial);slat.rotation.z=side*.10;}buildingBox('Blind bottom rail',x,1.105,z,.10,.065,3.17,trimMat);for(const dz of[-.96,.96])buildingBox('Blind cord',x-side*.045,1.94,z+dz,.025,1.64,.022,blindCordMaterial);blindWindowCount++;}building.userData.blindWindows=blindWindowCount;
