@@ -240,7 +240,7 @@ function Visuals.Build(character, id, color)
         for variant=1,3 do
             local stream=variant==1 and emitter or emitter:Clone()
             local textureIndex=(index+variant)%3+1
-            stream.Texture=textures[textureIndex]
+            stream.Texture="rbxasset://textures/particles/smoke_main.dds"
             local scale=variant==1 and .065 or (variant==2 and .20 or .62)
             scale*=1+level*.025
             stream.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.18,scale),NumberSequenceKeypoint.new(.65,scale*.75),NumberSequenceKeypoint.new(1,0)})
@@ -255,9 +255,11 @@ function Visuals.Build(character, id, color)
     -- Slightly reduce density while preserving all textures, sizes and shapes.
     for _,instance in model:GetDescendants() do
         if instance:IsA("ParticleEmitter") then
-            instance.Rate*=.30
-            instance.Lifetime=NumberRange.new(1.4,2.2)
-            instance.RotSpeed=NumberRange.new(-12,12)
+            instance.Rate*=.75
+            instance.Lifetime=NumberRange.new(1.8,2.6)
+            instance.LockedToPart=false
+            instance.LightEmission=.15
+            instance.RotSpeed=NumberRange.new(-4,4)
             instance.LightEmission*=.65
         end
     end

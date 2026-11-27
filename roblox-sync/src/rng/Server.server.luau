@@ -52,6 +52,10 @@ end
 local function init(player)
     if data[player] then return end
     data[player] = {rolls=0,equipped=0,nextAt=0,owned={},sequence=0,pending=nil}
+    -- Temporary visual-testing inventory. Never grant free auras in live servers.
+    if game:GetService("RunService"):IsStudio() then
+        for index in config do data[player].owned[index]=1 end
+    end
     local stats = Instance.new("Folder")
     stats.Name = "leaderstats"
     stats.Parent = player
