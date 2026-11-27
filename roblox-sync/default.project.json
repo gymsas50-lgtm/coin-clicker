@@ -117,20 +117,21 @@
               ]
             },
             "BackgroundColor3": [
-              0.95,
-              0.95,
-              0.95
+              0.0784313725490196,
+              0.0784313725490196,
+              0.0784313725490196
             ],
             "BorderSizePixel": 0,
             "Text": "ROLL",
             "TextColor3": [
-              0.06,
-              0.06,
-              0.06
+              1,
+              1,
+              1
             ],
             "TextSize": 22,
             "Font": "GothamBold",
-            "AutoButtonColor": true
+            "AutoButtonColor": true,
+            "BackgroundTransparency": 0.35
           },
           "Corner": {
             "$className": "UICorner",
@@ -147,12 +148,13 @@
             "$className": "UIStroke",
             "$properties": {
               "Color": [
-                0.0784313725490196,
-                0.0784313725490196,
-                0.0784313725490196
+                0.9411764705882353,
+                0.9411764705882353,
+                0.9411764705882353
               ],
               "Thickness": 2,
-              "ApplyStrokeMode": "Border"
+              "ApplyStrokeMode": "Border",
+              "Transparency": 0.25
             }
           },
           "CooldownController": {

@@ -20,16 +20,18 @@ local function label(parent,name,text,pos,size,fontSize,color)
 end
 local function panel(name,pos,size)
     local f=Instance.new("Frame");f.Name=name;f.Position=pos;f.Size=size;f.BackgroundColor3=Color3.fromRGB(22,22,22)
-    f.BackgroundTransparency=.08;f.BorderSizePixel=0;f.Parent=ui;rounded(f,14)
+    f.BackgroundTransparency=.35;f.BorderSizePixel=0;f.Parent=ui;rounded(f,14)
     local stroke=Instance.new("UIStroke");stroke.Color=Color3.fromRGB(87,87,87);stroke.Transparency=.4;stroke.Parent=f;return f
 end
 local stats=panel("SessionStats",UDim2.new(0,18,.5,0),UDim2.fromOffset(48,48))
 stats.AnchorPoint=Vector2.new(0,.5)
+stats.BackgroundTransparency=1
+for _, child in stats:GetChildren() do if child:IsA("UIStroke") then child.Enabled=false end end
 local counter={Text=""}
 local equippedText={Text="",TextColor3=white}
 local inventoryButton=Instance.new("TextButton");inventoryButton.Name="InventoryButton"
 inventoryButton.Position=UDim2.fromOffset(0,0);inventoryButton.Size=UDim2.fromOffset(48,48)
-inventoryButton.BackgroundColor3=Color3.fromRGB(32,32,32);inventoryButton.BorderSizePixel=0
+inventoryButton.BackgroundColor3=Color3.fromRGB(32,32,32);inventoryButton.BackgroundTransparency=.35;inventoryButton.BorderSizePixel=0
 inventoryButton.Text="";inventoryButton.Parent=stats;rounded(inventoryButton,9)
 -- Draw a small inventory grid with UI primitives: no text or external image.
 for row=0,1 do
@@ -97,7 +99,7 @@ grid:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() list.Can
 local rows={}
 for i,aura in config do
     local slot=Instance.new("Frame");slot.Name="Slot"..i;slot.LayoutOrder=i
-    slot.BackgroundColor3=Color3.fromRGB(36,36,36);slot.BorderSizePixel=0;slot.Parent=list;rounded(slot,10)
+    slot.BackgroundColor3=Color3.fromRGB(36,36,36);slot.BackgroundTransparency=.45;slot.BorderSizePixel=0;slot.Parent=list;rounded(slot,10)
     local border=Instance.new("UIStroke");border.Thickness=1;border.Color=Color3.fromRGB(65,65,65);border.Parent=slot
     local icon=Instance.new("Frame");icon.Name="AuraIcon";icon.AnchorPoint=Vector2.new(.5,.5)
     icon.Position=UDim2.fromScale(.5,.18);icon.Size=UDim2.fromScale(.13,.13);icon.Rotation=45
@@ -109,7 +111,7 @@ for i,aura in config do
     count.TextWrapped=true
     local action=Instance.new("TextButton");action.Name="Equip";action.AnchorPoint=Vector2.new(.5,1)
     action.Size=UDim2.new(1,-16,0,26);action.Position=UDim2.new(.5,0,1,-7)
-    action.BorderSizePixel=0;action.Font=Enum.Font.GothamBold;action.TextSize=10;action.TextColor3=white;action.Parent=slot;rounded(action,6)
+    action.BackgroundTransparency=.35;action.BorderSizePixel=0;action.Font=Enum.Font.GothamBold;action.TextSize=10;action.TextColor3=white;action.Parent=slot;rounded(action,6)
     rows[i]={frame=slot,title=title,count=count,action=action,icon=icon,border=border}
 end
 resizeGrid()
@@ -150,18 +152,22 @@ for i,row in rows do
         inventoryBusy=false
     end)
 end
-button.Size=UDim2.fromOffset(140,52);button.BackgroundColor3=Color3.fromRGB(242,242,242);button.TextColor3=Color3.fromRGB(15,15,15)
+button.Size=UDim2.fromOffset(140,52);button.BackgroundColor3=Color3.fromRGB(20,20,20);button.BackgroundTransparency=.35;button.TextColor3=white
+button.TextTransparency=1
+local rollCaption=label(button,"Caption",button.Text,UDim2.fromScale(0,0),UDim2.fromScale(1,1),22,white)
+rollCaption.Font=Enum.Font.GothamBold;rollCaption.TextStrokeTransparency=.55;rollCaption.ZIndex=button.ZIndex+3
+button:GetPropertyChangedSignal("Text"):Connect(function() rollCaption.Text=button.Text end)
 local rollOutline=button:FindFirstChildOfClass("UIStroke")
 if not rollOutline then rollOutline=Instance.new("UIStroke");rollOutline.Parent=button end
 rollOutline.ApplyStrokeMode=Enum.ApplyStrokeMode.Border;rollOutline.Thickness=2
-rollOutline.Color=Color3.fromRGB(20,20,20);rollOutline.Transparency=0
+rollOutline.Color=Color3.fromRGB(240,240,240);rollOutline.Transparency=.25
 local progressTrack=Instance.new("Frame");progressTrack.Name="RollProgress"
-progressTrack.Position=UDim2.new(0,10,1,-9);progressTrack.Size=UDim2.new(1,-20,0,4)
-progressTrack.BackgroundColor3=Color3.fromRGB(196,196,196);progressTrack.BorderSizePixel=0
-progressTrack.Visible=false;progressTrack.ClipsDescendants=true;progressTrack.Parent=button;rounded(progressTrack,2)
+progressTrack.Position=UDim2.fromScale(0,0);progressTrack.Size=UDim2.fromScale(1,1)
+progressTrack.BackgroundTransparency=1;progressTrack.BorderSizePixel=0;progressTrack.ZIndex=button.ZIndex+1
+progressTrack.Visible=false;progressTrack.ClipsDescendants=true;progressTrack.Parent=button;rounded(progressTrack,12)
 local progressFill=Instance.new("Frame");progressFill.Name="Remaining"
-progressFill.Size=UDim2.fromScale(1,1);progressFill.BackgroundColor3=Color3.fromRGB(25,25,25)
-progressFill.BorderSizePixel=0;progressFill.Parent=progressTrack;rounded(progressFill,2)
+progressFill.Size=UDim2.fromScale(1,1);progressFill.BackgroundColor3=Color3.fromRGB(240,240,240);progressFill.BackgroundTransparency=.72;progressFill.ZIndex=button.ZIndex+1
+progressFill.BorderSizePixel=0;progressFill.Parent=progressTrack;rounded(progressFill,12)
 local progressTween
 local function resetProgress()
     if progressTween then progressTween:Cancel();progressTween=nil end
@@ -174,7 +180,7 @@ local function startProgress()
     progressTween:Play()
 end
 local autoButton=Instance.new("TextButton");autoButton.AnchorPoint=Vector2.new(.5,1);autoButton.Position=UDim2.new(.5,-118,1,-24);autoButton.Size=UDim2.fromOffset(76,52)
-autoButton.BackgroundColor3=Color3.fromRGB(32,32,32);autoButton.BorderSizePixel=0;autoButton.Text="AUTO: OFF";autoButton.TextSize=11;autoButton.Font=Enum.Font.GothamBold;autoButton.TextColor3=white;autoButton.Parent=ui;rounded(autoButton)
+autoButton.BackgroundColor3=Color3.fromRGB(32,32,32);autoButton.BackgroundTransparency=.35;autoButton.BorderSizePixel=0;autoButton.Text="AUTO: OFF";autoButton.TextSize=11;autoButton.Font=Enum.Font.GothamBold;autoButton.TextColor3=white;autoButton.Parent=ui;rounded(autoButton)
 
 local roll
 local function finish()
