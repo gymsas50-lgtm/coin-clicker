@@ -15,6 +15,8 @@ local types={
 }
 local progress={{level=1,xp=0},{level=1,xp=0},{level=1,xp=0}}
 local current,balance,busy=1,0,false
+local currentItem=1
+local items={{kind=1,state=progress[1]}}
 local cooldown={}
 local function power() return types[current].power*2^(progress[current].level-1) end
 local function required() return 25*2^(progress[current].level-1) end
@@ -138,6 +140,7 @@ caseDetector.MouseClick:Connect(function(player)
     local ok,err=pcall(function()
         task.wait(.4)
         owned[chosen]+=1
+        table.insert(items,{kind=chosen,state={level=1,xp=0}})
         caseText.Text="ROLLED: "..types[chosen].name.."\nADDED TO INVENTORY"
         task.wait(1.3)
     end)
@@ -149,22 +152,29 @@ refresh()
 
 local function snapshot()
     local entries={}
-    for i,kind in types do
-        table.insert(entries,{Name=kind.name,Owned=owned[i],Level=progress[i].level,Power=kind.power*2^(progress[i].level-1),Equipped=equipped and current==i})
+    for id,item in items do
+        local kind=types[item.kind];local state=item.state
+        table.insert(entries,{Id=id,Name=kind.name,Level=state.level,XP=state.xp,Required=25*2^(state.level-1),Power=kind.power*2^(state.level-1),Equipped=equipped and currentItem==id})
     end
     return {Balance=balance,Entries=entries,Busy=busy}
 end
-inventory.OnServerInvoke=function(player,action,index)
+inventory.OnServerInvoke=function(player,action,id)
     if action=="Get" then return snapshot() end
-    if busy or type(index)~="number" or index%1~=0 or not types[index] or owned[index]<1 then return snapshot() end
-    if action=="Unequip" and equipped and index==current then
+    if busy or type(id)~="number" or id%1~=0 or not items[id] then return snapshot() end
+    if action=="Unequip" and equipped and id==currentItem then
         equipped=false
         for _,part in tree:GetChildren() do if part:IsA("BasePart") then part:Destroy() end end
         refresh()
-    elseif action=="Equip" and not (equipped and index==current) then
+    elseif action=="Equip" and not (equipped and id==currentItem) then
         busy=true;refresh()
-        local ok,err=pcall(function() rebuild(index) end)
-        if ok then current=index;equipped=true else warn(err) end
+        local item=items[id]
+        local ok,err=pcall(function()
+            if not equipped or current~=item.kind then rebuild(item.kind) end
+        end)
+        if ok then
+            current=item.kind;currentItem=id
+            progress[current]=item.state;equipped=true
+        else warn(err) end
         busy=false;refresh()
     end
     return snapshot()

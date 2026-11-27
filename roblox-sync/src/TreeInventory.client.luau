@@ -1,60 +1,77 @@
 local remote=game:GetService("ReplicatedStorage"):WaitForChild("TreeInventory")
 local ui=script.Parent
-local panel=Instance.new("Frame");panel.Name="Inventory"
-panel.AnchorPoint=Vector2.new(.5,1);panel.Position=UDim2.new(.5,0,1,-18)
-panel.Size=UDim2.new(.9,0,0,164);panel.BackgroundColor3=Color3.fromRGB(27,37,30)
-panel.BackgroundTransparency=.12;panel.BorderSizePixel=0;panel.Parent=ui
-local limit=Instance.new("UISizeConstraint");limit.MaxSize=Vector2.new(540,164);limit.Parent=panel
-local corner=Instance.new("UICorner");corner.CornerRadius=UDim.new(0,12);corner.Parent=panel
-local function label(parent,text,pos,size,font)
-    local l=Instance.new("TextLabel");l.BackgroundTransparency=1;l.Text=text;l.Position=pos;l.Size=size
-    l.Font=Enum.Font.GothamBold;l.TextSize=font;l.TextColor3=Color3.fromRGB(240,248,237);l.Parent=parent;return l
+local function round(p,r) local c=Instance.new("UICorner");c.CornerRadius=UDim.new(0,r or 10);c.Parent=p end
+local function text(parent,value,pos,size,font)
+    local t=Instance.new("TextLabel");t.BackgroundTransparency=1;t.Text=value;t.Position=pos;t.Size=size
+    t.Font=Enum.Font.GothamBold;t.TextSize=font;t.TextColor3=Color3.fromRGB(238,248,236);t.Parent=parent;return t
 end
-local header=label(panel,"TREES",UDim2.fromOffset(12,7),UDim2.new(1,-24,0,22),15)
-local colors={Color3.fromRGB(100,174,84),Color3.fromRGB(203,202,116),Color3.fromRGB(151,210,251)}
-local rows={}
-local inFlight=false
-local apply
-for i=1,3 do
-    local card=Instance.new("Frame");card.Position=UDim2.new((i-1)/3,10,0,37)
-    card.Size=UDim2.new(1/3,-15,0,116);card.BackgroundColor3=Color3.fromRGB(43,56,45)
-    card.BorderSizePixel=0;card.Parent=panel
-    local c=Instance.new("UICorner");c.CornerRadius=UDim.new(0,8);c.Parent=card
-    local name=label(card,"...",UDim2.fromOffset(2,6),UDim2.new(1,-4,0,24),17);name.TextColor3=colors[i]
-    local info=label(card,"",UDim2.fromOffset(2,34),UDim2.new(1,-4,0,30),12)
+local toggle=Instance.new("TextButton");toggle.AnchorPoint=Vector2.new(.5,1)
+toggle.Position=UDim2.new(.5,0,1,-18);toggle.Size=UDim2.fromOffset(174,46)
+toggle.Text="TREE INVENTORY";toggle.TextSize=14;toggle.Font=Enum.Font.GothamBold
+toggle.BackgroundColor3=Color3.fromRGB(46,77,48);toggle.TextColor3=Color3.new(1,1,1);toggle.BorderSizePixel=0;toggle.Parent=ui;round(toggle)
+local panel=Instance.new("Frame");panel.Name="InventoryWindow";panel.AnchorPoint=Vector2.new(.5,.5)
+panel.Position=UDim2.fromScale(.5,.48);panel.Size=UDim2.new(.9,0,.65,0)
+panel.BackgroundColor3=Color3.fromRGB(25,37,28);panel.BorderSizePixel=0;panel.Visible=false;panel.Parent=ui;round(panel,14)
+local limit=Instance.new("UISizeConstraint");limit.MaxSize=Vector2.new(640,520);limit.Parent=panel
+local header=text(panel,"TREE INVENTORY",UDim2.fromOffset(16,12),UDim2.new(1,-80,0,24),18);header.TextXAlignment=Enum.TextXAlignment.Left
+local subtitle=text(panel,"",UDim2.fromOffset(16,40),UDim2.new(1,-32,0,20),12);subtitle.TextXAlignment=Enum.TextXAlignment.Left
+local close=Instance.new("TextButton");close.Text="X";close.Font=Enum.Font.GothamBold;close.TextSize=17
+close.Size=UDim2.fromOffset(34,34);close.Position=UDim2.new(1,-46,0,10);close.BackgroundColor3=Color3.fromRGB(61,79,62)
+close.TextColor3=Color3.new(1,1,1);close.BorderSizePixel=0;close.Parent=panel;round(close,7)
+local list=Instance.new("ScrollingFrame");list.Position=UDim2.fromOffset(12,72);list.Size=UDim2.new(1,-24,1,-84)
+list.BackgroundTransparency=1;list.BorderSizePixel=0;list.ScrollBarThickness=4;list.AutomaticCanvasSize=Enum.AutomaticSize.Y;list.CanvasSize=UDim2.new();list.Parent=panel
+local grid=Instance.new("UIGridLayout");grid.CellPadding=UDim2.fromOffset(10,10);grid.SortOrder=Enum.SortOrder.LayoutOrder;grid.Parent=list
+local function resize()
+    local columns=list.AbsoluteSize.X<420 and 2 or 3
+    local side=math.floor((list.AbsoluteSize.X-8-(columns-1)*10)/columns)
+    grid.CellSize=UDim2.fromOffset(side,side)
+end
+list:GetPropertyChangedSignal("AbsoluteSize"):Connect(resize);resize()
+local rows={};local inFlight=false;local apply
+local function makeRow(id)
+    local card=Instance.new("Frame");card.LayoutOrder=id;card.BackgroundColor3=Color3.fromRGB(43,60,46);card.BorderSizePixel=0;card.Parent=list;round(card,9)
+    local name=text(card,"",UDim2.new(0,5,0,7),UDim2.new(1,-10,.2,0),17)
+    local info=text(card,"",UDim2.new(0,4,.28,0),UDim2.new(1,-8,.18,0),12)
+    local track=Instance.new("Frame");track.Position=UDim2.new(0,10,.54,0);track.Size=UDim2.new(1,-20,0,15);track.BackgroundColor3=Color3.fromRGB(22,35,25);track.BorderSizePixel=0;track.Parent=card;round(track,4)
+    local fill=Instance.new("Frame");fill.Size=UDim2.fromScale(0,1);fill.BackgroundColor3=Color3.fromRGB(112,194,114);fill.BorderSizePixel=0;fill.Parent=track;round(fill,4)
+    local xp=text(track,"",UDim2.fromScale(0,0),UDim2.fromScale(1,1),10);xp.ZIndex=3
     local button=Instance.new("TextButton");button.Position=UDim2.new(0,8,1,-39);button.Size=UDim2.new(1,-16,0,31)
-    button.Font=Enum.Font.GothamBold;button.TextSize=12;button.BorderSizePixel=0;button.Parent=card
-    local b=Instance.new("UICorner");b.CornerRadius=UDim.new(0,6);b.Parent=button
-    rows[i]={name=name,info=info,button=button,owned=false,equipped=false}
+    button.Font=Enum.Font.GothamBold;button.TextSize=12;button.BorderSizePixel=0;button.Parent=card;round(button,6)
+    local row={name=name,info=info,fill=fill,xp=xp,button=button,equipped=false};rows[id]=row
     button.Activated:Connect(function()
-        local row=rows[i]
-        if inFlight or not row.owned then return end
+        if inFlight then return end
         inFlight=true
-        local ok,data=pcall(function() return remote:InvokeServer(row.equipped and "Unequip" or "Equip",i) end)
+        local ok,data=pcall(function() return remote:InvokeServer(row.equipped and "Unequip" or "Equip",id) end)
         if ok then apply(data) end
         inFlight=false
     end)
+    return row
 end
+local palette={Oak=Color3.fromRGB(131,202,101),Birch=Color3.fromRGB(226,224,141),Crystal=Color3.fromRGB(157,218,255)}
 apply=function(data)
     if type(data)~="table" or not data.Entries then return end
-    header.Text="TREES  |  Clicks: "..string.format("%.0f",data.Balance)
-    for i,entry in data.Entries do
-        local row=rows[i];row.owned=entry.Owned>0;row.equipped=entry.Equipped
-        row.name.Text=entry.Name
-        row.info.Text=row.owned and ("x"..entry.Owned.." | Lv. "..entry.Level.."\n+"..string.format("%.0f",entry.Power).." / sec nearby") or "Not owned"
-        row.button.Text=not row.owned and "LOCKED" or (entry.Equipped and "UNEQUIP" or "EQUIP")
-        row.button.BackgroundColor3=not row.owned and Color3.fromRGB(65,68,64) or (entry.Equipped and Color3.fromRGB(102,139,102) or colors[i])
-        row.button.TextColor3=Color3.fromRGB(20,30,22);row.button.Active=row.owned and not data.Busy
+    subtitle.Text=#data.Entries.." trees | Clicks: "..string.format("%.0f",data.Balance)
+    for _,entry in data.Entries do
+        local row=rows[entry.Id] or makeRow(entry.Id)
+        row.equipped=entry.Equipped;row.name.Text=entry.Name.." #"..entry.Id;row.name.TextColor3=palette[entry.Name]
+        row.info.Text="Lv. "..entry.Level.." | +"..string.format("%.0f",entry.Power).." / sec"
+        row.fill.Size=UDim2.fromScale(math.clamp(entry.XP/entry.Required,0,1),1)
+        row.xp.Text="XP "..entry.XP.." / "..string.format("%.0f",entry.Required)
+        row.button.Text=entry.Equipped and "UNEQUIP" or "EQUIP"
+        row.button.BackgroundColor3=entry.Equipped and Color3.fromRGB(91,137,94) or palette[entry.Name]
+        row.button.TextColor3=Color3.fromRGB(18,30,21);row.button.Active=not data.Busy
     end
 end
+toggle.Activated:Connect(function() panel.Visible=not panel.Visible end)
+close.Activated:Connect(function() panel.Visible=false end)
 task.spawn(function()
     while ui.Parent do
-        if not inFlight then
+        if panel.Visible and not inFlight then
             inFlight=true
             local ok,data=pcall(function() return remote:InvokeServer("Get") end)
             if ok then apply(data) end
             inFlight=false
         end
-        task.wait(.6)
+        task.wait(.5)
     end
 end)
