@@ -174,7 +174,7 @@ function Visuals.Build(character, id, color)
         local attachment=Instance.new("Attachment");attachment.Name="SurfaceMotes";attachment.Parent=part
         local emitter=particles:Clone()
         emitter.Color=ColorSequence.new(part.Color,part.Color:Lerp(white,.5))
-        emitter.Rate=(100+level*32)*4/math.max(1,count)
+        emitter.Rate=(100+level*32)*4*12/math.max(1,count)
         emitter.LockedToPart=true
         emitter.Lifetime=NumberRange.new(.65,1.15)
         emitter.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.15,.12+level*.008),NumberSequenceKeypoint.new(.7,.09),NumberSequenceKeypoint.new(1,0)})
@@ -185,7 +185,7 @@ function Visuals.Build(character, id, color)
         if level>=6 and i%3==0 then
             local mist=emitter:Clone();mist.Name="SoftMist"
             mist.Texture="rbxasset://textures/particles/smoke_main.dds"
-            mist.Rate=(level*1.5)/math.max(1,math.floor(count/3));mist.Speed=NumberRange.new(.1,.3)
+            mist.Rate=(level*1.5)*12/math.max(1,math.floor(count/3));mist.Speed=NumberRange.new(.1,.3)
             mist.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,.2),NumberSequenceKeypoint.new(.5,.7),NumberSequenceKeypoint.new(1,1)})
             mist.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.3,.9),NumberSequenceKeypoint.new(1,1)})
             mist.LightEmission=.35;mist.LockedToPart=false;mist.Parent=attachment
@@ -212,7 +212,9 @@ function Visuals.Build(character, id, color)
     end
     for _,holder in bodyPoints do
         local body=particles:Clone();body.Name="BodyRadiance"
-        body.Rate=(80+level*24)/math.max(1,#bodyPoints)
+        local bodyRate=(80+level*24)*12/math.max(1,#bodyPoints)
+        local streams=math.max(1,math.ceil(bodyRate/350))
+        body.Rate=bodyRate/streams
         body.Shape=Enum.ParticleEmitterShape.Box
         body.ShapeStyle=Enum.ParticleEmitterShapeStyle.Volume
         body.Speed=NumberRange.new(.5,1.6)
@@ -220,6 +222,7 @@ function Visuals.Build(character, id, color)
         body.SpreadAngle=Vector2.new(45,45)
         body.Acceleration=Vector3.new(0,.8,0)
         body.LockedToPart=false;body.Parent=holder
+        for i=2,streams do local extra=body:Clone();extra.Parent=holder end
     end
     particles:Destroy()
     return model

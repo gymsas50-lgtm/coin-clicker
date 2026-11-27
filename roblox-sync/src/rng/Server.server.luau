@@ -26,11 +26,12 @@ local function equip(player)
     if state.equipped == 0 then return end
     local aura = config[state.equipped]
     visuals.Build(character,aura.Id,aura.Color)
-    if aura.Weight <= 24 then
-        local light=Instance.new("PointLight")
-        light.Name="AuraLight";light.Color=aura.Color
-        light.Brightness=.35;light.Range=8;light.Parent=root
-    end
+    local rank=1
+    for _,other in config do if other.Weight>aura.Weight then rank+=1 end end
+    local light=Instance.new("PointLight")
+    light.Name="AuraLight";light.Color=aura.Color
+    light.Brightness=1+rank*.25;light.Range=9+rank*1.5
+    light.Shadows=false;light.Parent=root
     local title = Instance.new("BillboardGui")
     title.Name = "AuraTitle"
     title.Size = UDim2.fromOffset(220,55)
