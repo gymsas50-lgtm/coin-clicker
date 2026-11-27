@@ -7,7 +7,7 @@
     "$ignoreUnknownInstances": true,
     "Workspace": {
       "$className": "Workspace",
-      "$ignoreUnknownInstances": false,
+      "$ignoreUnknownInstances": true,
       "Baseplate": {
         "$className": "Part",
         "$ignoreUnknownInstances": false,
@@ -71,14 +71,24 @@
     },
     "StarterPlayer": {
       "$className": "StarterPlayer",
-      "$ignoreUnknownInstances": false,
+      "$ignoreUnknownInstances": true,
       "StarterPlayerScripts": {
         "$className": "StarterPlayerScripts",
-        "$ignoreUnknownInstances": false
+        "$ignoreUnknownInstances": true
       },
       "StarterCharacterScripts": {
         "$className": "StarterCharacterScripts",
-        "$ignoreUnknownInstances": false
+        "$ignoreUnknownInstances": true
+      },
+      "$properties": {
+        "CameraMode": "Classic",
+        "DevComputerCameraMovementMode": "UserChoice",
+        "DevComputerMovementMode": "UserChoice",
+        "DevTouchCameraMovementMode": "UserChoice",
+        "DevTouchMovementMode": "UserChoice",
+        "CharacterWalkSpeed": 16,
+        "CharacterJumpPower": 50,
+        "CharacterUseJumpPower": true
       }
     },
     "StarterGui": {
