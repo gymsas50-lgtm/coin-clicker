@@ -18,6 +18,11 @@ function load(){
   html=raw;version=next;stamp=fs.statSync(file).mtimeMs;
 }
 load();
+// Fast page delivery for already-installed Windows launchers (which check every 8s).
+const https=require('https');let remoteRevision='',fastBusy=false;
+function remoteText(url,maxBytes=6000000){return new Promise((resolve,reject)=>{const request=https.get(url,{headers:{'User-Agent':'SandboxUpdater/4','Cache-Control':'no-cache','Accept':'*/*'}},res=>{if(res.statusCode!==200){res.resume();return reject(new Error('HTTP '+res.statusCode));}let size=0,chunks=[];res.on('data',chunk=>{size+=chunk.length;if(size>maxBytes)res.destroy(new Error('Update too large'));else chunks.push(chunk);});res.on('end',()=>resolve(Buffer.concat(chunks).toString('utf8')));res.on('error',reject);});request.setTimeout(6500,()=>request.destroy(new Error('Update timeout')));request.on('error',reject);});}
+async function fastUpdate(){if(fastBusy)return;fastBusy=true;try{const refs=await remoteText('https://github.com/gymsas50-lgtm/coin-clicker.git/info/refs?service=git-upload-pack',1000000),match=refs.match(/([0-9a-f]{40}) refs\/heads\/main/);if(!match||match[1]===remoteRevision)return;const rev=match[1],page=await remoteText('https://raw.githubusercontent.com/gymsas50-lgtm/coin-clicker/'+rev+'/index.html');if(!page.includes('<meta name="app-id" content="arena-coin-clicker">')||!page.includes('</html>'))return;const hash=crypto.createHash('sha256').update(page).digest('hex');if(hash!==version){const temp=path.join(root,'index.fast.download.html');fs.writeFileSync(temp,page,'utf8');fs.renameSync(temp,path.join(root,'index.html'));load();console.log('Page updated: '+rev.slice(0,7));}remoteRevision=rev;}catch{}finally{fastBusy=false;}}
+const fastTimer=setInterval(fastUpdate,1100);fastTimer.unref();
 const watcher=setInterval(()=>{try{if(fs.statSync(path.join(root,'index.html')).mtimeMs!==stamp)load();}catch(error){console.error('Page update:',error.message);}},500);watcher.unref();
 function json(res,status,data){res.writeHead(status,{'Content-Type':'application/json; charset=utf-8'});res.end(JSON.stringify(data));}
 const server=http.createServer((req,res)=>{

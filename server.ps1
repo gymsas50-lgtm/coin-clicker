@@ -40,7 +40,7 @@ try {
     $nextCheck = [DateTime]::MinValue
     while ($true) {
         if ((Get-Date) -ge $nextCheck) {
-            $nextCheck=(Get-Date).AddSeconds(8)
+            $nextCheck=(Get-Date).AddSeconds(1)
             try {
                 $rev=Get-Revision
                 if ($rev -ne $lastRevision) {
@@ -74,7 +74,7 @@ try {
             Start-Sleep -Seconds 2
             if ($child.HasExited) { throw 'Server stopped. Close the old server; port 3000 must be free.' }
         }
-        Start-Sleep -Seconds 1
+        Start-Sleep -Milliseconds 250
     }
 } catch {
     Write-Host ('SERVER ERROR: '+$_.Exception.Message) -ForegroundColor Red
