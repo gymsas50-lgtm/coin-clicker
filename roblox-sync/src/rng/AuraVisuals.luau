@@ -174,7 +174,7 @@ function Visuals.Build(character, id, color)
         local attachment=Instance.new("Attachment");attachment.Name="SurfaceMotes";attachment.Parent=part
         local emitter=particles:Clone()
         emitter.Color=ColorSequence.new(part.Color,part.Color:Lerp(white,.5))
-        emitter.Rate=(100+level*32)/math.max(1,count)
+        emitter.Rate=(100+level*32)*4/math.max(1,count)
         emitter.LockedToPart=true
         emitter.Lifetime=NumberRange.new(.65,1.15)
         emitter.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.15,.12+level*.008),NumberSequenceKeypoint.new(.7,.09),NumberSequenceKeypoint.new(1,0)})
@@ -196,6 +196,30 @@ function Visuals.Build(character, id, color)
         if part:IsA("BasePart") then
             part.Transparency=1;part.CastShadow=false
         end
+    end
+    -- Body motes supplement the orbit/wing shapes with a rising character aura.
+    local bodyPoints={}
+    for _,name in {"Torso","UpperTorso","Left Arm","Right Arm","Left Leg","Right Leg","LeftUpperArm","RightUpperArm","LeftUpperLeg","RightUpperLeg"} do
+        local limb=character:FindFirstChild(name)
+        if limb and limb:IsA("BasePart") then
+            local holder=Instance.new("Part");holder.Name="BodyParticleAnchor"
+            holder.Size=limb.Size;holder.Transparency=1;holder.CanCollide=false
+            holder.CanTouch=false;holder.CanQuery=false;holder.Massless=true
+            holder.CastShadow=false;holder.CFrame=limb.CFrame;holder.Parent=model
+            local weld=Instance.new("WeldConstraint");weld.Part0=limb;weld.Part1=holder;weld.Parent=holder
+            table.insert(bodyPoints,holder)
+        end
+    end
+    for _,holder in bodyPoints do
+        local body=particles:Clone();body.Name="BodyRadiance"
+        body.Rate=(80+level*24)/math.max(1,#bodyPoints)
+        body.Shape=Enum.ParticleEmitterShape.Box
+        body.ShapeStyle=Enum.ParticleEmitterShapeStyle.Volume
+        body.Speed=NumberRange.new(.5,1.6)
+        body.Lifetime=NumberRange.new(.8,1.5)
+        body.SpreadAngle=Vector2.new(45,45)
+        body.Acceleration=Vector3.new(0,.8,0)
+        body.LockedToPart=false;body.Parent=holder
     end
     particles:Destroy()
     return model
