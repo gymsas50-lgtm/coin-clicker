@@ -43,6 +43,58 @@ function Visuals.Build(character,id,color)
         e:SetAttribute("WarmCount",math.ceil(rate*lifetime*.6))
         e.Parent=parent;return e
     end
+    -- Deliberate symmetric accents: a readable silhouette beneath the motes.
+    local function rod(parent,a,b,width,tint)
+        local p=Instance.new("Part");p.Name="Luminous accent"
+        p.Size=Vector3.new(width,width,(b-a).Magnitude)
+        p.Material=Enum.Material.Neon;p.Color=tint;p.Transparency=.28
+        p.CanCollide=false;p.CanTouch=false;p.CanQuery=false;p.Massless=true;p.CastShadow=false
+        p.CFrame=parent.CFrame*CFrame.lookAt((a+b)*.5,b);p.Parent=model
+        local w=Instance.new("WeldConstraint");w.Part0=parent;w.Part1=p;w.Parent=p
+    end
+    local function arc(parent,radius,startAngle,endAngle,height,tint)
+        local segments=12
+        for j=1,segments do
+            local a=startAngle+(endAngle-startAngle)*(j-1)/segments
+            local b=startAngle+(endAngle-startAngle)*j/segments
+            rod(parent,Vector3.new(math.cos(a)*radius,height,math.sin(a)*radius),Vector3.new(math.cos(b)*radius,height,math.sin(b)*radius),.035,tint)
+        end
+    end
+    local accents=anchor("Sculpted accents",Vector3.new(.1,.1,.1),CFrame.new(0,-1.9,0),style.speed*.35)
+    for i=0,2 do
+        local start=i*math.pi*2/3
+        arc(accents,style.radius+.15,start,start+math.pi*.43,0,color)
+    end
+    if level>=3 then
+        local satellites=anchor("Crystal orbit",Vector3.new(.1,.1,.1),CFrame.new(0,.1,0),-style.speed*.45)
+        local count=level>=7 and 6 or 4
+        for i=1,count do
+            local a=i*math.pi*2/count
+            local center=Vector3.new(math.cos(a)*(style.radius+.25),math.sin(a*2)*.25,math.sin(a)*(style.radius+.25))
+            local h=.20+level*.025
+            local x=Vector3.new(.13,0,0);local y=Vector3.new(0,h,0)
+            rod(satellites,center+y,center+x,.045,pale)
+            rod(satellites,center+x,center-y,.045,color)
+            rod(satellites,center-y,center-x,.045,color)
+            rod(satellites,center-x,center+y,.045,pale)
+        end
+    end
+    if level>=6 then
+        -- A compact fan behind the shoulders, with graduated lengths and clear gaps.
+        local back=anchor("Radiant fan",Vector3.new(.1,.1,.1),CFrame.new(0,.2,1),0)
+        for _,side in {-1,1} do
+            for j=1,4 do
+                local base=Vector3.new(side*(.75+j*.28),-.3+j*.10,.1+j*.10)
+                local tip=base+Vector3.new(side*(.25+j*.10),.65+j*.25,.12)
+                rod(back,base,tip,.045+j*.005,j%2==0 and pale or color)
+            end
+        end
+        local crown=anchor("Crown arcs",Vector3.new(.1,.1,.1),CFrame.new(0,2.55,0),style.speed*.3)
+        for i=0,2 do
+            local a=i*math.pi*2/3
+            arc(crown,.65,a,a+1.4,0,pale)
+        end
+    end
     -- A soft moving volume around the avatar, never a dotted wireframe.
     local core=anchor("Living energy",Vector3.new(3.4,4.2,2.8),CFrame.new(0,-.4,0),0)
     local dust=particles(core,"Fine energy",65+level*9,.075,1.8,true)
