@@ -43,6 +43,9 @@ card.BackgroundTransparency=1
 for _, child in card:GetChildren() do if child:IsA("UIStroke") then child.Enabled=false end end
 local auraName=label(card,"AuraName","",UDim2.fromOffset(10,43),UDim2.new(1,-20,0,38),28)
 local chance=label(card,"Chance","",UDim2.fromOffset(10,86),UDim2.new(1,-20,0,22),16)
+local reel=Instance.new("Frame");reel.Name="RollingReel";reel.Position=UDim2.fromOffset(10,29)
+reel.Size=UDim2.new(1,-20,0,64);reel.BackgroundTransparency=1;reel.ClipsDescendants=true;reel.Visible=false;reel.Parent=card
+local strip=Instance.new("Frame");strip.Name="Names";strip.BackgroundTransparency=1;strip.Size=UDim2.new(1,0,0,1200);strip.Parent=reel
 local note={Text=""}
 auraName.TextStrokeTransparency=.55;chance.TextStrokeTransparency=.65
 local resultToken=0
@@ -94,9 +97,9 @@ local function apply(data)
     equippedText.TextColor3=config[equipped] and config[equipped].Color or white
     for i,row in rows do
         local count=owned[i] or 0
-        row.title.Text=count>0 and config[i].Name or "?"
+        row.title.Text=count>0 and config[i].Name or "??? ??????"
         row.title.TextColor3=count>0 and config[i].Color or muted
-        row.count.Text=count>0 and (config[i].Chance.."  |  Owned: "..count) or ""
+        row.count.Text=count>0 and (config[i].Chance.."  |  Owned: "..count) or "??? ??"
         row.action.Visible=count>0
         row.action.Text=count==0 and "LOCKED" or (equipped==i and "UNEQUIP" or "EQUIP")
         row.action.BackgroundColor3=count==0 and Color3.fromRGB(42,46,57) or (equipped==i and Color3.fromRGB(96,65,55) or Color3.fromRGB(52,79,119))
@@ -148,11 +151,19 @@ result.OnClientEvent:Connect(function(data)
     if data.Error then task.delay(math.max(.05,data.Remaining or .1),finish);return end
     if not busy then busy=true;started=os.clock() end
     apply(data);local token=revealResult();card.Visible=not inv.Visible;note.Text=""
-    for i=1,9 do
-        auraName.Text="???";auraName.TextColor3=white;chance.Text="...";task.wait(.045+i*.003)
-    end
     local aura=config[data.Index]
     if not aura then finish();return end
+    auraName.Visible=false;chance.Text="";reel.Visible=true
+    strip:ClearAllChildren();strip.Position=UDim2.fromOffset(0,8)
+    local stopIndex=19
+    for i=0,stopIndex+1 do
+        local item=i==stopIndex and aura or config[math.random(1,#config)]
+        local text=label(strip,"ReelName",item.Name,UDim2.fromOffset(0,i*48),UDim2.new(1,0,0,48),28,item.Color)
+        text.TextStrokeTransparency=.55
+    end
+    local spin=TweenService:Create(strip,TweenInfo.new(.9,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=UDim2.fromOffset(0,8-stopIndex*48)})
+    spin:Play();spin.Completed:Wait()
+    reel.Visible=false;auraName.Visible=true
     auraName.Text=aura.Name;auraName.TextColor3=aura.Color
     chance.Text=aura.Chance
     note.Text=""
