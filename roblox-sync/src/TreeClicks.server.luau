@@ -8,6 +8,12 @@ local lastClick={}
 local random=Random.new()
 tree:SetAttribute("Clicks",0)
 tree:SetAttribute("Level",level)
+local outline=Instance.new("Highlight")
+outline.Name="TreeOutline";outline.Adornee=tree;outline.FillTransparency=1
+outline.OutlineTransparency=0;outline.OutlineColor=Color3.fromRGB(240,255,220)
+outline.DepthMode=Enum.HighlightDepthMode.Occluded;outline.Parent=tree
+local function upgradeCost() return 25*2^(level-1) end
+
 local function sign(parent,adornee,name,offset,size)
     local gui=Instance.new("BillboardGui");gui.Name=name;gui.Adornee=adornee
     gui.Size=size;gui.StudsOffsetWorldSpace=offset;gui.AlwaysOnTop=true;gui.MaxDistance=70;gui.Parent=parent
@@ -33,10 +39,10 @@ button.TopSurface=Enum.SurfaceType.Studs;button.BottomSurface=Enum.SurfaceType.S
 local _,upgradeText=sign(button,button,"UpgradeLabel",Vector3.new(0,2.1,0),UDim2.fromOffset(230,70))
 upgradeText.TextSize=18
 local function refresh()
-    text.Text="Clicks: "..count
+    text.Text="Clicks: "..count.."  |  Lv. "..level
     tree:SetAttribute("Clicks",count);tree:SetAttribute("Level",level)
-    upgradeText.Text=busy and "BUILDING..." or (level==2 and "MAX LEVEL" or "UPGRADE TREE\n50 CLICKS")
-    button.Color=level==2 and Color3.fromRGB(110,125,115) or (count>=50 and Color3.fromRGB(88,193,99) or Color3.fromRGB(233,180,63))
+    upgradeText.Text=busy and "BUILDING..." or ("UPGRADE TREE\n"..string.format("%.0f",upgradeCost()).." CLICKS")
+    button.Color=count>=upgradeCost() and Color3.fromRGB(88,193,99) or Color3.fromRGB(233,180,63)
 end
 local function nearby(player,position,range)
     local char=player.Character;local root=char and char:FindFirstChild("HumanoidRootPart")
@@ -55,11 +61,13 @@ local function clickable(part)
 end
 for _,part in tree:GetDescendants() do if part:IsA("BasePart") then clickable(part) end end
 local function upgrade(player)
-    if busy or level>=2 or count<50 or not nearby(player,button.Position,24) then return end
-    busy=true;count-=50;refresh()
+    local cost=upgradeCost()
+    if busy or count<cost or not nearby(player,button.Position,24) then return end
+    local nextLevel=level+1
+    busy=true;count-=cost;refresh()
     local ok,err=pcall(function()
         -- Move the counter off geometry before replacing it.
-        counterAnchor.Position=origin+Vector3.new(0,11.8,0)
+        counterAnchor.Position=origin+Vector3.new(0,8.5,0)
         local old={}
         for _,part in tree:GetChildren() do
             if part:IsA("BasePart") then
@@ -72,8 +80,9 @@ local function upgrade(player)
         task.wait(.42)
         for _,part in old do part:Destroy() end
         local blocks={}
+        local scale=.62+math.min(nextLevel-2,4)*.025
         local function block(name,size,position,color)
-            table.insert(blocks,{name=name,size=size,position=origin+position,color=color})
+            table.insert(blocks,{name=name,size=size*scale,position=origin+position*scale,color=color})
         end
         local brown=Color3.fromRGB(108,70,40)
         for y=0,5 do block("Trunk"..y,Vector3.new(1.6,1,1.6),Vector3.new(0,y+.5,0),brown) end
@@ -82,8 +91,8 @@ local function upgrade(player)
         end
         -- Tiered spruce silhouette, made entirely from individual stud blocks.
         for tier=0,3 do
-            local radius=3-tier*.65;local y=3.8+tier*1.6
-            local green=Color3.fromRGB(42+tier*9,108+tier*16,65+tier*6)
+            local radius=nextLevel%2==0 and (3-tier*.65) or ({2.4,3.1,2.7,1.7})[tier+1];local y=3.8+tier*1.6
+            local green=nextLevel%2==0 and Color3.fromRGB(42+tier*9,108+tier*16,65+tier*6) or Color3.fromRGB(80+tier*10,137+tier*14,48+tier*9)
             for x=-1,1 do for z=-1,1 do
                 if not (tier==3 and math.abs(x)+math.abs(z)>1) then
                     local width=radius*2/3
@@ -92,6 +101,13 @@ local function upgrade(player)
             end end
         end
         block("CrownTop",Vector3.new(1.3,1.3,1.3),Vector3.new(0,9.7,0),Color3.fromRGB(102,177,89))
+        if nextLevel>=3 then
+            for i=1,math.min(4+nextLevel,12) do
+                local angle=i*math.pi*2/math.min(4+nextLevel,12)
+                local fruitColor=nextLevel%2==1 and Color3.fromRGB(218,72,47) or Color3.fromRGB(195,150,60)
+                block("Fruit",Vector3.new(.48,.55,.48),Vector3.new(math.cos(angle)*2.5,5.3+(i%2)*1.2,math.sin(angle)*2.5),fruitColor)
+            end
+        end
         local top
         for i,spec in blocks do
             local part=Instance.new("Part");part.Name=spec.name;part.Anchored=true;part.CanCollide=false
@@ -107,10 +123,10 @@ local function upgrade(player)
         task.wait(.7)
         for _,part in tree:GetChildren() do if part:IsA("BasePart") then part.CanCollide=true end end
         if top then counterAnchor.Position=Vector3.new(origin.X,top.Position.Y+top.Size.Y*.5+1.5,origin.Z) end
-        level=2
+        level=nextLevel
     end)
     if not ok then
-        warn("Tree upgrade failed: "..tostring(err));count+=50
+        warn("Tree upgrade failed: "..tostring(err));count+=cost
     end
     busy=false;refresh()
 end
