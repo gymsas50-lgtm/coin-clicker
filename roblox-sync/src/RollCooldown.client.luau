@@ -65,20 +65,25 @@ local function fadeResult(token)
         task.delay(.65,function() if token==resultToken then card.Visible=false end end)
     end)
 end
-local inv=panel("InventoryPanel",UDim2.fromScale(.5,.45),UDim2.new(.92,0,0,325));inv.AnchorPoint=Vector2.new(.5,.5);inv.Visible=false
-local limit=Instance.new("UISizeConstraint");limit.MaxSize=Vector2.new(420,325);limit.Parent=inv
+local inv=panel("InventoryPanel",UDim2.fromScale(.5,.45),UDim2.new(.92,0,.68,0));inv.AnchorPoint=Vector2.new(.5,.5);inv.Visible=false
+local limit=Instance.new("UISizeConstraint");limit.MaxSize=Vector2.new(420,520);limit.Parent=inv
 label(inv,"Title","AURA INVENTORY",UDim2.fromOffset(18,13),UDim2.new(1,-75,0,30),18)
 
 local close=Instance.new("TextButton");close.Size=UDim2.fromOffset(32,32);close.Position=UDim2.new(1,-44,0,12);close.Text="X";close.Font=Enum.Font.GothamBold;close.TextSize=15;close.TextColor3=white;close.BackgroundTransparency=1;close.Parent=inv
+local list=Instance.new("ScrollingFrame")
+list.Name="AuraList";list.Position=UDim2.fromOffset(0,60);list.Size=UDim2.new(1,-6,1,-72)
+list.BackgroundTransparency=1;list.BorderSizePixel=0;list.ScrollBarThickness=4
+list.ScrollBarImageColor3=Color3.fromRGB(104,121,150);list.ScrollingDirection=Enum.ScrollingDirection.Y
+list.CanvasSize=UDim2.fromOffset(0,#config*75+6);list.Parent=inv
 local rows={}
 for i,aura in config do
-    local row=Instance.new("Frame");row.Name=aura.Id;row.Size=UDim2.new(1,-28,0,66);row.Position=UDim2.fromOffset(14,78+(i-1)*75)
-    row.BackgroundColor3=Color3.fromRGB(29,36,52);row.BorderSizePixel=0;row.Parent=inv;rounded(row,9)
-    local title=label(row,"Name",aura.Name,UDim2.fromOffset(12,8),UDim2.new(1,-116,0,24),17,aura.Color);title.TextXAlignment=Enum.TextXAlignment.Left
-    local count=label(row,"Count",aura.Chance.."  |  Owned: 0",UDim2.fromOffset(12,35),UDim2.new(1,-116,0,22),11,muted);count.TextXAlignment=Enum.TextXAlignment.Left
+    local row=Instance.new("Frame");row.Name="Slot"..i;row.Size=UDim2.new(1,-28,0,66);row.Position=UDim2.fromOffset(14,6+(i-1)*75)
+    row.BackgroundColor3=Color3.fromRGB(29,36,52);row.BorderSizePixel=0;row.Parent=list;rounded(row,9)
+    local title=label(row,"Name","?",UDim2.fromOffset(12,8),UDim2.new(1,-116,0,24),17,muted);title.TextXAlignment=Enum.TextXAlignment.Left
+    local count=label(row,"Count","",UDim2.fromOffset(12,35),UDim2.new(1,-116,0,22),11,muted);count.TextXAlignment=Enum.TextXAlignment.Left
     local action=Instance.new("TextButton");action.Name="Equip";action.Size=UDim2.fromOffset(90,34);action.Position=UDim2.new(1,-101,.5,-17)
     action.BorderSizePixel=0;action.Font=Enum.Font.GothamBold;action.TextSize=11;action.TextColor3=white;action.Parent=row;rounded(action,7)
-    rows[i]={count=count,action=action}
+    rows[i]={title=title,count=count,action=action}
 end
 
 local function apply(data)
@@ -89,7 +94,10 @@ local function apply(data)
     equippedText.TextColor3=config[equipped] and config[equipped].Color or white
     for i,row in rows do
         local count=owned[i] or 0
-        row.count.Text=config[i].Chance.."  |  Owned: "..count
+        row.title.Text=count>0 and config[i].Name or "?"
+        row.title.TextColor3=count>0 and config[i].Color or muted
+        row.count.Text=count>0 and (config[i].Chance.."  |  Owned: "..count) or ""
+        row.action.Visible=count>0
         row.action.Text=count==0 and "LOCKED" or (equipped==i and "UNEQUIP" or "EQUIP")
         row.action.BackgroundColor3=count==0 and Color3.fromRGB(42,46,57) or (equipped==i and Color3.fromRGB(96,65,55) or Color3.fromRGB(52,79,119))
         row.action.AutoButtonColor=count>0
@@ -141,12 +149,13 @@ result.OnClientEvent:Connect(function(data)
     if not busy then busy=true;started=os.clock() end
     apply(data);local token=revealResult();card.Visible=not inv.Visible;note.Text=""
     for i=1,9 do
-        local preview=config[math.random(1,#config)];auraName.Text=preview.Name;auraName.TextColor3=preview.Color;chance.Text="...";task.wait(.045+i*.003)
+        auraName.Text="???";auraName.TextColor3=white;chance.Text="...";task.wait(.045+i*.003)
     end
     local aura=config[data.Index]
-    auraName.Text=aura and aura.Name or "NO AURA";auraName.TextColor3=aura and aura.Color or muted
-    chance.Text=aura and aura.Chance or "No drop"
-    note.Text=aura and ("Added to inventory  |  Owned: "..tostring(data.Count)) or "Your inventory is unchanged."
+    if not aura then finish();return end
+    auraName.Text=aura.Name;auraName.TextColor3=aura.Color
+    chance.Text=aura.Chance
+    note.Text=""
     fadeResult(token)
     local remaining=1-(os.clock()-started);if remaining>0 then task.wait(remaining) end
     finish()
