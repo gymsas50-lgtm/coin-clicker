@@ -9,7 +9,36 @@
       "$className": "Workspace",
       "$ignoreUnknownInstances": true,
       "LiveSyncTest": {
-        "$path": "src"
+        "$className": "Folder",
+        "OakTree": {
+          "$path": "src/OakTree.model.json"
+        }
+      },
+      "Baseplate": {
+        "$className": "Part",
+        "$ignoreUnknownInstances": false,
+        "$properties": {
+          "Anchored": true,
+          "Locked": true,
+          "Size": [
+            512,
+            20,
+            512
+          ],
+          "Position": [
+            0,
+            -10,
+            0
+          ],
+          "Material": "Grass",
+          "Color": [
+            0.32,
+            0.46,
+            0.22
+          ],
+          "TopSurface": "Smooth",
+          "BottomSurface": "Smooth"
+        }
       }
     }
   }

@@ -1,7 +1,6 @@
 {
   "files": [
     "default.project.json",
-    "src/TestBlock.model.json",
     "src/OakTree.model.json"
   ]
 }
