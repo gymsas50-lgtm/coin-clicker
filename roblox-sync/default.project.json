@@ -59,8 +59,53 @@
             0
           ]
         }
+      }
+    },
+    "StarterPack": {
+      "$className": "StarterPack",
+      "$ignoreUnknownInstances": false
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "$ignoreUnknownInstances": false,
+      "TreeClicks": {
+        "$path": "src/TreeClicks.server.luau"
+      }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "$ignoreUnknownInstances": true,
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "$ignoreUnknownInstances": true
       },
-      "LittleStudTree": {
+      "StarterCharacterScripts": {
+        "$className": "StarterCharacterScripts",
+        "$ignoreUnknownInstances": true
+      },
+      "$properties": {
+        "CameraMode": "Classic",
+        "DevComputerCameraMovementMode": "UserChoice",
+        "DevComputerMovementMode": "UserChoice",
+        "DevTouchCameraMovementMode": "UserChoice",
+        "DevTouchMovementMode": "UserChoice",
+        "CharacterWalkSpeed": 16,
+        "CharacterJumpPower": 50,
+        "CharacterUseJumpPower": true
+      }
+    },
+    "StarterGui": {
+      "$className": "StarterGui",
+      "$ignoreUnknownInstances": false
+    },
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "$ignoreUnknownInstances": false
+    },
+    "ServerStorage": {
+      "$className": "ServerStorage",
+      "$ignoreUnknownInstances": false,
+      "TreeTemplate": {
         "$className": "Model",
         "$ignoreUnknownInstances": false,
         "Trunk": {
@@ -339,51 +384,6 @@
           }
         }
       }
-    },
-    "StarterPack": {
-      "$className": "StarterPack",
-      "$ignoreUnknownInstances": false
-    },
-    "ServerScriptService": {
-      "$className": "ServerScriptService",
-      "$ignoreUnknownInstances": false,
-      "TreeClicks": {
-        "$path": "src/TreeClicks.server.luau"
-      }
-    },
-    "StarterPlayer": {
-      "$className": "StarterPlayer",
-      "$ignoreUnknownInstances": true,
-      "StarterPlayerScripts": {
-        "$className": "StarterPlayerScripts",
-        "$ignoreUnknownInstances": true
-      },
-      "StarterCharacterScripts": {
-        "$className": "StarterCharacterScripts",
-        "$ignoreUnknownInstances": true
-      },
-      "$properties": {
-        "CameraMode": "Classic",
-        "DevComputerCameraMovementMode": "UserChoice",
-        "DevComputerMovementMode": "UserChoice",
-        "DevTouchCameraMovementMode": "UserChoice",
-        "DevTouchMovementMode": "UserChoice",
-        "CharacterWalkSpeed": 16,
-        "CharacterJumpPower": 50,
-        "CharacterUseJumpPower": true
-      }
-    },
-    "StarterGui": {
-      "$className": "StarterGui",
-      "$ignoreUnknownInstances": false
-    },
-    "ReplicatedStorage": {
-      "$className": "ReplicatedStorage",
-      "$ignoreUnknownInstances": false
-    },
-    "ServerStorage": {
-      "$className": "ServerStorage",
-      "$ignoreUnknownInstances": false
     },
     "ReplicatedFirst": {
       "$className": "ReplicatedFirst",
