@@ -8,7 +8,9 @@ function Visuals.Open(kind,index)
     local chest=workspace:WaitForChild("TreeChest")
     local lid=chest:WaitForChild("LidAssembly")
     local closed=lid:GetPivot()
-    local hinge=CFrame.new(42,2.5,-5.9)
+    local center=CFrame.new(42,0,-4)
+    local turn=center*CFrame.Angles(0,-math.pi/2,0)*center:Inverse()
+    local hinge=turn*CFrame.new(42,2.5,-5.9)
     local relative=hinge:ToObjectSpace(closed)
     local angle=Instance.new("NumberValue")
     local connection=angle.Changed:Connect(function(a)
@@ -38,11 +40,11 @@ function Visuals.Open(kind,index)
             for i=1,4 do local a=i*math.pi/2;block("Crystal",Vector3.new(.17,.6,.17),Vector3.new(math.cos(a)*.5,1.6,math.sin(a)*.5),Color3.fromRGB(205,232,255)) end
         end
         mini.WorldPivot=CFrame.identity
-        mini:PivotTo(CFrame.new(42,1,-4));mini.Parent=workspace
+        mini:PivotTo(turn*CFrame.new(42,1,-4));mini.Parent=workspace
         motion=Instance.new("CFrameValue");motion.Value=mini:GetPivot()
         moveConnection=motion.Changed:Connect(function(cf) if mini.Parent then mini:PivotTo(cf) end end)
-        animate(motion,.6,{Value=CFrame.new(42,5,-2.8)*CFrame.Angles(0,math.pi*.75,0)},Enum.EasingStyle.Quint)
-        animate(motion,.65,{Value=CFrame.new(42,.65,1.6)*CFrame.Angles(0,math.pi,0)},Enum.EasingStyle.Bounce)
+        animate(motion,.6,{Value=turn*CFrame.new(42,5,-2.8)*CFrame.Angles(0,math.pi*.75,0)},Enum.EasingStyle.Quint)
+        animate(motion,.65,{Value=turn*CFrame.new(42,.05,1.6)*CFrame.Angles(0,math.pi,0)},Enum.EasingStyle.Bounce)
         task.wait(.8)
         animate(angle,.4,{Value=0})
     end)

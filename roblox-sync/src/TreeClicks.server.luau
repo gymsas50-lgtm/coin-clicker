@@ -3,7 +3,8 @@ local TweenService=game:GetService("TweenService")
 local tree=workspace:WaitForChild("LittleStudTree")
 local trunk=tree:WaitForChild("Trunk")
 local origin=Vector3.new(trunk.Position.X,0,trunk.Position.Z)
-local caseButton=workspace:WaitForChild("TreeCaseButton")
+local chest=workspace:WaitForChild("TreeChest")
+local caseButton=chest:WaitForChild("Floor")
 local random=Random.new()
 local inventory=game:GetService("ReplicatedStorage"):WaitForChild("TreeInventory")
 local caseVisuals=require(game:GetService("ReplicatedStorage"):WaitForChild("CaseVisuals"))
@@ -41,7 +42,7 @@ local corner=Instance.new("UICorner");corner.CornerRadius=UDim.new(0,6);corner.P
 local fill=Instance.new("Frame");fill.Size=UDim2.fromScale(0,1);fill.BackgroundColor3=Color3.fromRGB(111,223,112);fill.BorderSizePixel=0;fill.Parent=track
 local xpText=label(track,UDim2.fromScale(0,0),UDim2.fromScale(1,1),12);xpText.ZIndex=3
 local caseGui=Instance.new("BillboardGui");caseGui.Name="CaseLabel";caseGui.Adornee=caseButton
-caseGui.Size=UDim2.fromOffset(260,100);caseGui.StudsOffsetWorldSpace=Vector3.new(0,2.5,0);caseGui.AlwaysOnTop=true;caseGui.MaxDistance=80;caseGui.Parent=caseButton
+caseGui.Size=UDim2.fromOffset(270,125);caseGui.StudsOffsetWorldSpace=Vector3.new(0,5,0);caseGui.AlwaysOnTop=true;caseGui.MaxDistance=80;caseGui.Parent=caseButton
 local caseText=label(caseGui,UDim2.fromScale(0,0),UDim2.fromScale(1,1),16)
 local fillTween
 local function refresh()
@@ -51,8 +52,7 @@ local function refresh()
     xpText.Text="XP "..state.xp.." / "..string.format("%.0f",required())
     if fillTween then fillTween:Cancel() end
     fillTween=TweenService:Create(fill,TweenInfo.new(.18),{Size=UDim2.fromScale(math.clamp(state.xp/required(),0,1),1)});fillTween:Play()
-    caseText.Text=busy and "OPENING..." or "OPEN TREE CASE\n50 CLICKS"
-    caseButton.Color=balance>=50 and Color3.fromRGB(85,184,108) or Color3.fromRGB(218,170,64)
+    caseText.Text=busy and "OPENING..." or "TREE CASE - 50 CLICKS\nCHANCES\nOak 70%  |  Birch 25%\nCrystal 5%"
     tree:SetAttribute("Clicks",balance);tree:SetAttribute("Level",state.level)
     tree:SetAttribute("XP",state.xp);tree:SetAttribute("ClickPower",power());tree:SetAttribute("TreeType",types[current].name)
 end
@@ -131,9 +131,15 @@ local function rebuild(index)
     task.wait(.55)
     for _,part in tree:GetChildren() do if part:IsA("BasePart") then part.CanCollide=true end end
 end
-local caseDetector=Instance.new("ClickDetector");caseDetector.MaxActivationDistance=20;caseDetector.Parent=caseButton
+local prompt=Instance.new("ProximityPrompt")
+prompt.Name="OpenTreeCase";prompt.ActionText="Open - 50 clicks";prompt.ObjectText="Tree Chest"
+prompt.KeyboardKeyCode=Enum.KeyCode.E;prompt.HoldDuration=.5
+prompt.MaxActivationDistance=12;prompt.RequiresLineOfSight=false
+prompt.Parent=chest:WaitForChild("Lock")
+local nextOpenAt=0
 local function openCase(player)
-    if busy or balance<50 or not nearby(player,caseButton.Position,24) then return end
+    if busy or os.clock()<nextOpenAt or balance<50 or not nearby(player,caseButton.Position,15) then return end
+    prompt.Enabled=false
     busy=true;balance-=50;refresh()
     local roll=random:NextInteger(1,100)
     local chosen=roll<=70 and 1 or (roll<=95 and 2 or 3)
@@ -150,15 +156,11 @@ local function openCase(player)
         task.wait(1.3)
     end)
     if not ok then balance+=50;warn("Tree case failed: "..tostring(err)) end
+    nextOpenAt=os.clock()+.5
     busy=false;refresh()
+    task.delay(.5,function() prompt.Enabled=true end)
 end
-caseDetector.MouseClick:Connect(openCase)
-for _,part in workspace:WaitForChild("TreeChest"):GetDescendants() do
-    if part:IsA("BasePart") then
-        local detector=Instance.new("ClickDetector");detector.MaxActivationDistance=20
-        detector.Parent=part;detector.MouseClick:Connect(openCase)
-    end
-end
+prompt.Triggered:Connect(openCase)
 Players.PlayerRemoving:Connect(function(player) cooldown[player]=nil end)
 refresh()
 
