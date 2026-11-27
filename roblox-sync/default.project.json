@@ -59,55 +59,10 @@
             0
           ]
         }
-      }
-    },
-    "StarterPack": {
-      "$className": "StarterPack",
-      "$ignoreUnknownInstances": false
-    },
-    "ServerScriptService": {
-      "$className": "ServerScriptService",
-      "$ignoreUnknownInstances": false,
-      "TreeClicks": {
-        "$path": "src/TreeClicks.server.luau"
-      }
-    },
-    "StarterPlayer": {
-      "$className": "StarterPlayer",
-      "$ignoreUnknownInstances": true,
-      "StarterPlayerScripts": {
-        "$className": "StarterPlayerScripts",
-        "$ignoreUnknownInstances": true
       },
-      "StarterCharacterScripts": {
-        "$className": "StarterCharacterScripts",
-        "$ignoreUnknownInstances": true
-      },
-      "$properties": {
-        "CameraMode": "Classic",
-        "DevComputerCameraMovementMode": "UserChoice",
-        "DevComputerMovementMode": "UserChoice",
-        "DevTouchCameraMovementMode": "UserChoice",
-        "DevTouchMovementMode": "UserChoice",
-        "CharacterWalkSpeed": 16,
-        "CharacterJumpPower": 50,
-        "CharacterUseJumpPower": true
-      }
-    },
-    "StarterGui": {
-      "$className": "StarterGui",
-      "$ignoreUnknownInstances": false
-    },
-    "ReplicatedStorage": {
-      "$className": "ReplicatedStorage",
-      "$ignoreUnknownInstances": false
-    },
-    "ServerStorage": {
-      "$className": "ServerStorage",
-      "$ignoreUnknownInstances": false,
-      "TreeTemplate": {
+      "LittleStudTree": {
         "$className": "Model",
-        "$ignoreUnknownInstances": false,
+        "$ignoreUnknownInstances": true,
         "Trunk": {
           "$className": "Part",
           "$properties": {
@@ -382,8 +337,92 @@
             "BottomSurface": "Inlet",
             "CanCollide": true
           }
+        },
+        "TreeOutline": {
+          "$className": "Highlight",
+          "$properties": {
+            "FillTransparency": 1,
+            "OutlineTransparency": 0,
+            "OutlineColor": [
+              0.94,
+              1,
+              0.86
+            ],
+            "DepthMode": "AlwaysOnTop",
+            "Enabled": true
+          }
+        }
+      },
+      "TreeUpgradeButton": {
+        "$className": "Part",
+        "$ignoreUnknownInstances": true,
+        "$properties": {
+          "Anchored": true,
+          "Size": [
+            4,
+            0.6,
+            4
+          ],
+          "Position": [
+            39.5,
+            0.3,
+            -35
+          ],
+          "Material": "Plastic",
+          "Color": [
+            0.914,
+            0.706,
+            0.247
+          ],
+          "TopSurface": "Studs",
+          "BottomSurface": "Smooth"
         }
       }
+    },
+    "StarterPack": {
+      "$className": "StarterPack",
+      "$ignoreUnknownInstances": false
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "$ignoreUnknownInstances": false,
+      "TreeClicks": {
+        "$path": "src/TreeClicks.server.luau"
+      }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "$ignoreUnknownInstances": true,
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "$ignoreUnknownInstances": true
+      },
+      "StarterCharacterScripts": {
+        "$className": "StarterCharacterScripts",
+        "$ignoreUnknownInstances": true
+      },
+      "$properties": {
+        "CameraMode": "Classic",
+        "DevComputerCameraMovementMode": "UserChoice",
+        "DevComputerMovementMode": "UserChoice",
+        "DevTouchCameraMovementMode": "UserChoice",
+        "DevTouchMovementMode": "UserChoice",
+        "CharacterWalkSpeed": 16,
+        "CharacterJumpPower": 50,
+        "CharacterUseJumpPower": true
+      }
+    },
+    "StarterGui": {
+      "$className": "StarterGui",
+      "$ignoreUnknownInstances": false
+    },
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "$ignoreUnknownInstances": false
+    },
+    "ServerStorage": {
+      "$className": "ServerStorage",
+      "$ignoreUnknownInstances": false
     },
     "ReplicatedFirst": {
       "$className": "ReplicatedFirst",

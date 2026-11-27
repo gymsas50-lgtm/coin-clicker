@@ -1,26 +1,15 @@
 local Players=game:GetService("Players")
 local TweenService=game:GetService("TweenService")
--- Rojo owns only the stored template, never the running tree/Highlight.
-local template=game:GetService("ServerStorage"):WaitForChild("TreeTemplate")
-local origin=Vector3.new(35,0,-35)
-for _,name in {"LittleStudTree","TreeCounterAnchor","TreeUpgradeButton"} do
-    local previous=workspace:FindFirstChild(name)
-    if previous then previous:Destroy() end
-end
-local tree=template:Clone();tree.Name="LittleStudTree"
+-- The tree and its upgrade button already exist in the edit-time map.
+local tree=workspace:WaitForChild("LittleStudTree")
 local trunk=tree:WaitForChild("Trunk")
-local shift=origin-Vector3.new(trunk.Position.X,0,trunk.Position.Z)
-for _,part in tree:GetDescendants() do
-    if part:IsA("BasePart") then part.Position+=shift end
-end
--- Complete positioning before exposing the model to clients.
-tree.Parent=workspace
+local origin=Vector3.new(trunk.Position.X,0,trunk.Position.Z)
 local count,level,busy=0,1,false
 local lastClick={}
 local random=Random.new()
 tree:SetAttribute("Clicks",0)
 tree:SetAttribute("Level",level)
-local outline=Instance.new("Highlight")
+local outline=tree:FindFirstChild("TreeOutline") or Instance.new("Highlight")
 outline.Name="TreeOutline";outline.Adornee=tree;outline.FillTransparency=1
 outline.OutlineTransparency=0;outline.OutlineColor=Color3.fromRGB(240,255,220)
 outline.DepthMode=Enum.HighlightDepthMode.AlwaysOnTop;outline.Enabled=true;outline.Parent=tree
@@ -44,10 +33,7 @@ counterAnchor.Parent=workspace
 local billboard,text=sign(counterAnchor,counterAnchor,"TreeClickCounter",Vector3.zero,UDim2.fromOffset(240,60))
 billboard.Enabled=true;billboard.MaxDistance=150
 text.Text="Clicks: 0";text.TextSize=26
-local button=Instance.new("Part");button.Name="TreeUpgradeButton";button.Anchored=true
-button.Size=Vector3.new(4,.6,4);button.Position=origin+Vector3.new(4.5,.3,0)
-button.Material=Enum.Material.Plastic;button.Color=Color3.fromRGB(233,180,63)
-button.TopSurface=Enum.SurfaceType.Studs;button.BottomSurface=Enum.SurfaceType.Smooth;button.Parent=workspace
+local button=workspace:WaitForChild("TreeUpgradeButton")
 local _,upgradeText=sign(button,button,"UpgradeLabel",Vector3.new(0,2.1,0),UDim2.fromOffset(230,70))
 upgradeText.TextSize=18
 local function refresh()
