@@ -166,9 +166,17 @@ refresh()
 
 local function snapshot()
     local entries={}
-    for id,item in items do
-        local kind=types[item.kind];local state=item.state
-        table.insert(entries,{Id=id,Name=kind.name,Level=state.level,XP=state.xp,Required=25*2^(state.level-1),Power=kind.power*2^(state.level-1),Equipped=equipped and currentItem==id})
+    for kindIndex,kind in types do
+        local itemId,item
+        for id,candidate in items do
+            if candidate.kind==kindIndex then itemId=id;item=candidate;break end
+        end
+        if item then
+            local state=item.state
+            table.insert(entries,{Id=kindIndex,ItemId=itemId,Owned=true,Name=kind.name,Level=state.level,XP=state.xp,Required=25*2^(state.level-1),Power=kind.power*2^(state.level-1),Equipped=equipped and currentItem==itemId})
+        else
+            table.insert(entries,{Id=kindIndex,Owned=false})
+        end
     end
     return {Balance=balance,Entries=entries,Busy=busy}
 end

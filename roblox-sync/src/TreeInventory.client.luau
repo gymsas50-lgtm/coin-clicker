@@ -6,9 +6,15 @@ local function text(parent,value,pos,size,font)
     t.Font=Enum.Font.GothamBold;t.TextSize=font;t.TextColor3=Color3.fromRGB(238,248,236);t.Parent=parent;return t
 end
 local toggle=Instance.new("TextButton");toggle.AnchorPoint=Vector2.new(.5,1)
-toggle.Position=UDim2.new(.5,0,1,-18);toggle.Size=UDim2.fromOffset(174,46)
-toggle.Text="TREE INVENTORY";toggle.TextSize=14;toggle.Font=Enum.Font.GothamBold
+toggle.Position=UDim2.new(.5,0,1,-18);toggle.Size=UDim2.fromOffset(52,52)
+toggle.Text="";toggle.BackgroundTransparency=.4;toggle.TextSize=14;toggle.Font=Enum.Font.GothamBold
 toggle.BackgroundColor3=Color3.fromRGB(46,77,48);toggle.TextColor3=Color3.new(1,1,1);toggle.BorderSizePixel=0;toggle.Parent=ui;round(toggle)
+-- A simple four-slot inventory icon, no external image dependency.
+for x=0,1 do for y=0,1 do
+    local square=Instance.new("Frame");square.Size=UDim2.fromOffset(10,10)
+    square.Position=UDim2.fromOffset(14+x*14,14+y*14)
+    square.BackgroundColor3=Color3.fromRGB(239,248,237);square.BorderSizePixel=0;square.Parent=toggle;round(square,2)
+end end
 local panel=Instance.new("Frame");panel.Name="InventoryWindow";panel.AnchorPoint=Vector2.new(.5,.5)
 panel.Position=UDim2.fromScale(.5,.48);panel.Size=UDim2.new(.9,0,.65,0)
 panel.BackgroundColor3=Color3.fromRGB(25,37,28);panel.BorderSizePixel=0;panel.Visible=false;panel.Parent=ui;round(panel,14)
@@ -37,11 +43,11 @@ local function makeRow(id)
     local xp=text(track,"",UDim2.fromScale(0,0),UDim2.fromScale(1,1),10);xp.ZIndex=3
     local button=Instance.new("TextButton");button.Position=UDim2.new(0,8,1,-39);button.Size=UDim2.new(1,-16,0,31)
     button.Font=Enum.Font.GothamBold;button.TextSize=12;button.BorderSizePixel=0;button.Parent=card;round(button,6)
-    local row={name=name,info=info,fill=fill,xp=xp,button=button,equipped=false};rows[id]=row
+    local row={name=name,info=info,track=track,fill=fill,xp=xp,button=button,equipped=false,owned=false,itemId=nil};rows[id]=row
     button.Activated:Connect(function()
-        if inFlight then return end
+        if inFlight or not row.owned or not row.itemId then return end
         inFlight=true
-        local ok,data=pcall(function() return remote:InvokeServer(row.equipped and "Unequip" or "Equip",id) end)
+        local ok,data=pcall(function() return remote:InvokeServer(row.equipped and "Unequip" or "Equip",row.itemId) end)
         if ok then apply(data) end
         inFlight=false
     end)
@@ -50,16 +56,29 @@ end
 local palette={Oak=Color3.fromRGB(131,202,101),Birch=Color3.fromRGB(226,224,141),Crystal=Color3.fromRGB(157,218,255)}
 apply=function(data)
     if type(data)~="table" or not data.Entries then return end
-    subtitle.Text=#data.Entries.." trees | Clicks: "..string.format("%.0f",data.Balance)
+    local found=0
+    for _,entry in data.Entries do if entry.Owned then found+=1 end end
+    subtitle.Text=found.." / "..#data.Entries.." trees | Clicks: "..string.format("%.0f",data.Balance)
     for _,entry in data.Entries do
         local row=rows[entry.Id] or makeRow(entry.Id)
-        row.equipped=entry.Equipped;row.name.Text=entry.Name.." #"..entry.Id;row.name.TextColor3=palette[entry.Name]
-        row.info.Text="Lv. "..entry.Level.." | +"..string.format("%.0f",entry.Power).." / sec"
-        row.fill.Size=UDim2.fromScale(math.clamp(entry.XP/entry.Required,0,1),1)
-        row.xp.Text="XP "..entry.XP.." / "..string.format("%.0f",entry.Required)
-        row.button.Text=entry.Equipped and "UNEQUIP" or "EQUIP"
-        row.button.BackgroundColor3=entry.Equipped and Color3.fromRGB(91,137,94) or palette[entry.Name]
-        row.button.TextColor3=Color3.fromRGB(18,30,21);row.button.Active=not data.Busy
+        row.owned=entry.Owned;row.itemId=entry.ItemId;row.equipped=entry.Equipped
+        row.track.Visible=entry.Owned
+        if entry.Owned then
+            row.name.Text=entry.Name;row.name.TextColor3=palette[entry.Name]
+            row.info.Text="Lv. "..entry.Level.." | +"..string.format("%.0f",entry.Power).." / sec"
+            row.fill.Size=UDim2.fromScale(math.clamp(entry.XP/entry.Required,0,1),1)
+            row.xp.Text="XP "..entry.XP.." / "..string.format("%.0f",entry.Required)
+            row.button.Text=entry.Equipped and "UNEQUIP" or "EQUIP"
+            row.button.BackgroundColor3=entry.Equipped and Color3.fromRGB(91,137,94) or palette[entry.Name]
+        else
+            row.name.Text="???";row.name.TextColor3=Color3.fromRGB(155,165,155)
+            row.info.Text="?";row.button.Text="LOCKED"
+            row.button.BackgroundColor3=Color3.fromRGB(70,78,71)
+        end
+        row.button.TextColor3=Color3.fromRGB(18,30,21)
+        row.button.Active=entry.Owned and not data.Busy
+        row.button.AutoButtonColor=entry.Owned
+
     end
 end
 toggle.Activated:Connect(function() panel.Visible=not panel.Visible end)
