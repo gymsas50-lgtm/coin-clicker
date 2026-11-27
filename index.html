@@ -44,7 +44,7 @@ function randomPhotoPosition(avoid=null){const values=new Uint32Array(3);for(let
 
 // Unequal rooms: lounge 7.4x9, dining/kitchen 4.6x9, bedroom 5x9, study 7x9.
 function crossPartition(x,z0,z1,door,mat){const gap=1.1;for(const [a,b]of[[z0,door-gap],[door+gap,z1]])if(b>a)buildingBox('Internal partition',x,1.7,(a+b)/2,.20,3.4,b-a,mat,true);buildingBox('Internal doorway header',x,2.975,door,.20,.85,2.2,mat);for(const z of[door-gap,door+gap])buildingBox('Internal door jamb',x,1.275,z,.30,2.55,.08,trimMat);buildingBox('Internal door lintel',x,2.55,door,.30,.08,2.28,trimMat);}
-crossPartition(1,-19,-11.2,-14.4,wallB);crossPartition(1.4,-2,7,.15,wallA);crossPartition(-1,-11,-2,-6.4,wallB);
+buildingBox('Solid wall between dead-end rooms',1,1.7,-15.1,.20,3.4,7.8,wallB,true);crossPartition(1.4,-2,7,.15,wallA);crossPartition(-1,-11,-2,-6.4,wallB);
 const roomLayouts=[{name:'Living room',minX:-6,maxX:1.4,minZ:-2,maxZ:7},{name:'Kitchen and dining',minX:1.4,maxX:6,minZ:-2,maxZ:7},{name:'Bedroom',minX:-6,maxX:-1,minZ:-11,maxZ:-2},{name:'Study',minX:-1,maxX:6,minZ:-11,maxZ:-2}];
 roomLayouts.push({name:'Guest bedroom',minX:-6,maxX:1,minZ:-19,maxZ:-11.2},{name:'Reading room',minX:1,maxX:6,minZ:-19,maxZ:-11.2});building.userData.rooms=roomLayouts;
 for(const x of[-2.5,3.5]){const lamp=new THREE.PointLight('#fff0d4',14,12,2);lamp.position.set(x,2.95,-15);building.add(lamp);buildingBox('Extension ceiling lamp',x,3.32,-15,.9,.10,.55,frameMat);}
