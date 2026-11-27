@@ -27,31 +27,6 @@
       }
     },
     {
-      "Name": "Central path",
-      "ClassName": "Part",
-      "Properties": {
-        "Anchored": true,
-        "Size": [
-          86,
-          0.28,
-          6
-        ],
-        "Position": [
-          61,
-          0.24,
-          0
-        ],
-        "Color": [
-          0.7568627450980392,
-          0.6666666666666666,
-          0.4627450980392157
-        ],
-        "Material": "Plastic",
-        "TopSurface": "Studs",
-        "BottomSurface": "Smooth"
-      }
-    },
-    {
       "Name": "Fence post",
       "ClassName": "Part",
       "Properties": {
