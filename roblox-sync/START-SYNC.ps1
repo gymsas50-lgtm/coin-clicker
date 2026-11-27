@@ -38,7 +38,9 @@ function Sync-Project {
         if ((Test-Path $item.Dest) -and [IO.File]::ReadAllText($item.Dest) -eq $item.Content) {
             Remove-Item $item.Temp -Force
         } elseif (Test-Path $item.Dest) {
-            [IO.File]::Replace($item.Temp, $item.Dest, $null)
+            $backup = $item.Dest + '.sync-backup'
+            [IO.File]::Replace([string]$item.Temp, [string]$item.Dest, [string]$backup)
+            Remove-Item -LiteralPath $backup -Force -ErrorAction SilentlyContinue
         } else { [IO.File]::Move($item.Temp, $item.Dest) }
     }
     $script:lastRevision = $revision
