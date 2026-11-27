@@ -63,6 +63,13 @@
       "Garden": {
         "$path": "src/Garden.model.json"
       }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "$ignoreUnknownInstances": true,
+      "GardenCharacterSetup": {
+        "$path": "src/server"
+      }
     }
   }
 }

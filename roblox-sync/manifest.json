@@ -1,6 +1,7 @@
 {
   "files": [
     "default.project.json",
-    "src/Garden.model.json"
+    "src/Garden.model.json",
+    "src/server/R6Setup.server.luau"
   ]
 }
