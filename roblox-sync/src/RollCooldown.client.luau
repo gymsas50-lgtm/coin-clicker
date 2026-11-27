@@ -152,7 +152,7 @@ local function finish()
 end
 roll=function()
     if busy then return end
-    inv.Visible=false;busy=true;started=os.clock();button.Active=false;button.AutoButtonColor=false;button.Text="...";cooldown.Visible=true;cooldown.Text="1"
+    busy=true;started=os.clock();button.Active=false;button.AutoButtonColor=false;button.Text="...";cooldown.Visible=true;cooldown.Text="1"
     request:FireServer()
     local token=started
     task.delay(10,function() if busy and started==token then auto=false;autoButton.Text="AUTO: OFF";note.Text="Server unavailable. Try again.";finish() end end)
@@ -165,7 +165,7 @@ end)
 inventoryButton.Activated:Connect(function()
     inv.Visible=not inv.Visible
     if inv.Visible then
-        auto=false;autoButton.Text="AUTO: OFF";card.Visible=false
+        card.Visible=false
         task.spawn(function() local ok,data=pcall(function() return inventoryRemote:InvokeServer("Get") end);if ok then apply(data) end end)
     end
 end)
