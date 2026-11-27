@@ -64,7 +64,7 @@ local function equip(player)
 end
 local function init(player)
     if data[player] then return end
-    data[player] = {rolls=0,equipped=0,nextAt=0,owned={}}
+    data[player] = {rolls=0,equipped=0,nextAt=0,owned={},sequence=0,pending=nil}
     local stats = Instance.new("Folder")
     stats.Name = "leaderstats"
     stats.Parent = player
@@ -88,7 +88,18 @@ end
 inventory.OnServerInvoke = function(player, action, index)
     local state = data[player]
     if not state then return nil end
-    if action == "Equip" then
+    if action == "Complete" then
+        local pending = state.pending
+        if not pending or index ~= pending.token then return snapshot(state) end
+        local waitTime = pending.readyAt-os.clock()
+        if waitTime > 0 then task.wait(waitTime) end
+        if data[player] ~= state or state.pending ~= pending then return snapshot(state) end
+        state.pending = nil
+        state.owned[pending.index] = (state.owned[pending.index] or 0)+1
+        state.rolls += 1
+        local stats = player:FindFirstChild("leaderstats")
+        if stats and stats:FindFirstChild("Rolls") then stats.Rolls.Value=state.rolls end
+    elseif action == "Equip" then
         if type(index) ~= "number" or index ~= math.floor(index) or not config[index] or (state.owned[index] or 0) < 1 then return snapshot(state) end
         state.equipped = index
         equip(player)
@@ -102,22 +113,21 @@ request.OnServerEvent:Connect(function(player)
     local state = data[player]
     if not state then return end
     local now = os.clock()
-    if now < state.nextAt then
-        result:FireClient(player,{Error=true,Remaining=state.nextAt-now})
+    if state.pending and now > state.pending.readyAt+12 then state.pending=nil end
+    if state.pending or now < state.nextAt then
+        result:FireClient(player,{Error=true,Remaining=math.max(.15,state.nextAt-now)})
         return
     end
-    state.nextAt = now+1
+    state.nextAt = now+3
     local value,index = random:NextInteger(1,totalWeight),#config
     for i,aura in config do
         value -= aura.Weight
         if value <= 0 then index=i;break end
     end
-    state.rolls += 1
-    state.owned[index] = (state.owned[index] or 0)+1
-    local stats = player:FindFirstChild("leaderstats")
-    if stats and stats:FindFirstChild("Rolls") then stats.Rolls.Value=state.rolls end
+    state.sequence += 1
+    state.pending = {index=index,token=state.sequence,readyAt=now+3}
     local packet = snapshot(state)
     packet.Index = index
-    packet.Count = state.owned[index] or 0
+    packet.Token = state.sequence
     result:FireClient(player,packet)
 end)

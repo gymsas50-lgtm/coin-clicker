@@ -108,10 +108,15 @@ for i,aura in config do
     local action=Instance.new("TextButton");action.Name="Equip";action.AnchorPoint=Vector2.new(.5,1)
     action.Size=UDim2.new(1,-16,0,26);action.Position=UDim2.new(.5,0,1,-7)
     action.BorderSizePixel=0;action.Font=Enum.Font.GothamBold;action.TextSize=10;action.TextColor3=white;action.Parent=slot;rounded(action,6)
-    rows[i]={title=title,count=count,action=action,icon=icon,border=border}
+    rows[i]={frame=slot,title=title,count=count,action=action,icon=icon,border=border}
 end
 resizeGrid()
 
+local rarityOrder={}
+for i=1,#config do table.insert(rarityOrder,i) end
+table.sort(rarityOrder,function(a,b) return config[a].Weight<config[b].Weight end)
+local rarityRank={}
+for rank,index in rarityOrder do rarityRank[index]=rank end
 local function apply(data)
     if not data then return end
     owned=data.Owned or owned;equipped=data.Equipped or 0
@@ -120,6 +125,7 @@ local function apply(data)
     equippedText.TextColor3=white
     for i,row in rows do
         local count=owned[i] or 0
+        row.frame.LayoutOrder=(count>0 and 0 or 100)+rarityRank[i]
         row.title.Text=count>0 and config[i].Name or "??? ??????"
         row.title.TextColor3=count>0 and white or muted
         row.count.Text=count>0 and (config[i].Chance.."  |  x"..count) or "??? ??"
@@ -153,7 +159,7 @@ local function finish()
 end
 roll=function()
     if busy then return end
-    busy=true;started=os.clock();button.Active=false;button.AutoButtonColor=false;button.Text="...";cooldown.Visible=true;cooldown.Text="1"
+    busy=true;started=os.clock();button.Active=false;button.AutoButtonColor=false;button.Text="...";cooldown.Visible=false
     request:FireServer()
     local token=started
     task.delay(10,function() if busy and started==token then auto=false;autoButton.Text="AUTO: OFF";note.Text="Server unavailable. Try again.";finish() end end)
@@ -171,9 +177,6 @@ inventoryButton.Activated:Connect(function()
     end
 end)
 close.Activated:Connect(function() inv.Visible=false end)
-RunService.RenderStepped:Connect(function()
-    if busy then local remaining=math.max(0,1-(os.clock()-started));cooldown.Text=remaining>.95 and "1" or string.format("%.1f",math.ceil(remaining*10)/10) end
-end)
 result.OnClientEvent:Connect(function(data)
     if data.Error then task.delay(math.max(.05,data.Remaining or .1),finish);return end
     if not busy then busy=true;started=os.clock() end
@@ -195,7 +198,8 @@ result.OnClientEvent:Connect(function(data)
     chance.Text=aura.Chance
     note.Text=""
     fadeResult(token)
-    local remaining=1-(os.clock()-started);if remaining>0 then task.wait(remaining) end
+    local ok,updated=pcall(function() return inventoryRemote:InvokeServer("Complete",data.Token) end)
+    if ok then apply(updated) end
     finish()
 end)
 apply({Owned={},Equipped=0,Rolls=0})
