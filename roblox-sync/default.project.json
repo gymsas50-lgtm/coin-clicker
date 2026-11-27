@@ -363,7 +363,7 @@
           }
         }
       },
-      "TreeUpgradeButton": {
+      "TreeCaseButton": {
         "$className": "Part",
         "$ignoreUnknownInstances": true,
         "$properties": {

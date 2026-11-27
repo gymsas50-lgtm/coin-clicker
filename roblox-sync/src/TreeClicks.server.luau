@@ -1,138 +1,132 @@
 local Players=game:GetService("Players")
 local TweenService=game:GetService("TweenService")
--- The tree and its upgrade button already exist in the edit-time map.
 local tree=workspace:WaitForChild("LittleStudTree")
 local trunk=tree:WaitForChild("Trunk")
 local origin=Vector3.new(trunk.Position.X,0,trunk.Position.Z)
-local count,level,busy=0,1,false
-local lastClick={}
+local caseButton=workspace:WaitForChild("TreeCaseButton")
 local random=Random.new()
-tree:SetAttribute("Clicks",0)
-tree:SetAttribute("Level",level)
+local types={
+    {name="Oak",weight=70,power=1,leaf=Color3.fromRGB(69,144,65),wood=Color3.fromRGB(108,70,40)},
+    {name="Birch",weight=25,power=2,leaf=Color3.fromRGB(159,185,65),wood=Color3.fromRGB(226,222,205)},
+    {name="Crystal",weight=5,power=4,leaf=Color3.fromRGB(126,194,235),wood=Color3.fromRGB(106,116,155)},
+}
+local progress={{level=1,xp=0},{level=1,xp=0},{level=1,xp=0}}
+local current,balance,busy=1,0,false
+local cooldown={}
+local function power() return types[current].power*2^(progress[current].level-1) end
+local function required() return 25*2^(progress[current].level-1) end
 local outline=tree:FindFirstChild("TreeOutline") or Instance.new("Highlight")
-outline.Name="TreeOutline";outline.Adornee=tree;outline.FillTransparency=1
-outline.OutlineTransparency=0;outline.OutlineColor=Color3.fromRGB(240,255,220)
-outline.DepthMode=Enum.HighlightDepthMode.AlwaysOnTop;outline.Enabled=true;outline.Parent=tree
-local function upgradeCost() return 25*2^(level-1) end
-local function clickPower() return 2^(level-1) end
-
-local function sign(parent,adornee,name,offset,size)
-    local gui=Instance.new("BillboardGui");gui.Name=name;gui.Adornee=adornee
-    gui.Size=size;gui.StudsOffsetWorldSpace=offset;gui.AlwaysOnTop=true;gui.MaxDistance=70;gui.Parent=parent
-    local label=Instance.new("TextLabel");label.Size=UDim2.fromScale(1,1);label.BackgroundTransparency=1
-    label.Font=Enum.Font.GothamBold;label.TextSize=22;label.TextColor3=Color3.new(1,1,1)
-    label.TextStrokeColor3=Color3.fromRGB(20,35,20);label.TextStrokeTransparency=.1;label.Parent=gui
-    return gui,label
+outline.Name="TreeOutline";outline.Adornee=tree;outline.FillTransparency=1;outline.OutlineTransparency=0
+outline.OutlineColor=Color3.fromRGB(240,255,220);outline.Parent=tree
+local anchor=Instance.new("Part");anchor.Name="TreeCounterAnchor";anchor.Size=Vector3.new(.1,.1,.1)
+anchor.Transparency=1;anchor.Anchored=true;anchor.CanCollide=false;anchor.CanTouch=false;anchor.CanQuery=false;anchor.Parent=workspace
+local function label(parent,pos,size,fontSize)
+    local l=Instance.new("TextLabel");l.BackgroundTransparency=1;l.Position=pos;l.Size=size
+    l.Font=Enum.Font.GothamBold;l.TextSize=fontSize;l.TextColor3=Color3.new(1,1,1)
+    l.TextStrokeTransparency=.15;l.TextStrokeColor3=Color3.fromRGB(20,35,20);l.Parent=parent;return l
 end
-local counterAnchor=Instance.new("Part")
-counterAnchor.Name="TreeCounterAnchor";counterAnchor.Size=Vector3.new(.1,.1,.1)
-counterAnchor.Anchored=true;counterAnchor.Transparency=1;counterAnchor.CanCollide=false
-counterAnchor.CanTouch=false;counterAnchor.CanQuery=false;counterAnchor.CastShadow=false
-local initialTop=tree:WaitForChild("CrownTop")
-counterAnchor.Position=Vector3.new(origin.X,initialTop.Position.Y+initialTop.Size.Y*.5+1.5,origin.Z)
-counterAnchor.Parent=workspace
-local billboard,text=sign(counterAnchor,counterAnchor,"TreeClickCounter",Vector3.zero,UDim2.fromOffset(240,60))
-billboard.Enabled=true;billboard.MaxDistance=150
-text.Text="Clicks: 0";text.TextSize=26
-local button=workspace:WaitForChild("TreeUpgradeButton")
-local _,upgradeText=sign(button,button,"UpgradeLabel",Vector3.new(0,2.1,0),UDim2.fromOffset(230,70))
-upgradeText.TextSize=18
+local gui=Instance.new("BillboardGui");gui.Name="TreeStats";gui.Adornee=anchor
+ gui.Size=UDim2.fromOffset(260,105);gui.AlwaysOnTop=true;gui.MaxDistance=130;gui.Parent=anchor
+local title=label(gui,UDim2.fromOffset(0,0),UDim2.new(1,0,0,28),20)
+local clicks=label(gui,UDim2.fromOffset(0,28),UDim2.new(1,0,0,27),21)
+local track=Instance.new("Frame");track.Position=UDim2.fromOffset(18,62);track.Size=UDim2.new(1,-36,0,20)
+track.BackgroundColor3=Color3.fromRGB(29,41,32);track.BorderSizePixel=0;track.ClipsDescendants=true;track.Parent=gui
+local corner=Instance.new("UICorner");corner.CornerRadius=UDim.new(0,6);corner.Parent=track
+local fill=Instance.new("Frame");fill.Size=UDim2.fromScale(0,1);fill.BackgroundColor3=Color3.fromRGB(111,223,112);fill.BorderSizePixel=0;fill.Parent=track
+local xpText=label(track,UDim2.fromScale(0,0),UDim2.fromScale(1,1),12);xpText.ZIndex=3
+local caseGui=Instance.new("BillboardGui");caseGui.Name="CaseLabel";caseGui.Adornee=caseButton
+caseGui.Size=UDim2.fromOffset(260,100);caseGui.StudsOffsetWorldSpace=Vector3.new(0,2.5,0);caseGui.AlwaysOnTop=true;caseGui.MaxDistance=80;caseGui.Parent=caseButton
+local caseText=label(caseGui,UDim2.fromScale(0,0),UDim2.fromScale(1,1),16)
+local fillTween
 local function refresh()
-    text.Text="Clicks: "..count.."  |  Lv. "..level.."\n+"..string.format("%.0f",clickPower()).." / click"
-    tree:SetAttribute("Clicks",count);tree:SetAttribute("Level",level)
-    tree:SetAttribute("ClickPower",clickPower())
-    upgradeText.Text=busy and "BUILDING..." or ("UPGRADE TREE\n"..string.format("%.0f",upgradeCost()).." CLICKS")
-    button.Color=count>=upgradeCost() and Color3.fromRGB(88,193,99) or Color3.fromRGB(233,180,63)
+    local state=progress[current]
+    title.Text=types[current].name.." | Lv. "..state.level
+    clicks.Text="Clicks: "..string.format("%.0f",balance).." | +"..string.format("%.0f",power())
+    xpText.Text="XP "..state.xp.." / "..string.format("%.0f",required())
+    if fillTween then fillTween:Cancel() end
+    fillTween=TweenService:Create(fill,TweenInfo.new(.18),{Size=UDim2.fromScale(math.clamp(state.xp/required(),0,1),1)});fillTween:Play()
+    caseText.Text=busy and "OPENING..." or "TREE CASE - 50 CLICKS\nOak 70% | Birch 25%\nCrystal 5%"
+    caseButton.Color=balance>=50 and Color3.fromRGB(85,184,108) or Color3.fromRGB(218,170,64)
+    tree:SetAttribute("Clicks",balance);tree:SetAttribute("Level",state.level)
+    tree:SetAttribute("XP",state.xp);tree:SetAttribute("ClickPower",power());tree:SetAttribute("TreeType",types[current].name)
 end
-local function nearby(player,position,range)
+local function nearby(player,target,range)
     local char=player.Character;local root=char and char:FindFirstChild("HumanoidRootPart")
-    local humanoid=char and char:FindFirstChildOfClass("Humanoid")
-    return root and humanoid and humanoid.Health>0 and (root.Position-position).Magnitude<=range
+    local h=char and char:FindFirstChildOfClass("Humanoid")
+    return root and h and h.Health>0 and (root.Position-target).Magnitude<=range
 end
 local function clicked(player)
-    if busy or not nearby(player,origin,28) then return end
-    local now=os.clock()
-    if lastClick[player] and now-lastClick[player]<.08 then return end
-    lastClick[player]=now;count+=clickPower();refresh()
+    if busy or not nearby(player,origin,26) then return end
+    local now=os.clock();if cooldown[player] and now-cooldown[player]<.08 then return end
+    cooldown[player]=now;balance+=power()
+    local state=progress[current];state.xp+=1
+    while state.xp>=required() do state.xp-=required();state.level+=1 end
+    refresh()
 end
 local function clickable(part)
-    local detector=Instance.new("ClickDetector");detector.Name="TreeClick";detector.MaxActivationDistance=24
-    detector.Parent=part;detector.MouseClick:Connect(clicked)
+    local detector=Instance.new("ClickDetector");detector.MaxActivationDistance=24;detector.Parent=part
+    detector.MouseClick:Connect(clicked)
 end
 for _,part in tree:GetDescendants() do if part:IsA("BasePart") then clickable(part) end end
-local function upgrade(player)
-    local cost=upgradeCost()
-    if busy or count<cost or not nearby(player,button.Position,24) then return end
-    local nextLevel=level+1
-    busy=true;count-=cost;refresh()
-    local ok,err=pcall(function()
-        -- Move the counter off geometry before replacing it.
-        counterAnchor.Position=origin+Vector3.new(0,8.5,0)
-        local old={}
-        for _,part in tree:GetChildren() do
-            if part:IsA("BasePart") then
-                table.insert(old,part)
-                local tween=TweenService:Create(part,TweenInfo.new(.4,Enum.EasingStyle.Quad,Enum.EasingDirection.In),{
-                    Position=part.Position+Vector3.new(random:NextNumber(-2,2),-3,random:NextNumber(-2,2)),Transparency=1,Size=part.Size*.3})
-                part.CanCollide=false;tween:Play()
-            end
-        end
-        task.wait(.42)
-        for _,part in old do part:Destroy() end
-        local blocks={}
-        local scale=.62+math.min(nextLevel-2,4)*.025
-        local function block(name,size,position,color)
-            table.insert(blocks,{name=name,size=size*scale,position=origin+position*scale,color=color})
-        end
-        local brown=Color3.fromRGB(108,70,40)
-        for y=0,5 do block("Trunk"..y,Vector3.new(1.6,1,1.6),Vector3.new(0,y+.5,0),brown) end
-        for _,v in {Vector3.new(1,0,0),Vector3.new(-1,0,0),Vector3.new(0,0,1),Vector3.new(0,0,-1)} do
-            block("Root",Vector3.new(1,.5,1),v*1.1+Vector3.new(0,.25,0),brown)
-        end
-        -- Tiered spruce silhouette, made entirely from individual stud blocks.
-        for tier=0,3 do
-            local radius=nextLevel%2==0 and (3-tier*.65) or ({2.4,3.1,2.7,1.7})[tier+1];local y=3.8+tier*1.6
-            local green=nextLevel%2==0 and Color3.fromRGB(42+tier*9,108+tier*16,65+tier*6) or Color3.fromRGB(80+tier*10,137+tier*14,48+tier*9)
-            for x=-1,1 do for z=-1,1 do
-                if not (tier==3 and math.abs(x)+math.abs(z)>1) then
-                    local width=radius*2/3
-                    block("SpruceFoliage",Vector3.new(width,1.1,width),Vector3.new(x*width,y,z*width),green)
-                end
-            end end
-        end
-        block("CrownTop",Vector3.new(1.3,1.3,1.3),Vector3.new(0,9.7,0),Color3.fromRGB(102,177,89))
-        if nextLevel>=3 then
-            for i=1,math.min(4+nextLevel,12) do
-                local angle=i*math.pi*2/math.min(4+nextLevel,12)
-                local fruitColor=nextLevel%2==1 and Color3.fromRGB(218,72,47) or Color3.fromRGB(195,150,60)
-                block("Fruit",Vector3.new(.48,.55,.48),Vector3.new(math.cos(angle)*2.5,5.3+(i%2)*1.2,math.sin(angle)*2.5),fruitColor)
-            end
-        end
-        local top
-        for i,spec in blocks do
-            local part=Instance.new("Part");part.Name=spec.name;part.Anchored=true;part.CanCollide=false
-            part.Material=Enum.Material.Plastic;part.Color=spec.color;part.Size=spec.size*.2;part.Transparency=.35
-            part.TopSurface=Enum.SurfaceType.Studs;part.BottomSurface=Enum.SurfaceType.Inlet
-            part.Position=spec.position+Vector3.new(random:NextNumber(-5,5),random:NextNumber(3,6),random:NextNumber(-5,5))
-            part.Parent=tree
-            local tween=TweenService:Create(part,TweenInfo.new(.65,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=spec.position,Size=spec.size,Transparency=0})
-            tween:Play();clickable(part)
-            if spec.name=="CrownTop" then top=part end
-            task.wait(.025)
-        end
-        task.wait(.7)
-        for _,part in tree:GetChildren() do if part:IsA("BasePart") then part.CanCollide=true end end
-        if top then counterAnchor.Position=Vector3.new(origin.X,top.Position.Y+top.Size.Y*.5+1.5,origin.Z) end
-        outline.Adornee=tree;outline.FillTransparency=1
-        outline.OutlineTransparency=0;outline.Enabled=true
-        level=nextLevel
-    end)
-    if not ok then
-        warn("Tree upgrade failed: "..tostring(err));count+=cost
+local top=tree:WaitForChild("CrownTop")
+anchor.Position=Vector3.new(origin.X,top.Position.Y+top.Size.Y/2+1.8,origin.Z)
+local function rebuild(index)
+    local specs={};local kind=types[index]
+    local function block(name,size,offset,color)
+        table.insert(specs,{name=name,size=size,pos=origin+offset,color=color})
     end
-    busy=false;refresh()
+    block("Trunk",Vector3.new(.95,3.5,.95),Vector3.new(0,1.75,0),kind.wood)
+    if index==1 then
+        for tier=0,2 do
+            local width=3.7-tier*.8
+            block("Leaves",Vector3.new(width,1,width),Vector3.new(-tier*.1,3.5+tier*.9,0),kind.leaf:Lerp(Color3.fromRGB(145,198,88),tier*.18))
+        end
+        block("CrownTop",Vector3.new(1.5,.7,1.5),Vector3.new(-.2,6,0),kind.leaf)
+    elseif index==2 then
+        for i=1,5 do block("BarkMark",Vector3.new(1,.12,.98),Vector3.new(0,.4+i*.5,0),Color3.fromRGB(67,69,64)) end
+        for tier=0,3 do
+            local width=3.5-tier*.55
+            block("Leaves",Vector3.new(width,.85,width*.8),Vector3.new(tier%2*.22,3.8+tier*.7,0),kind.leaf:Lerp(Color3.fromRGB(215,224,111),tier*.15))
+        end
+        block("CrownTop",Vector3.new(1.2,.6,1.2),Vector3.new(0,6.5,0),kind.leaf)
+    else
+        for i=1,6 do
+            local a=i*math.pi/3
+            block("Crystal",Vector3.new(.7,1.5+(i%2)*.6,.7),Vector3.new(math.cos(a)*1.15,4.2,math.sin(a)*1.15),i%2==0 and kind.leaf or Color3.fromRGB(179,153,247))
+        end
+        block("CrystalCore",Vector3.new(1.9,1.9,1.9),Vector3.new(0,4.9,0),kind.leaf)
+        block("CrownTop",Vector3.new(.9,1.4,.9),Vector3.new(0,6.2,0),Color3.fromRGB(200,239,255))
+    end
+    for _,part in tree:GetChildren() do if part:IsA("BasePart") then part:Destroy() end end
+    for _,spec in specs do
+        local part=Instance.new("Part");part.Name=spec.name;part.Anchored=true;part.CanCollide=false
+        part.Size=spec.size*.3;part.Position=spec.pos+Vector3.new(random:NextNumber(-3,3),3,random:NextNumber(-3,3))
+        part.Color=spec.color;part.Material=Enum.Material.Plastic
+        part.TopSurface=Enum.SurfaceType.Studs;part.BottomSurface=Enum.SurfaceType.Inlet;part.Parent=tree
+        TweenService:Create(part,TweenInfo.new(.5,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=spec.pos,Size=spec.size}):Play()
+        clickable(part)
+        if spec.name=="CrownTop" then anchor.Position=spec.pos+Vector3.new(0,spec.size.Y/2+1.8,0) end
+        task.wait(.035)
+    end
+    task.wait(.55)
+    for _,part in tree:GetChildren() do if part:IsA("BasePart") then part.CanCollide=true end end
 end
-local upgradeDetector=Instance.new("ClickDetector");upgradeDetector.MaxActivationDistance=20
-upgradeDetector.Parent=button;upgradeDetector.MouseClick:Connect(upgrade)
-Players.PlayerRemoving:Connect(function(player) lastClick[player]=nil end)
+local caseDetector=Instance.new("ClickDetector");caseDetector.MaxActivationDistance=20;caseDetector.Parent=caseButton
+caseDetector.MouseClick:Connect(function(player)
+    if busy or balance<50 or not nearby(player,caseButton.Position,24) then return end
+    busy=true;balance-=50;refresh()
+    local roll=random:NextInteger(1,100)
+    local chosen=roll<=70 and 1 or (roll<=95 and 2 or 3)
+    local old=current
+    local ok,err=pcall(function()
+        task.wait(.4)
+        if chosen~=current then rebuild(chosen) end
+        current=chosen
+        caseText.Text="ROLLED: "..types[chosen].name..(chosen==old and "\nDUPLICATE - XP KEPT" or "")
+        task.wait(1.3)
+    end)
+    if not ok then balance+=50;warn("Tree case failed: "..tostring(err)) end
+    busy=false;refresh()
+end)
+Players.PlayerRemoving:Connect(function(player) cooldown[player]=nil end)
 refresh()
