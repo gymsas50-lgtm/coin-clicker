@@ -246,8 +246,8 @@ function Visuals.Build(character, id, color)
             stream.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,0),NumberSequenceKeypoint.new(.18,scale),NumberSequenceKeypoint.new(.65,scale*.75),NumberSequenceKeypoint.new(1,0)})
             stream.Rate=rate*(variant==1 and .6 or (variant==2 and .3 or .1))
             stream.Rotation=NumberRange.new(0,360)
-            stream.RotSpeed=NumberRange.new(-70,70)
-            local alpha=textureIndex==1 and .65 or (textureIndex==2 and .5 or .25)
+            stream.RotSpeed=NumberRange.new(-12,12)
+            local alpha=textureIndex==1 and .82 or (textureIndex==2 and .78 or .72)
             stream.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.18,alpha),NumberSequenceKeypoint.new(.7,math.min(.9,alpha+.15)),NumberSequenceKeypoint.new(1,1)})
             if variant>1 then stream.Parent=emitter.Parent end
         end
@@ -255,7 +255,9 @@ function Visuals.Build(character, id, color)
     -- Slightly reduce density while preserving all textures, sizes and shapes.
     for _,instance in model:GetDescendants() do
         if instance:IsA("ParticleEmitter") then
-            instance.Rate*=.75
+            instance.Rate*=.30
+            instance.Lifetime=NumberRange.new(1.4,2.2)
+            instance.RotSpeed=NumberRange.new(-12,12)
             instance.LightEmission*=.65
         end
     end

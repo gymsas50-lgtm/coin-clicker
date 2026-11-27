@@ -18,7 +18,7 @@ RunService.PreSimulation:Connect(function()
             local offset=motor:GetAttribute("BaseOffset")
             local speed=motor:GetAttribute("Speed")
             if typeof(offset)=="CFrame" and type(speed)=="number" then
-                local angle=(now*speed*2)%(math.pi*2)
+                local angle=(now*speed*.8)%(math.pi*2)
                 local axis=motor:GetAttribute("Axis") or "Y"
                 local rotation=axis=="X" and CFrame.Angles(angle,0,0) or (axis=="Z" and CFrame.Angles(0,0,angle) or CFrame.Angles(0,angle,0))
                 local phase=offset.Position.Y*.7+offset.Position.Z
