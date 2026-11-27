@@ -1,5 +1,6 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 local button, ui = script.Parent, script.Parent.Parent
 local cooldown = ui:WaitForChild("Cooldown")
 local folder = ReplicatedStorage:WaitForChild("AuraRNG")
@@ -24,16 +25,40 @@ local function panel(name,pos,size)
 end
 local stats=panel("SessionStats",UDim2.fromOffset(18,18),UDim2.fromOffset(230,135))
 label(stats,"Heading","A U R A  /  R N G",UDim2.fromOffset(10,9),UDim2.fromOffset(210,24),16)
+stats.BackgroundTransparency=1
+for _, child in stats:GetChildren() do if child:IsA("UIStroke") then child.Enabled=false end end
 local counter=label(stats,"RollCount","Rolls  :  0",UDim2.fromOffset(10,37),UDim2.fromOffset(210,22),14,muted)
 local equippedText=label(stats,"Equipped","Equipped  :  None",UDim2.fromOffset(8,61),UDim2.fromOffset(214,22),12)
 local inventoryButton=Instance.new("TextButton");inventoryButton.Name="InventoryButton";inventoryButton.Position=UDim2.fromOffset(14,92)
 inventoryButton.Size=UDim2.fromOffset(202,31);inventoryButton.BackgroundColor3=Color3.fromRGB(44,58,85);inventoryButton.BorderSizePixel=0
 inventoryButton.Font=Enum.Font.GothamBold;inventoryButton.TextSize=12;inventoryButton.TextColor3=white;inventoryButton.Text="INVENTORY";inventoryButton.Parent=stats;rounded(inventoryButton,7)
 local card=panel("RollResult",UDim2.new(.5,0,.35,0),UDim2.fromOffset(320,150));card.AnchorPoint=Vector2.new(.5,.5);card.Visible=false
-label(card,"Caption","ROLL RESULT",UDim2.fromOffset(10,13),UDim2.new(1,-20,0,22),11,muted)
+card.BackgroundTransparency=1
+for _, child in card:GetChildren() do if child:IsA("UIStroke") then child.Enabled=false end end
 local auraName=label(card,"AuraName","",UDim2.fromOffset(10,43),UDim2.new(1,-20,0,38),28)
 local chance=label(card,"Chance","",UDim2.fromOffset(10,86),UDim2.new(1,-20,0,22),16)
-local note=label(card,"Note","",UDim2.fromOffset(10,117),UDim2.new(1,-20,0,20),11,muted)
+local note={Text=""}
+auraName.TextStrokeTransparency=.55;chance.TextStrokeTransparency=.65
+local resultToken=0
+local resultTweens={}
+local function revealResult()
+    resultToken+=1
+    for _, tween in resultTweens do tween:Cancel() end
+    table.clear(resultTweens)
+    auraName.TextTransparency=0;chance.TextTransparency=0
+    auraName.TextStrokeTransparency=.55;chance.TextStrokeTransparency=.65
+    return resultToken
+end
+local function fadeResult(token)
+    task.delay(.65,function()
+        if token~=resultToken then return end
+        for _, text in {auraName,chance} do
+            local tween=TweenService:Create(text,TweenInfo.new(.65,Enum.EasingStyle.Quad,Enum.EasingDirection.Out),{TextTransparency=1,TextStrokeTransparency=1})
+            table.insert(resultTweens,tween);tween:Play()
+        end
+        task.delay(.65,function() if token==resultToken then card.Visible=false end end)
+    end)
+end
 local inv=panel("InventoryPanel",UDim2.fromScale(.5,.45),UDim2.new(.92,0,0,325));inv.AnchorPoint=Vector2.new(.5,.5);inv.Visible=false
 local limit=Instance.new("UISizeConstraint");limit.MaxSize=Vector2.new(420,325);limit.Parent=inv
 label(inv,"Title","AURA INVENTORY",UDim2.fromOffset(18,13),UDim2.new(1,-75,0,30),18)
@@ -108,7 +133,7 @@ end)
 result.OnClientEvent:Connect(function(data)
     if data.Error then task.delay(math.max(.05,data.Remaining or .1),finish);return end
     if not busy then busy=true;started=os.clock() end
-    apply(data);card.Visible=not inv.Visible;note.Text=""
+    apply(data);local token=revealResult();card.Visible=not inv.Visible;note.Text=""
     for i=1,9 do
         local preview=config[math.random(1,#config)];auraName.Text=preview.Name;auraName.TextColor3=preview.Color;chance.Text="...";task.wait(.045+i*.003)
     end
@@ -116,6 +141,7 @@ result.OnClientEvent:Connect(function(data)
     auraName.Text=aura and aura.Name or "NO AURA";auraName.TextColor3=aura and aura.Color or muted
     chance.Text=aura and aura.Chance or "No drop"
     note.Text=aura and ("Added to inventory  |  Owned: "..tostring(data.Count)) or "Your inventory is unchanged."
+    fadeResult(token)
     local remaining=1-(os.clock()-started);if remaining>0 then task.wait(remaining) end
     finish()
 end)
