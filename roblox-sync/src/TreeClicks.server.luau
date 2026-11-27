@@ -73,7 +73,7 @@ local function clickable(part) end -- Passive income replaces manual clicking.
 for _,part in tree:GetDescendants() do if part:IsA("BasePart") then clickable(part) end end
 local top=tree:WaitForChild("CrownTop")
 anchor.Position=Vector3.new(origin.X,top.Position.Y+top.Size.Y/2+1.8,origin.Z)
-local function rebuild(index)
+local function rebuild(index,instant)
     local specs={};local kind=types[index]
     local function block(name,size,offset,color)
         -- Three separate studded pieces per original block, without increasing footprint.
@@ -120,15 +120,15 @@ local function rebuild(index)
     for _,part in tree:GetChildren() do if part:IsA("BasePart") then part:Destroy() end end
     for _,spec in specs do
         local part=Instance.new("Part");part.Name=spec.name;part.Anchored=true;part.CanCollide=false
-        part.Size=spec.size*.3;part.Position=spec.pos+Vector3.new(random:NextNumber(-3,3),3,random:NextNumber(-3,3))
+        part.Size=instant and spec.size or spec.size*.3;part.Position=instant and spec.pos or spec.pos+Vector3.new(random:NextNumber(-3,3),3,random:NextNumber(-3,3))
         part.Color=spec.color;part.Material=Enum.Material.Plastic
         part.TopSurface=Enum.SurfaceType.Studs;part.BottomSurface=Enum.SurfaceType.Inlet;part.Parent=tree
-        TweenService:Create(part,TweenInfo.new(.5,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=spec.pos,Size=spec.size}):Play()
+        if not instant then TweenService:Create(part,TweenInfo.new(.5,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=spec.pos,Size=spec.size}):Play() end
         clickable(part)
         if spec.name=="CrownTop" then anchor.Position=spec.pos+Vector3.new(0,spec.size.Y/2+1.8,0) end
-        task.wait(.006)
+        if not instant then task.wait(.006) end
     end
-    task.wait(.55)
+    if not instant then task.wait(.55) end
     for _,part in tree:GetChildren() do if part:IsA("BasePart") then part.CanCollide=true end end
 end
 local prompt=Instance.new("ProximityPrompt")
@@ -182,22 +182,21 @@ local function snapshot()
 end
 inventory.OnServerInvoke=function(player,action,id)
     if action=="Get" then return snapshot() end
-    if busy or type(id)~="number" or id%1~=0 or not items[id] then return snapshot() end
+    if type(id)~="number" or id%1~=0 or not items[id] then return snapshot() end
     if action=="Unequip" and equipped and id==currentItem then
         equipped=false
         for _,part in tree:GetChildren() do if part:IsA("BasePart") then part:Destroy() end end
         refresh()
     elseif action=="Equip" and not (equipped and id==currentItem) then
-        busy=true;refresh()
         local item=items[id]
         local ok,err=pcall(function()
-            if not equipped or current~=item.kind then rebuild(item.kind) end
+            if not equipped or current~=item.kind then rebuild(item.kind,true) end
         end)
         if ok then
             current=item.kind;currentItem=id
             progress[current]=item.state;equipped=true
         else warn(err) end
-        busy=false;refresh()
+        refresh()
     end
     return snapshot()
 end
@@ -212,5 +211,5 @@ task.spawn(function()
 end)
 -- Apply the detailed starting design on launch as well.
 busy=true
-rebuild(current)
+rebuild(current,true)
 busy=false;refresh()
