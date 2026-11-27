@@ -277,11 +277,65 @@ function Visuals.Build(character, id, color)
                 line(etching,center,center-d*.24-t*.22,.025,blue,.24)
             end
         end
+    elseif id=="Rubic" then
+        local cube=pivot("Chromatic mechanism",CFrame.new(0,.3,1.6)*CFrame.Angles(.3,0,.25),.22)
+        local colors={Color3.fromRGB(255,75,75),Color3.fromRGB(70,160,255),Color3.fromRGB(255,215,65),Color3.fromRGB(85,235,125),Color3.fromRGB(250,250,255),Color3.fromRGB(255,145,50)}
+        for axis=1,3 do for _,side in {-1,1} do
+            local tint=colors[(axis-1)*2+(side==1 and 2 or 1)]
+            for u=-1,1 do for v=-1,1 do
+                local pos=axis==1 and Vector3.new(side*1.2,u*.72,v*.72) or (axis==2 and Vector3.new(u*.72,side*1.2,v*.72) or Vector3.new(u*.72,v*.72,side*1.2))
+                local size=axis==1 and Vector3.new(.10,.62,.62) or (axis==2 and Vector3.new(.62,.10,.62) or Vector3.new(.62,.62,.10))
+                piece(cube,"Chromatic tile",size,CFrame.new(pos),tint,.12)
+            end end
+        end end
+        local small=pivot("Puzzle satellites",CFrame.new(0,-.5,0),-.24)
+        for i=1,4 do local a=i*math.pi/2;piece(small,"Puzzle cube",Vector3.new(.35,.35,.35),CFrame.new(math.cos(a)*2.5,0,math.sin(a)*2.5)*CFrame.Angles(.4,a,.4),colors[i],.12) end
+    elseif id=="UltraLegendary" then
+        local throne=pivot("Imperial solar engine",CFrame.new(0,.8,1.4)*CFrame.Angles(math.pi/2,0,0),.11)
+        for tier=1,3 do polygon(throne,1.6+tier*.45,tier*.08,12,tier==2 and white or gold,.035+tier*.01,tier*math.pi/12) end
+        for i=1,12 do
+            local a=i*math.pi/6;local dir=Vector3.new(math.cos(a),0,math.sin(a))
+            diamond(throne,CFrame.new(dir*3.3)*CFrame.Angles(0,0,math.pi/2),i%2==0 and .65 or .4,gold)
+            line(throne,dir*2.95,dir*3.3,.045,white,.2)
+        end
+        local crown=pivot("Imperial crown",CFrame.new(0,3,0),-.17)
+        polygon(crown,1.1,0,8,gold,.06)
+        for i=1,8 do local a=i*math.pi/4;diamond(crown,CFrame.new(math.cos(a)*1.1,.35,math.sin(a)*1.1),.4,white) end
+        local base=pivot("Imperial double seal",CFrame.new(0,-2.5,0),-.12)
+        polygon(base,3.2,0,8,gold,.06);polygon(base,2.8,.04,8,white,.03,math.pi/8)
+    elseif id=="Romb" then
+        for layer=1,3 do
+            local frame=pivot("Prismatic rhombus",CFrame.new(0,.25,1.1+layer*.08),layer%2==0 and -.13 or .13,"Z")
+            local w=1.2+layer*.45;local h=1.55+layer*.45
+            local points={Vector3.new(0,h,0),Vector3.new(w,0,0),Vector3.new(0,-h,0),Vector3.new(-w,0,0)}
+            for j=1,4 do line(frame,points[j],points[j%4+1],layer==2 and .07 or .035,layer==2 and white or color,.2) end
+        end
+        local gems=pivot("Rhomb constellation",CFrame.new(0,-.3,0),.23)
+        for i=1,6 do local a=i*math.pi/3;diamond(gems,CFrame.new(math.cos(a)*2.6,math.sin(a*2)*.35,math.sin(a)*2.6),i%2==0 and .4 or .25,color) end
+    elseif id=="Sleeping" then
+        local moon=pivot("Dream crescent",CFrame.new(0,1,1.3),0)
+        for band=1,2 do
+            local previous
+            for j=0,32 do
+                local a=-1.9+j/32*3.8
+                local v=Vector3.new(-.25-math.cos(a)*(band==1 and 2.0 or 1.65),math.sin(a)*2.0,0)
+                if previous then line(moon,previous,v,band==1 and .09 or .04,band==1 and color or white,.2) end
+                previous=v
+            end
+        end
+        local dreams=pivot("Dream stars",CFrame.new(0,.5,0),.10)
+        for i=1,7 do
+            local a=i*math.pi*2/7;local c=Vector3.new(math.cos(a)*2.3,math.sin(a*2)*.65,math.sin(a)*2.3)
+            line(dreams,c-Vector3.new(0,.22,0),c+Vector3.new(0,.22,0),.05,white,.2)
+            line(dreams,c-Vector3.new(.15,0,0),c+Vector3.new(.15,0,0),.05,color,.2)
+        end
+        local above=pivot("Dream floating jewels",CFrame.new(0,2.85,0),-.12)
+        for i=1,3 do diamond(above,CFrame.new((i-2)*.65,math.abs(i-2)*.18,0),.20,color) end
     end
     -- Secondary detail layer complements the existing silhouettes.
-    local ranks={Common=1,InDev=2,Uncommon=3,Rare=4,SuperRare=5,Epic=6,Lucky=7,Legendary=8,Ice=9}
+    local ranks={Common=1,InDev=2,Uncommon=3,Rare=4,SuperRare=5,Epic=6,Lucky=7,Legendary=8,Ice=9,Rubic=10,Romb=11,Sleeping=12,UltraLegendary=13}
     local rank=ranks[id] or 1
-    local accents={Common=white,InDev=white,Uncommon=Color3.fromRGB(203,255,168),Rare=white,SuperRare=white,Epic=Color3.fromRGB(235,182,255),Lucky=gold,Legendary=white,Ice=white}
+    local accents={Common=white,InDev=white,Uncommon=Color3.fromRGB(203,255,168),Rare=white,SuperRare=white,Epic=Color3.fromRGB(235,182,255),Lucky=gold,Legendary=white,Ice=white,Rubic=white,Romb=white,Sleeping=Color3.fromRGB(220,225,255),UltraLegendary=gold}
     local accent=accents[id] or white
     if rank>=2 then
         local detail=pivot("Floating detail gems",CFrame.new(0,-1.5,0),-.12-rank*.008)
