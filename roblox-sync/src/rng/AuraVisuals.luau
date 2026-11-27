@@ -156,11 +156,15 @@ function Visuals.Build(character, id, color)
             part.Transparency=1;part.CastShadow=false
         end
     end
+    local particleIndex=0
     local function emitter(parent,rate,size,body)
+        particleIndex+=1
+        local palette={color,color:Lerp(white,.30),color:Lerp(Color3.new(0,0,0),.18),color:Lerp(white,.12)}
+        local tint=palette[(particleIndex-1)%#palette+1]
         local e=Instance.new("ParticleEmitter");e.Name=body and "BodyRadiance" or "AuraShape"
         e.Texture="rbxasset://textures/particles/sparkles_main.dds"
-        e.Color=ColorSequence.new(color,color:Lerp(white,.2))
-        e.Enabled=true;e.Rate=rate;e.Lifetime=NumberRange.new(1.5,2)
+        e.Color=ColorSequence.new(tint,tint:Lerp(white,.15))
+        e.Enabled=true;e.Rate=rate*2;e.Lifetime=NumberRange.new(1.5,2)
         e.LightEmission=.1;e.LightInfluence=0
         e.Speed=body and NumberRange.new(.08,.22) or NumberRange.new(0)
         e.Acceleration=body and Vector3.new(0,.08,0) or Vector3.zero
@@ -168,7 +172,7 @@ function Visuals.Build(character, id, color)
         e.Rotation=NumberRange.new(0,360);e.RotSpeed=NumberRange.new(-8,8)
         e.Size=NumberSequence.new({NumberSequenceKeypoint.new(0,size*.3),NumberSequenceKeypoint.new(.15,size),NumberSequenceKeypoint.new(.8,size),NumberSequenceKeypoint.new(1,0)})
         e.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(.15,.35),NumberSequenceKeypoint.new(.8,.35),NumberSequenceKeypoint.new(1,1)})
-        e:SetAttribute("WarmCount",math.ceil(rate*1.5))
+        e:SetAttribute("WarmCount",math.ceil(rate*2*1.5))
         e.Parent=parent
     end
     local count=#surfaces
@@ -178,7 +182,7 @@ function Visuals.Build(character, id, color)
         -- Keep each particle source on the designed contour, not across a box volume.
         local attachment=Instance.new("Attachment")
         attachment.Name="ContourPoint";attachment.Parent=part
-        emitter(attachment,budget/count,({.10,.13,.16})[(i-1)%3+1],false)
+        emitter(attachment,budget/count,({.065,.10,.14,.20,.12})[(i-1)%5+1],false)
     end
     local limbs={}
     for _,name in {"Torso","UpperTorso","Left Arm","Right Arm","Left Leg","Right Leg","LeftUpperArm","RightUpperArm","LeftUpperLeg","RightUpperLeg"} do
@@ -191,7 +195,7 @@ function Visuals.Build(character, id, color)
         holder.CanTouch=false;holder.CanQuery=false;holder.Massless=true;holder.CastShadow=false
         holder.CFrame=limb.CFrame;holder.Parent=model
         local weld=Instance.new("WeldConstraint");weld.Part0=limb;weld.Part1=holder;weld.Parent=holder
-        emitter(holder,(25+level*4)/math.max(1,#limbs),i%2==0 and .12 or .2,true)
+        emitter(holder,(25+level*4)/math.max(1,#limbs),({.08,.13,.19})[(i-1)%3+1],true)
     end
     return model
 end
