@@ -1,6 +1,7 @@
 {
   "files": [
     "default.project.json",
-    "src/TreeClicks.server.luau"
+    "src/TreeClicks.server.luau",
+    "src/SpawnSetup.server.luau"
   ]
 }

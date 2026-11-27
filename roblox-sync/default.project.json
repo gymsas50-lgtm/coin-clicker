@@ -53,11 +53,21 @@
             1,
             5
           ],
-          "Position": [
+          "CFrame": [
             25,
             0.5,
-            0
-          ]
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1
+          ],
+          "Enabled": true
         }
       },
       "LittleStudTree": {
@@ -388,6 +398,9 @@
       "$ignoreUnknownInstances": false,
       "TreeClicks": {
         "$path": "src/TreeClicks.server.luau"
+      },
+      "SpawnSetup": {
+        "$path": "src/SpawnSetup.server.luau"
       }
     },
     "StarterPlayer": {
