@@ -9,8 +9,8 @@ local request, result = folder:WaitForChild("RollRequest"), folder:WaitForChild(
 local inventoryRemote = folder:WaitForChild("Inventory")
 local busy, auto, started, inventoryBusy = false, false, 0, false
 local owned, equipped = {}, 0
-local white = Color3.fromRGB(232,237,249)
-local muted = Color3.fromRGB(151,168,193)
+local white = Color3.fromRGB(237,237,237)
+local muted = Color3.fromRGB(166,166,166)
 local function rounded(object,radius)
     local c=Instance.new("UICorner");c.CornerRadius=UDim.new(0,radius or 12);c.Parent=object
 end
@@ -19,9 +19,9 @@ local function label(parent,name,text,pos,size,fontSize,color)
     t.Text=text;t.Font=Enum.Font.GothamMedium;t.TextSize=fontSize;t.TextColor3=color or white;t.Parent=parent;return t
 end
 local function panel(name,pos,size)
-    local f=Instance.new("Frame");f.Name=name;f.Position=pos;f.Size=size;f.BackgroundColor3=Color3.fromRGB(17,22,34)
+    local f=Instance.new("Frame");f.Name=name;f.Position=pos;f.Size=size;f.BackgroundColor3=Color3.fromRGB(22,22,22)
     f.BackgroundTransparency=.08;f.BorderSizePixel=0;f.Parent=ui;rounded(f,14)
-    local stroke=Instance.new("UIStroke");stroke.Color=Color3.fromRGB(71,88,124);stroke.Transparency=.4;stroke.Parent=f;return f
+    local stroke=Instance.new("UIStroke");stroke.Color=Color3.fromRGB(87,87,87);stroke.Transparency=.4;stroke.Parent=f;return f
 end
 local stats=panel("SessionStats",UDim2.new(0,18,.5,0),UDim2.fromOffset(48,48))
 stats.AnchorPoint=Vector2.new(0,.5)
@@ -29,14 +29,14 @@ local counter={Text=""}
 local equippedText={Text="",TextColor3=white}
 local inventoryButton=Instance.new("TextButton");inventoryButton.Name="InventoryButton"
 inventoryButton.Position=UDim2.fromOffset(0,0);inventoryButton.Size=UDim2.fromOffset(48,48)
-inventoryButton.BackgroundColor3=Color3.fromRGB(25,32,47);inventoryButton.BorderSizePixel=0
+inventoryButton.BackgroundColor3=Color3.fromRGB(32,32,32);inventoryButton.BorderSizePixel=0
 inventoryButton.Text="";inventoryButton.Parent=stats;rounded(inventoryButton,9)
 -- Draw a small inventory grid with UI primitives: no text or external image.
 for row=0,1 do
     for column=0,1 do
         local cell=Instance.new("Frame");cell.Name="IconCell"
         cell.Size=UDim2.fromOffset(9,9);cell.Position=UDim2.fromOffset(13+column*13,13+row*13)
-        cell.BackgroundColor3=Color3.fromRGB(218,229,247);cell.BorderSizePixel=0;cell.Parent=inventoryButton;rounded(cell,2)
+        cell.BackgroundColor3=Color3.fromRGB(228,228,228);cell.BorderSizePixel=0;cell.Parent=inventoryButton;rounded(cell,2)
     end
 end
 local card=panel("RollResult",UDim2.new(.5,0,.35,0),UDim2.fromOffset(320,150));card.AnchorPoint=Vector2.new(.5,.5);card.Visible=false
@@ -77,7 +77,7 @@ local close=Instance.new("TextButton");close.Size=UDim2.fromOffset(32,32);close.
 local list=Instance.new("ScrollingFrame")
 list.Name="AuraSlots";list.Position=UDim2.fromOffset(10,60);list.Size=UDim2.new(1,-20,1,-72)
 list.BackgroundTransparency=1;list.BorderSizePixel=0;list.ScrollBarThickness=4
-list.ScrollBarImageColor3=Color3.fromRGB(104,121,150);list.ScrollingDirection=Enum.ScrollingDirection.Y
+list.ScrollBarImageColor3=Color3.fromRGB(119,119,119);list.ScrollingDirection=Enum.ScrollingDirection.Y
 list.CanvasSize=UDim2.fromOffset(0,0);list.Parent=inv
 local grid=Instance.new("UIGridLayout");grid.SortOrder=Enum.SortOrder.LayoutOrder
  grid.CellPadding=UDim2.fromOffset(10,10);grid.Parent=list
@@ -95,8 +95,8 @@ grid:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function() list.Can
 local rows={}
 for i,aura in config do
     local slot=Instance.new("Frame");slot.Name="Slot"..i;slot.LayoutOrder=i
-    slot.BackgroundColor3=Color3.fromRGB(29,36,52);slot.BorderSizePixel=0;slot.Parent=list;rounded(slot,10)
-    local border=Instance.new("UIStroke");border.Thickness=1;border.Color=Color3.fromRGB(57,65,85);border.Parent=slot
+    slot.BackgroundColor3=Color3.fromRGB(36,36,36);slot.BorderSizePixel=0;slot.Parent=list;rounded(slot,10)
+    local border=Instance.new("UIStroke");border.Thickness=1;border.Color=Color3.fromRGB(65,65,65);border.Parent=slot
     local icon=Instance.new("Frame");icon.Name="AuraIcon";icon.AnchorPoint=Vector2.new(.5,.5)
     icon.Position=UDim2.fromScale(.5,.18);icon.Size=UDim2.fromScale(.13,.13);icon.Rotation=45
     icon.BorderSizePixel=0;icon.BackgroundColor3=muted;icon.Parent=slot;rounded(icon,2)
@@ -117,18 +117,19 @@ local function apply(data)
     owned=data.Owned or owned;equipped=data.Equipped or 0
     counter.Text="Rolls  :  "..tostring(data.Rolls or 0)
     equippedText.Text="Equipped  :  "..(config[equipped] and config[equipped].Name or "None")
-    equippedText.TextColor3=config[equipped] and config[equipped].Color or white
+    equippedText.TextColor3=white
     for i,row in rows do
         local count=owned[i] or 0
         row.title.Text=count>0 and config[i].Name or "??? ??????"
-        row.title.TextColor3=count>0 and config[i].Color or muted
+        row.title.TextColor3=count>0 and white or muted
         row.count.Text=count>0 and (config[i].Chance.."  |  x"..count) or "??? ??"
-        row.icon.BackgroundColor3=count>0 and config[i].Color or Color3.fromRGB(79,89,108)
-        row.border.Color=equipped==i and config[i].Color or Color3.fromRGB(57,65,85)
+        row.icon.BackgroundColor3=count>0 and white or Color3.fromRGB(88,88,88)
+        row.border.Color=equipped==i and white or Color3.fromRGB(65,65,65)
         row.border.Thickness=equipped==i and 2 or 1
         row.action.Visible=count>0
         row.action.Text=count==0 and "LOCKED" or (equipped==i and "UNEQUIP" or "EQUIP")
-        row.action.BackgroundColor3=count==0 and Color3.fromRGB(42,46,57) or (equipped==i and Color3.fromRGB(96,65,55) or Color3.fromRGB(52,79,119))
+        row.action.BackgroundColor3=count==0 and Color3.fromRGB(38,38,38) or (equipped==i and Color3.fromRGB(65,65,65) or Color3.fromRGB(232,232,232))
+        row.action.TextColor3=equipped==i and white or Color3.fromRGB(15,15,15)
         row.action.AutoButtonColor=count>0
     end
 end
@@ -141,9 +142,9 @@ for i,row in rows do
         inventoryBusy=false
     end)
 end
-button.Size=UDim2.fromOffset(140,52);button.BackgroundColor3=Color3.fromRGB(65,91,153)
+button.Size=UDim2.fromOffset(140,52);button.BackgroundColor3=Color3.fromRGB(242,242,242);button.TextColor3=Color3.fromRGB(15,15,15)
 local autoButton=Instance.new("TextButton");autoButton.AnchorPoint=Vector2.new(.5,1);autoButton.Position=UDim2.new(.5,-118,1,-24);autoButton.Size=UDim2.fromOffset(76,52)
-autoButton.BackgroundColor3=Color3.fromRGB(25,32,47);autoButton.BorderSizePixel=0;autoButton.Text="AUTO: OFF";autoButton.TextSize=11;autoButton.Font=Enum.Font.GothamBold;autoButton.TextColor3=white;autoButton.Parent=ui;rounded(autoButton)
+autoButton.BackgroundColor3=Color3.fromRGB(32,32,32);autoButton.BorderSizePixel=0;autoButton.Text="AUTO: OFF";autoButton.TextSize=11;autoButton.Font=Enum.Font.GothamBold;autoButton.TextColor3=white;autoButton.Parent=ui;rounded(autoButton)
 
 local roll
 local function finish()
@@ -184,13 +185,13 @@ result.OnClientEvent:Connect(function(data)
     local stopIndex=19
     for i=0,stopIndex+1 do
         local item=i==stopIndex and aura or config[math.random(1,#config)]
-        local text=label(strip,"ReelName",item.Name,UDim2.fromOffset(0,i*48),UDim2.new(1,0,0,48),28,item.Color)
+        local text=label(strip,"ReelName",item.Name,UDim2.fromOffset(0,i*48),UDim2.new(1,0,0,48),28,white)
         text.TextStrokeTransparency=.55
     end
     local spin=TweenService:Create(strip,TweenInfo.new(3,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=UDim2.fromOffset(0,8-stopIndex*48)})
     spin:Play();spin.Completed:Wait()
     reel.Visible=false;auraName.Visible=true
-    auraName.Text=aura.Name;auraName.TextColor3=aura.Color
+    auraName.Text=aura.Name;auraName.TextColor3=white
     chance.Text=aura.Chance
     note.Text=""
     fadeResult(token)

@@ -117,16 +117,16 @@
               ]
             },
             "BackgroundColor3": [
-              0.12,
-              0.14,
-              0.19
+              0.95,
+              0.95,
+              0.95
             ],
             "BorderSizePixel": 0,
             "Text": "ROLL",
             "TextColor3": [
-              1,
-              1,
-              1
+              0.06,
+              0.06,
+              0.06
             ],
             "TextSize": 22,
             "Font": "GothamBold",
@@ -147,9 +147,9 @@
             "$className": "UIStroke",
             "$properties": {
               "Color": [
-                0.48,
-                0.57,
-                0.78
+                1,
+                1,
+                1
               ],
               "Thickness": 2,
               "ApplyStrokeMode": "Border"
