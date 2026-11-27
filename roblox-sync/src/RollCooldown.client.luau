@@ -161,7 +161,7 @@ result.OnClientEvent:Connect(function(data)
         local text=label(strip,"ReelName",item.Name,UDim2.fromOffset(0,i*48),UDim2.new(1,0,0,48),28,item.Color)
         text.TextStrokeTransparency=.55
     end
-    local spin=TweenService:Create(strip,TweenInfo.new(.9,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=UDim2.fromOffset(0,8-stopIndex*48)})
+    local spin=TweenService:Create(strip,TweenInfo.new(3,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=UDim2.fromOffset(0,8-stopIndex*48)})
     spin:Play();spin.Completed:Wait()
     reel.Visible=false;auraName.Visible=true
     auraName.Text=aura.Name;auraName.TextColor3=aura.Color
