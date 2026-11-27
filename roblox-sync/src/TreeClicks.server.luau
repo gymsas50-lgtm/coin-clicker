@@ -16,7 +16,16 @@ local function sign(parent,adornee,name,offset,size)
     label.TextStrokeColor3=Color3.fromRGB(20,35,20);label.TextStrokeTransparency=.1;label.Parent=gui
     return gui,label
 end
-local billboard,text=sign(tree,tree:WaitForChild("CrownTop"),"TreeClickCounter",Vector3.new(0,1.6,0),UDim2.fromOffset(210,55))
+local counterAnchor=Instance.new("Part")
+counterAnchor.Name="TreeCounterAnchor";counterAnchor.Size=Vector3.new(.1,.1,.1)
+counterAnchor.Anchored=true;counterAnchor.Transparency=1;counterAnchor.CanCollide=false
+counterAnchor.CanTouch=false;counterAnchor.CanQuery=false;counterAnchor.CastShadow=false
+local initialTop=tree:WaitForChild("CrownTop")
+counterAnchor.Position=Vector3.new(origin.X,initialTop.Position.Y+initialTop.Size.Y*.5+1.5,origin.Z)
+counterAnchor.Parent=workspace
+local billboard,text=sign(counterAnchor,counterAnchor,"TreeClickCounter",Vector3.zero,UDim2.fromOffset(240,60))
+billboard.Enabled=true;billboard.MaxDistance=150
+text.Text="Clicks: 0";text.TextSize=26
 local button=Instance.new("Part");button.Name="TreeUpgradeButton";button.Anchored=true
 button.Size=Vector3.new(4,.6,4);button.Position=origin+Vector3.new(7,.3,0)
 button.Material=Enum.Material.Plastic;button.Color=Color3.fromRGB(233,180,63)
@@ -50,7 +59,7 @@ local function upgrade(player)
     busy=true;count-=50;refresh()
     local ok,err=pcall(function()
         -- Move the counter off geometry before replacing it.
-        billboard.Adornee=button;billboard.StudsOffsetWorldSpace=Vector3.new(-7,10,0)
+        counterAnchor.Position=origin+Vector3.new(0,11.8,0)
         local old={}
         for _,part in tree:GetChildren() do
             if part:IsA("BasePart") then
@@ -97,7 +106,7 @@ local function upgrade(player)
         end
         task.wait(.7)
         for _,part in tree:GetChildren() do if part:IsA("BasePart") then part.CanCollide=true end end
-        billboard.Adornee=top;billboard.StudsOffsetWorldSpace=Vector3.new(0,1.6,0)
+        if top then counterAnchor.Position=Vector3.new(origin.X,top.Position.Y+top.Size.Y*.5+1.5,origin.Z) end
         level=2
     end)
     if not ok then
