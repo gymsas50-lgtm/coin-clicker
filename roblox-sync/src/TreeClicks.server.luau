@@ -120,10 +120,12 @@ local function rebuild(index,instant)
     for _,part in tree:GetChildren() do if part:IsA("BasePart") then part:Destroy() end end
     for _,spec in specs do
         local part=Instance.new("Part");part.Name=spec.name;part.Anchored=true;part.CanCollide=false
-        part.Size=instant and spec.size or spec.size*.3;part.Position=instant and spec.pos or spec.pos+Vector3.new(random:NextNumber(-3,3),3,random:NextNumber(-3,3))
+        part.Size=spec.size*.3
+        part.Position=spec.pos+Vector3.new(random:NextNumber(-1.7,1.7),1.8,random:NextNumber(-1.7,1.7))
         part.Color=spec.color;part.Material=Enum.Material.Plastic
         part.TopSurface=Enum.SurfaceType.Studs;part.BottomSurface=Enum.SurfaceType.Inlet;part.Parent=tree
-        if not instant then TweenService:Create(part,TweenInfo.new(.5,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=spec.pos,Size=spec.size}):Play() end
+        -- Play assembly without yielding: the next equip can interrupt immediately.
+        TweenService:Create(part,TweenInfo.new(instant and .35 or .5,Enum.EasingStyle.Quint,Enum.EasingDirection.Out),{Position=spec.pos,Size=spec.size}):Play()
         clickable(part)
         if spec.name=="CrownTop" then anchor.Position=spec.pos+Vector3.new(0,spec.size.Y/2+1.8,0) end
         if not instant then task.wait(.006) end
