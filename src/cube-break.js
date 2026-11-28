@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 export function createCubeBreak(scene,world){
  const pieces=[],geometry=new THREE.BoxGeometry(.217,.217,.217);
- const material=new THREE.MeshStandardMaterial({color:0xd4d9de,roughness:.2,metalness:.3,emissive:0xb5f4e9,emissiveIntensity:.08,flatShading:true});
+ const material=new THREE.MeshStandardMaterial({color:0xd6d6d6,roughness:.2,metalness:.3,flatShading:true});
  const dustGeometry=new THREE.BufferGeometry(),dustPositions=new Float32Array(72*3),dustVelocities=[];
  dustGeometry.setAttribute('position',new THREE.BufferAttribute(dustPositions,3));
  const dust=new THREE.Points(dustGeometry,new THREE.PointsMaterial({color:0xe8f0ff,size:.11,transparent:true,opacity:.55,depthWrite:false}));dust.visible=false;scene.add(dust);

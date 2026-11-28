@@ -7,10 +7,9 @@ export function convexShape(geometry){
 }
 export function createDefaultCube(){
  const geometry=new THREE.BoxGeometry(.7,.7,.7);
- const material=new THREE.MeshStandardMaterial({color:0xd4d9da,metalness:.12,roughness:.38,emissive:0xb5f4e9,emissiveIntensity:.08});
+ const material=new THREE.MeshStandardMaterial({color:0xd6d6d6,metalness:.08,roughness:.55});
  const mesh=new THREE.Mesh(geometry,material);mesh.name='Default cube';mesh.castShadow=true;mesh.receiveShadow=true;
- const edges=new THREE.LineSegments(new THREE.EdgesGeometry(geometry),new THREE.LineBasicMaterial({color:0xc2f5ec,transparent:true,opacity:.28,toneMapped:false}));edges.name='Subtle neon edges';mesh.add(edges);
- const light=new THREE.PointLight(0xc9fff2,.16,1.15,2);light.name='Faint cube glow';mesh.add(light);
+ const light=new THREE.PointLight(0xffffff,.16,1.15,2);light.name='Faint white light';mesh.add(light);
  const vertices=[];for(const x of [-.35,.35])for(const y of [-.35,.35])for(const z of [-.35,.35])vertices.push(new CANNON.Vec3(x,y,z));
  return{mesh,vertices,shape:new CANNON.Box(new CANNON.Vec3(.35,.35,.35))};
 }
