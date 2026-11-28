@@ -36,10 +36,10 @@ try {
  function syncView(){camera.position.set(player.position.x,player.position.y+.70,player.position.z);camera.rotation.set(pitch,yaw,0);camera.updateMatrixWorld(true);}
  function release(){holding=false;energyBeam.hide();crosshair.classList.remove('holding');}
  function grab(){if(holding)return;syncView();cube.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(0,0),camera);const hits=ray.intersectObject(cube,false);if(!hits.length||hits[0].distance>7)return;const p=hits[0].point;cubeBody.pointToLocalFrame(new CANNON.Vec3(p.x,p.y,p.z),anchor);holdDistance=THREE.MathUtils.clamp(hits[0].distance,1.8,6.5);grabNormal.copy(hits[0].face.normal);holdTarget.copy(p);previousHoldTarget.copy(p);holding=true;cubeBody.wakeUp();crosshair.classList.add('holding');}
- function throwCube(){if(!holding)return;weapon.kick();camera.getWorldDirection(forward);cubeBody.vectorToWorldFrame(anchor,relative);release();cubeBody.applyImpulse(new CANNON.Vec3(forward.x*125,forward.y*125,forward.z*125),relative);}
+
  function resetCube(){release();cubeBody.position.set(0,.62,0);cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
  async function enter(){try{await renderer.domElement.requestPointerLock();}catch{hint.textContent='Нажми ещё раз для захвата мыши';}}
- hint.addEventListener('click',enter);renderer.domElement.addEventListener('pointerdown',e=>{if(!locked){enter();return;}if(e.button===0)grab();if(e.button===2)throwCube();});
+ hint.addEventListener('click',enter);renderer.domElement.addEventListener('pointerdown',e=>{if(!locked){enter();return;}if(e.button===0)grab();});
  addEventListener('pointerup',e=>{if(e.button===0)release();});addEventListener('pointercancel',release);
  document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement===renderer.domElement;hint.classList.toggle('hidden',locked);if(!locked){keys.clear();jump=false;release();}last=null;});
  document.addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0023;pitch=THREE.MathUtils.clamp(pitch-e.movementY*.0023,-1.48,1.48);});
@@ -91,5 +91,5 @@ try {
  }
  function frame(now){requestAnimationFrame(frame);if(document.hidden){last=null;return;}const dt=last===null?1/120:Math.min(.06,(now-last)/1000);last=now;world.step(1/120,dt,8);render(dt);}
  addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});syncView();render();requestAnimationFrame(frame);
- window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,player,weapon,energyBeam,grab,release,throwCube,resetCube,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
+ window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,player,weapon,energyBeam,grab,release,resetCube,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
 }catch(e){console.error(e);document.querySelector('#error').style.display='grid';}
