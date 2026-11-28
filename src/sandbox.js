@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import {createGravityGun} from './gravity-gun.js';
 import {createGravityBeam} from './gravity-beam.js';
+import {createContainer} from './container.js';
 import {createCubeProps} from './cube-props.js';
 import {createOutdoors} from './outdoors.js';
 try {
@@ -12,7 +13,8 @@ try {
  function box(parent,size,pos,color){const m=new THREE.Mesh(new THREE.BoxGeometry(...size),typeof color==='number'?material(color):color);m.position.set(...pos);m.receiveShadow=true;m.castShadow=parent!==scene;parent.add(m);return m;}
  const outdoors=createOutdoors({scene,world,renderer});
  const roomMeshes=[outdoors.ground];
- const props=createCubeProps({scene,world,getPlayer:()=>player,onFreeze(body){if(holding&&activeBody===body)release();}});
+ const container=createContainer({scene,world});
+ const props=createCubeProps({scene,world,isProtected:body=>container.contains(body),canSpawn:(x,z,size)=>!container.blocksSpawn(x,z,size),getPlayer:()=>player,onFreeze(body){if(holding&&activeBody===body)release();}});
  const cube=props[0].mesh,cubeBody=props[0].body;
  const hoverRay=new THREE.Raycaster(),screenCenter=new THREE.Vector2(0,0);
  const player=new CANNON.Body({mass:75,shape:new CANNON.Box(new CANNON.Vec3(.3,.85,.3)),fixedRotation:true,linearDamping:.05,allowSleep:false});player.position.set(0,.88,6);player.updateMassProperties();player.collisionFilterGroup=4;world.addBody(player);
@@ -29,9 +31,9 @@ try {
  function syncView(){camera.position.set(player.position.x,player.position.y+.70,player.position.z);camera.rotation.set(pitch,yaw,0);camera.updateMatrixWorld(true);}
  function release(){holding=false;energyBeam.hide();crosshair.classList.remove('holding');}
  function grab(){
-  if(holding)return;syncView();for(const prop of props)prop.mesh.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(0,0),camera);
-  const hits=ray.intersectObjects(props.filter(p=>!p.broken&&p.price>0).map(p=>p.mesh),true).filter(h=>h.object.isMesh&&h.face);if(!hits.length||hits[0].distance>3)return;
-  const hit=hits[0];let node=hit.object,prop;while(node&&!prop){prop=props.find(p=>p.mesh===node);node=node.parent;}
+  if(holding)return;syncView();for(const prop of [...props,container])prop.mesh.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(0,0),camera);
+  const hits=ray.intersectObjects([...props,container].filter(p=>!p.broken&&p.price>0).map(p=>p.mesh),true).filter(h=>h.object.isMesh&&h.face);if(!hits.length||hits[0].distance>3)return;
+  const hit=hits[0];let node=hit.object,prop;while(node&&!prop){prop=[...props,container].find(p=>p.mesh===node);node=node.parent;}
   if(!prop)return;if(prop.detach)prop.detach();activeBody=prop.body;activeMesh=prop.mesh;
   const p=hit.point;activeBody.pointToLocalFrame(new CANNON.Vec3(p.x,p.y,p.z),anchor);holdDistance=THREE.MathUtils.clamp(hit.distance,1.2,3);
   grabNormal.copy(hit.face.normal).transformDirection(hit.object.matrixWorld).applyQuaternion(activeMesh.getWorldQuaternion(new THREE.Quaternion()).invert()).normalize();
@@ -60,7 +62,7 @@ try {
    roomFrom.set(camera.position.x,camera.position.y,camera.position.z);roomTo.set(target.x,target.y,target.z);roomHit.reset();
    world.raycastClosest(roomFrom,roomTo,{collisionFilterMask:1},roomHit);
    if(roomHit.hasHit)target.copy(camera.position).addScaledVector(forward,Math.max(.4,roomHit.distance-.42));
-   target.x=THREE.MathUtils.clamp(target.x,-12.1,12.1);target.y=Math.max(.4,target.y);target.z=THREE.MathUtils.clamp(target.z,-12.1,12.1);
+   target.x=THREE.MathUtils.clamp(target.x,-24.5,24.5);target.y=Math.max(.4,target.y);target.z=THREE.MathUtils.clamp(target.z,-24.5,24.5);
    previousHoldTarget.copy(holdTarget);goalDelta.subVectors(target,holdTarget).clampLength(0,7/120);holdTarget.add(goalDelta);targetVelocity.subVectors(holdTarget,previousHoldTarget).multiplyScalar(120);
    activeBody.pointToWorldFrame(anchor,grabWorld);activeBody.getVelocityAtWorldPoint(grabWorld,grabVelocity);grabWorld.vsub(activeBody.position,relative);
    errorDirection.set(holdTarget.x-grabWorld.x,holdTarget.y-grabWorld.y,holdTarget.z-grabWorld.z);
@@ -74,20 +76,21 @@ try {
   }
 
  });
- // Invisible map boundary, no ceiling: keep all bodies on the 25 x 25 m field.
+ // Invisible map boundary, no ceiling: keep all bodies on the 50 x 50 m field.
  function contain(b){b.updateAABB();for(const axis of ['x','y','z']){
   if(axis==='y'&&b!==player){if(b.aabb.upperBound.y<-.5){b.position.y=b.shapes[0].halfExtents.y;b.velocity.y=0;b.aabbNeedsUpdate=true;}continue;}
-  const lower=axis==='y'?0:-12.5,upper=axis==='y'?Infinity:12.5;
+  const lower=axis==='y'?0:-25,upper=axis==='y'?Infinity:25;
   if(b.aabb.lowerBound[axis]<lower){b.position[axis]+=lower-b.aabb.lowerBound[axis];if(b.velocity[axis]<0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
   if(b.aabb.upperBound[axis]>upper){b.position[axis]-=b.aabb.upperBound[axis]-upper;if(b.velocity[axis]>0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
  }}
- world.addEventListener('postStep',()=>{contain(player);for(const prop of props){if(!prop.broken&&prop.price>0)contain(prop.body);prop.physics();}});
+ world.addEventListener('postStep',()=>{contain(player);contain(container.body);for(const prop of props){if(!prop.broken&&prop.price>0)contain(prop.body);prop.physics();}});
  const wallRay=new THREE.Raycaster(),obstructionDirection=new THREE.Vector3();wallRay.far=1.4;
  function render(dt=1/60){syncView();outdoors.tick(camera);
   // First synchronize all transforms, then select only the nearest grabbable object.
   for(const prop of props)prop.render(dt,false,holding&&activeBody===prop.body);
-  hoverRay.setFromCamera(screenCenter,camera);const hoverHit=hoverRay.intersectObjects(props.filter(p=>!p.broken&&p.price>0).map(p=>p.mesh),false)[0];
-  if(hoverHit&&hoverHit.distance<=3){const hovered=props.find(p=>p.mesh===hoverHit.object);if(hovered)hovered.outline.visible=true;}
+  container.render(dt,false,holding&&activeBody===container.body);
+  hoverRay.setFromCamera(screenCenter,camera);const hoverHit=hoverRay.intersectObjects([...props,container].filter(p=>!p.broken&&p.price>0).map(p=>p.mesh),true).find(h=>h.object.isMesh&&h.face);
+  if(hoverHit&&hoverHit.distance<=3){let node=hoverHit.object,hovered;while(node&&!hovered){hovered=[...props,container].find(p=>p.mesh===node);node=node.parent;}if(hovered===container)container.setHighlight(true);else if(hovered)hovered.outline.visible=true;}
   obstructionDirection.set(.43,-.27,-1.1).applyMatrix4(camera.matrixWorld).sub(camera.position).normalize();wallRay.set(camera.position,obstructionDirection);
   const obstruction=wallRay.intersectObjects(roomMeshes,false)[0];const blocked=obstruction?THREE.MathUtils.clamp((1.25-obstruction.distance)/.9,0,1):0;
   weapon.update(dt,blocked,holding);
@@ -98,5 +101,5 @@ try {
  }
  function frame(now){requestAnimationFrame(frame);if(document.hidden){last=null;return;}const dt=last===null?1/120:Math.min(.06,(now-last)/1000);last=now;world.step(1/120,dt,8);props.tickSpawns();render(dt);}
  addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});syncView();render();requestAnimationFrame(frame);
- window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,props,player,weapon,energyBeam,outdoors,get heldBody(){return holding?activeBody:null;},grab,release,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
+ window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,props,container,player,weapon,energyBeam,outdoors,get heldBody(){return holding?activeBody:null;},grab,release,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
 }catch(e){console.error(e);document.querySelector('#error').style.display='grid';}

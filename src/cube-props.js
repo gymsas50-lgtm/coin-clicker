@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import {createDefaultCube} from './crystal.js';
 import {createCubeBreak} from './cube-break.js';
-export function createCubeProps({scene,world,onFreeze,getPlayer}){
+export function createCubeProps({scene,world,onFreeze,getPlayer,isProtected=()=>false,canSpawn=()=>true}){
  const specs=[{name:'Default',price:5,size:.7,x:-2},{name:'Small cube',price:8,size:.42,x:0},{name:'Big cube',price:12,size:1,x:2}];
  function create(spec){
   const model=createDefaultCube(spec.size),mesh=model.mesh;mesh.name=spec.name;scene.add(mesh);
@@ -14,7 +14,7 @@ export function createCubeProps({scene,world,onFreeze,getPlayer}){
   const prop={...spec,mesh,body,tag,outline,effect,price:spec.price,broken:false,breakAt:Infinity,lastDamage:-Infinity};
   function label(){ctx.clearRect(0,0,256,192);ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';ctx.lineWidth=3;ctx.strokeStyle='rgba(0,0,0,.8)';ctx.font='bold 60px Arial';ctx.strokeText(prop.price+'$',128,66);ctx.fillStyle=prop.price===spec.price?'#ffffff':prop.price>spec.price*.3?'#ffd578':'#ff7979';ctx.fillText(prop.price+'$',128,66);ctx.font='36px Arial';ctx.lineWidth=2;ctx.strokeText(spec.name,128,132);ctx.fillStyle='#e4e7eb';ctx.fillText(spec.name,128,132);texture.needsUpdate=true;tag.name=spec.name+' '+prop.price+'$';}
   label();
-  body.addEventListener('collide',event=>{const speed=Math.abs(event.contact.getImpactVelocityAlongNormal());if(speed<4||prop.price===0||world.time-prop.lastDamage<.25)return;prop.price=Math.max(0,prop.price-Math.max(1,Math.round((speed*speed-16)/14)));prop.lastDamage=world.time;
+  body.addEventListener('collide',event=>{if(event.body.isCargoContainer||isProtected(body))return;const speed=Math.abs(event.contact.getImpactVelocityAlongNormal());if(speed<4||prop.price===0||world.time-prop.lastDamage<.25)return;prop.price=Math.max(0,prop.price-Math.max(1,Math.round((speed*speed-16)/14)));prop.lastDamage=world.time;
    if(prop.price===0){prop.breakAt=world.time+.2;onFreeze(body);frozenPosition.copy(body.position);frozenQuaternion.copy(body.quaternion);body.type=CANNON.Body.STATIC;body.velocity.setZero();body.angularVelocity.setZero();body.force.setZero();body.torque.setZero();body.updateSolveMassProperties();}label();
   });
   prop.physics=()=>{if(prop.broken)return;if(prop.price===0){body.position.copy(frozenPosition);body.quaternion.copy(frozenQuaternion);body.velocity.setZero();body.angularVelocity.setZero();body.previousPosition.copy(frozenPosition);body.interpolatedPosition.copy(frozenPosition);body.previousQuaternion.copy(frozenQuaternion);body.interpolatedQuaternion.copy(frozenQuaternion);body.aabbNeedsUpdate=true;}
@@ -32,7 +32,8 @@ export function createCubeProps({scene,world,onFreeze,getPlayer}){
   if(props.filter(p=>!p.broken).length>=5)return;
   const spec=specs[Math.floor(Math.random()*specs.length)],player=getPlayer();
   for(let attempt=0;attempt<50;attempt++){
-   const x=(Math.random()*2-1)*(12.5-spec.size/2-.3),z=(Math.random()*2-1)*(12.5-spec.size/2-.3);
+   const x=(Math.random()*2-1)*(25-spec.size/2-.3),z=(Math.random()*2-1)*(25-spec.size/2-.3);
+   if(!canSpawn(x,z,spec.size))continue;
    if(player&&Math.hypot(x-player.position.x,z-player.position.z)<spec.size/2+1.2)continue;
    if(props.some(p=>!p.broken&&Math.hypot(x-p.body.position.x,z-p.body.position.z)<(spec.size+p.size)*.71+.3))continue;
    props.push(create({...spec,x,z}));break;
