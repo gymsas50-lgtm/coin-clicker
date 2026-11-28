@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import {createVoxelCar} from './voxel-car.js';
 import {createCrashSystem} from './crash.js';
+import {createOrbitCamera} from './orbit-camera.js';
 
 try {
   const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
@@ -11,6 +12,7 @@ try {
   document.body.prepend(renderer.domElement);renderer.domElement.tabIndex=0;renderer.domElement.setAttribute('aria-label','3D-игра: управление автомобилем WASD или стрелками');
   const scene=new THREE.Scene();scene.background=new THREE.Color(0xe6eae9);scene.fog=new THREE.Fog(0xe6eae9,55,230);
   const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.1,350);
+  const orbit=createOrbitCamera(renderer.domElement);
   scene.add(new THREE.HemisphereLight(0xf2f7ff,0x7e8b75,2.5));
   const sun=new THREE.DirectionalLight(0xfff0d7,3.2);sun.position.set(-10,16,8);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-12;sun.shadow.camera.right=12;sun.shadow.camera.top=12;sun.shadow.camera.bottom=-12;sun.shadow.camera.near=.5;sun.shadow.camera.far=50;sun.shadow.normalBias=.035;sun.shadow.bias=-.00008;scene.add(sun,sun.target);
   const groundCanvas=document.createElement('canvas');groundCanvas.width=groundCanvas.height=32;
@@ -61,7 +63,7 @@ try {
   const desiredCamera=new THREE.Vector3(),lookAt=new THREE.Vector3(),carPosition=new THREE.Vector3(),carRotation=new THREE.Quaternion(),cameraOffset=new THREE.Vector3(),targetOffset=new THREE.Vector3(),sunOffset=new THREE.Vector3(-10,16,8);
   const localWheel=new THREE.Vector3(),wheelSteer=new THREE.Quaternion(),wheelSpin=new THREE.Quaternion(),upAxis=new THREE.Vector3(0,1,0),axleAxis=new THREE.Vector3(-1,0,0);
   let cameraInitialized=false;
-  function reset(){crash.reset();clearInput();body.position.set(0,.9,0);body.quaternion.set(0,0,0,1);body.previousPosition.copy(body.position);body.interpolatedPosition.copy(body.position);body.previousQuaternion.copy(body.quaternion);body.interpolatedQuaternion.copy(body.quaternion);body.velocity.setZero();body.angularVelocity.setZero();body.force.setZero();body.torque.setZero();body.aabbNeedsUpdate=true;body.wakeUp();steer=0;for(let i=0;i<4;i++){vehicle.setSteeringValue(0,i);vehicle.applyEngineForce(0,i);vehicle.setBrake(0,i);vehicle.wheelInfos[i].rotation=0;vehicle.wheelInfos[i].deltaRotation=0;}world.accumulator=0;last=null;cameraInitialized=false;}
+  function reset(){crash.reset();orbit.reset();clearInput();body.position.set(0,.9,0);body.quaternion.set(0,0,0,1);body.previousPosition.copy(body.position);body.interpolatedPosition.copy(body.position);body.previousQuaternion.copy(body.quaternion);body.interpolatedQuaternion.copy(body.quaternion);body.velocity.setZero();body.angularVelocity.setZero();body.force.setZero();body.torque.setZero();body.aabbNeedsUpdate=true;body.wakeUp();steer=0;for(let i=0;i<4;i++){vehicle.setSteeringValue(0,i);vehicle.applyEngineForce(0,i);vehicle.setBrake(0,i);vehicle.wheelInfos[i].rotation=0;vehicle.wheelInfos[i].deltaRotation=0;}world.accumulator=0;last=null;cameraInitialized=false;}
   document.querySelector('#reset').addEventListener('click',reset);
   const localVelocity=new CANNON.Vec3();
   function applyControls(dt){
@@ -100,9 +102,10 @@ try {
     }
     const speed=Math.hypot(body.velocity.x,body.velocity.z)*3.6;
     const portrait=innerWidth/innerHeight<.8;
-    cameraOffset.set(portrait?4.2:4.9,portrait?3.6:3.1,(portrait?10.5:7.5)+Math.min(speed/90,1.5)).applyQuaternion(carRotation);
+    cameraOffset.set(portrait?4.2:4.9,portrait?3.6:3.1,(portrait?10.5:7.5)+Math.min(speed/90,1.5));
+    orbit.apply(cameraOffset,dt).applyQuaternion(carRotation);
     desiredCamera.copy(carPosition).add(cameraOffset);desiredCamera.y=Math.max(desiredCamera.y,1.5);
-    targetOffset.set(0,.45,portrait?0:-1.2).applyQuaternion(carRotation);lookAt.copy(carPosition).add(targetOffset);
+    targetOffset.set(0,.45,portrait||orbit.free?0:-1.2).applyQuaternion(carRotation);lookAt.copy(carPosition).add(targetOffset);
     if(!cameraInitialized){camera.position.copy(desiredCamera);cameraInitialized=true;}else camera.position.lerp(desiredCamera,1-Math.exp(-5*dt));
     camera.lookAt(lookAt);
     sun.position.copy(carPosition).add(sunOffset);sun.target.position.copy(carPosition);
@@ -115,5 +118,5 @@ try {
   addEventListener('resize',resize);resize();reset();render(1/60);requestAnimationFrame(frame);
   renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();paused=true;clearInput();document.querySelector('#error').classList.add('show');});
   renderer.domElement.addEventListener('webglcontextrestored',()=>location.reload());
-  window.carGame={ready:true,scene,camera,renderer,car,body,world,vehicle,input,reset,voxelCount,crash,get paused(){return paused;},get speed(){return Math.hypot(body.velocity.x,body.velocity.z)*3.6;},get simulationTime(){return simTime;}};
+  window.carGame={ready:true,scene,camera,renderer,car,body,world,vehicle,input,reset,voxelCount,crash,orbit,get paused(){return paused;},get speed(){return Math.hypot(body.velocity.x,body.velocity.z)*3.6;},get simulationTime(){return simTime;}};
 } catch(error){console.error(error);document.querySelector('#error').classList.add('show');}
