@@ -58,9 +58,9 @@ try {
     const broad = Math.sin(warp * .046) * 9 + Math.sin(x * .006 + y * .02) * 3;
     const noise = (noiseSeed % 17) - 8;
     const i = (y * 512 + x) * 4;
-    woodImage.data[i] = 126 + broad + line + noise;
-    woodImage.data[i+1] = 77 + broad*.65 + line*.7 + noise*.6;
-    woodImage.data[i+2] = 39 + broad*.38 + line*.45 + noise*.4;
+    woodImage.data[i] = 100 + broad + line + noise;
+    woodImage.data[i+1] = 78 + broad*.65 + line*.7 + noise*.6;
+    woodImage.data[i+2] = 51 + broad*.38 + line*.45 + noise*.4;
     woodImage.data[i+3] = 255;
   }
   wc.putImageData(woodImage, 0, 0);
@@ -70,12 +70,29 @@ try {
       wc.beginPath();wc.ellipse(x,y,r*2.8,r*.38,.03,0,Math.PI*2);wc.stroke();
     }
   }
+  // Fine splinters and long faded scratches embedded in the wood itself.
+  for (let i=0;i<110;i++) {
+    noiseSeed=(Math.imul(noiseSeed,1664525)+1013904223)>>>0;
+    const x=noiseSeed%512,y=(noiseSeed>>>10)%512,len=8+(noiseSeed>>>18)%100;
+    wc.strokeStyle=i%3===0?'rgba(198,178,139,.19)':'rgba(34,26,17,.3)';wc.lineWidth=i%7===0?1.5:.55;
+    wc.beginPath();wc.moveTo(x,y);wc.lineTo(x+len*.65,y-.8);wc.lineTo(x+len,y+.4);wc.stroke();
+  }
   const wood = new THREE.CanvasTexture(woodCanvas); wood.colorSpace = THREE.SRGBColorSpace;
   wood.wrapS = wood.wrapT = THREE.RepeatWrapping; wood.anisotropy = Math.min(8,renderer.capabilities.getMaxAnisotropy());
-  const shell = new THREE.MeshStandardMaterial({ color: 0xd7b98d, map:wood, metalness: 0, roughness: .78, bumpMap: wood, bumpScale: .025 });
-  const panel = new THREE.MeshStandardMaterial({ color: 0xc49e73, map:wood, metalness: 0, roughness: .85, bumpMap: wood, bumpScale: .03 });
-  const aluminum = new THREE.MeshStandardMaterial({ color: 0x53514c, metalness: .84, roughness: .48 });
-  const steel = new THREE.MeshStandardMaterial({ color: 0x353632, metalness: .8, roughness: .5 });
+  const shell = new THREE.MeshStandardMaterial({ color: 0xbeb59d, map:wood, metalness: 0, roughness: .96, bumpMap: wood, bumpScale: .045 });
+  const panel = new THREE.MeshStandardMaterial({ color: 0xa49a80, map:wood, metalness: 0, roughness: .98, bumpMap: wood, bumpScale: .03 });
+  const rustCanvas=document.createElement('canvas');rustCanvas.width=rustCanvas.height=128;
+  const rc=rustCanvas.getContext('2d');rc.fillStyle='#3e3b33';rc.fillRect(0,0,128,128);
+  for(let i=0;i<1700;i++){
+    noiseSeed=(Math.imul(noiseSeed,1664525)+1013904223)>>>0;
+    const x=noiseSeed%128,y=(noiseSeed>>>8)%128;
+    rc.fillStyle=i%3===0?'rgba(128,70,32,.45)':'rgba(26,29,26,.38)';
+    rc.fillRect(x,y,1+(i%4),1+(i%3));
+  }
+  const rust=new THREE.CanvasTexture(rustCanvas);rust.colorSpace=THREE.SRGBColorSpace;
+  rust.wrapS=rust.wrapT=THREE.RepeatWrapping;
+  const aluminum = new THREE.MeshStandardMaterial({ color: 0xa49b84,map:rust,metalness:.52,roughness:.88,bumpMap:rust,bumpScale:.015 });
+  const steel = new THREE.MeshStandardMaterial({ color: 0x777666,map:rust,metalness:.45,roughness:.94 });
   const rubber = new THREE.MeshStandardMaterial({ color: 0x11161c, metalness: 0.03, roughness: 0.82 });
   const dark = new THREE.MeshStandardMaterial({ color: 0x080d12, metalness: 0.4, roughness: 0.45 });
   const indicator = new THREE.MeshStandardMaterial({ color: 0x93ccc3, metalness: 0.55, roughness: 0.3, emissive: 0x366c62, emissiveIntensity: 0.35 });
@@ -109,7 +126,8 @@ try {
   for (const side of [-1, 1]) {
     box(model, [4.80, 1.42, 0.07], [0, -0.11, side * 1.17], dark, 0.03);
     for (let board=0; board<4; board++) {
-      const plank = box(model, [4.72, .324, .075], [0, -.64 + board*.35, side * 1.214], board%2 ? shell : panel, .018);
+      const plank = box(model, [4.72, .318+(board%2)*.008, .075], [board%2 ? .018 : -.012, -.64 + board*.35, side * 1.214], board%2 ? shell : panel, .012);
+      plank.rotation.z=(board%2 ? 1 : -1)*.002;
     }
     // Recessed nails, not futuristic panel ribs.
     for (const x of [-2.18,2.18]) for (const y of [-.62,-.27,.08,.43]) screw(x,y,side*1.265,side>0);
@@ -124,38 +142,38 @@ try {
     screw(x * 2.49, -0.76, z * 1.25, z > 0);
     screw(x * 2.48, 1.42, z * 1.25, z > 0);
   }
-  // Two deep mechanical latches on the front.
-  for (const x of [-1.85, 1.85]) {
-    box(model, [0.42, 0.64, 0.11], [x, 0.88, 1.23], aluminum, 0.04);
-    box(model, [0.29, 0.33, 0.075], [x, 0.84, 1.31], dark, 0.025);
-    box(model, [0.25, 0.24, 0.10], [x, 0.85, 1.355], steel, 0.03);
-    cylinder(model, 0.07, 0.38, [x, 0.98, 1.36], aluminum, 'x');
-    box(model, [0.22, 0.035, 0.018], [x, 0.79, 1.413], aluminum, 0.008);
-    screw(x, 1.14, 1.30); screw(x, 0.59, 1.30);
-    // Recessed band along the top of the lid.
-    box(model, [0.22, 0.035, 2.04], [x, 1.615, 0], steel, 0.015);
+  // Old forged iron straps: heavy rivets instead of modern suitcase latches.
+  for(const x of [-1.85,1.85]) {
+    box(model,[.26,1.8,.09],[x,-.03,1.285],aluminum,.012);
+    box(model,[.26,.55,.09],[x,1.31,1.245],aluminum,.012);
+    box(model,[.27,.07,2.15],[x,1.70,0],aluminum,.012);
+    for(const y of [-.74,-.36,.15,.63,1.35]) cylinder(model,.05,.04,[x,y,1.35],steel);
   }
+  box(model,[.32,.65,.10],[0,.81,1.29],aluminum,.025);
+  cylinder(model,.065,.15,[0,.62,1.39],steel);
   // Hinge barrels and back plates are visible when the player rotates the case.
   for (const x of [-1.8, 1.8]) {
     box(model, [0.65, 0.48, 0.09], [x, 0.96, -1.21], steel, 0.035);
     for (let i = -1; i <= 1; i++) cylinder(model, 0.09, 0.18, [x + i * 0.20, 0.98, -1.31], i === 0 ? steel : aluminum, 'x');
     screw(x - 0.2, 1.13, -1.27, false); screw(x + 0.2, 0.79, -1.27, false);
   }
-  // A solid carry handle with an actual opening and a ribbed rubber grip.
-  for (const x of [-0.8, 0.8]) box(model, [0.35, 0.13, 0.5], [x, 1.66, 0], aluminum, 0.045);
-  function roundedPath(path, x, y, w, h, r) {
-    path.moveTo(x + r, y); path.lineTo(x + w - r, y); path.quadraticCurveTo(x + w, y, x + w, y + r);
-    path.lineTo(x + w, y + h - r); path.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-    path.lineTo(x + r, y + h); path.quadraticCurveTo(x, y + h, x, y + h - r);
-    path.lineTo(x, y + r); path.quadraticCurveTo(x, y, x + r, y);
+  // A worn plank lid and simple old iron side handles.
+  for(let i=0;i<4;i++) {
+    const board=box(model,[5.14,.075,.49],[0,1.63,-.78+i*.52],i%2?shell:panel,.018);
+    board.rotation.z=(i%2?1:-1)*.002;
   }
-  const handleShape = new THREE.Shape(); roundedPath(handleShape, -0.95, 0, 1.9, 0.69, 0.20);
-  const hole = new THREE.Path(); roundedPath(hole, -0.72, 0.12, 1.44, 0.35, 0.10); handleShape.holes.push(hole);
-  // The opening stays clear above the top plate; a dark grip caps the metal arch.
-  const handleGeo = new THREE.ExtrudeGeometry(handleShape, { depth: 0.16, bevelEnabled: true, bevelSize: 0.03, bevelThickness: 0.025, bevelSegments: 3, curveSegments: 16 });
-  const handle = new THREE.Mesh(handleGeo, aluminum); handle.position.set(0, 1.70, -0.08); handle.castShadow = true; model.add(handle);
-  box(model, [1.24, 0.24, 0.25], [0, 2.29, 0], rubber, 0.07);
-  for (let i = -5; i <= 5; i++) box(model, [0.035, 0.245, 0.255], [i * 0.094, 2.29, 0], dark, 0.009);
+  for(const side of [-1,1]) {
+    box(model,[.09,.47,.60],[side*2.85,.2,0],aluminum,.035);
+    for(const z of [-.2,.2]) cylinder(model,.065,.09,[side*2.94,.24,z],steel,'x');
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(.29,.045,8,32),aluminum);
+    ring.rotation.y=Math.PI/2;ring.scale.y=.8;ring.position.set(side*2.97,-.04,0);ring.castShadow=true;model.add(ring);
+  }
+  const split=new THREE.MeshStandardMaterial({color:0x30291e,roughness:1});
+  // A handful of visible hairline splits, following rather than crossing the grain.
+  for(const [x,y,len] of [[-1.4,-.52,.70],[.5,.1,.95],[-.2,.48,.6],[1.6,-.25,.55]]) {
+    const points=[new THREE.Vector3(x,y,1.257),new THREE.Vector3(x+len*.35,y+.018,1.259),new THREE.Vector3(x+len*.7,y-.008,1.259),new THREE.Vector3(x+len,y+.006,1.257)];
+    const crack=new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),12,.007,4,false),split);model.add(crack);
+  }
   // Center badge, status light, side vents and non-slip feet.
   box(model, [0.40, 0.38, 0.055], [0, 0.15, 1.284], steel, 0.045);
   cylinder(model,.045,.012,[0,.19,1.32],dark);
@@ -163,7 +181,7 @@ try {
   for (const side of [-1, 1]) {
     box(model, [.04, 1.42, 1.65], [side*2.77,-.11,0], dark,.02);
     for (let i=0;i<4;i++) box(model,[.065,.324,1.57],[side*2.80,-.64+i*.35,0],i%2 ? shell : panel,.015);
-    for (const z of [-.77,.77]) box(model,[.77,.24,.48],[side*1.93,-1.10,z],rubber,.07);
+    for (const z of [-.77,.77]) box(model,[.77,.24,.48],[side*1.93,-1.10,z],panel,.07);
   }
   // Studio-style lighting with actual material reflections and grounded shadows.
   const key = new THREE.SpotLight(0xfff4e5, 95, 40, 0.65, 0.75, 2);
@@ -181,7 +199,7 @@ try {
   const contact = new THREE.Mesh(new THREE.PlaneGeometry(8, 4.8), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(shadowCanvas), transparent: true, depthWrite: false, opacity: 0.75 }));
   contact.rotation.x = -Math.PI / 2; contact.position.y = 0.208; scene.add(contact);
   const controls = new OrbitControls(camera, renderer.domElement);
-  controls.target.set(0, 1.88, 0); controls.enableDamping = true; controls.dampingFactor = 0.07;
+  controls.target.set(0, 1.65, 0); controls.enableDamping = true; controls.dampingFactor = 0.07;
   controls.enablePan = false; controls.enableZoom = false; controls.enableRotate = false; controls.enabled = false;
   controls.minPolarAngle = Math.PI * 0.27; controls.maxPolarAngle = Math.PI * 0.49;
   let interacting = false, dirty = true;
