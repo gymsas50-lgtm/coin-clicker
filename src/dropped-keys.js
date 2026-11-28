@@ -36,9 +36,10 @@ export function createDroppedKeys(scene) {
       if(now-(e.landed??e.born)> (e.landed===null?14000:10000)){
         world.removeBody(e.body);scene.remove(e.visual);for(const m of e.materials.values())m.dispose();items.splice(i,1);continue;
       }
-      e.visual.quaternion.set(e.body.quaternion.x,e.body.quaternion.y,e.body.quaternion.z,e.body.quaternion.w);
+      const q=e.body.interpolatedQuaternion,p=e.body.interpolatedPosition;
+      e.visual.quaternion.set(q.x,q.y,q.z,q.w);
       offset.copy(center).applyQuaternion(e.visual.quaternion);
-      e.visual.position.set(e.body.position.x-offset.x,e.body.position.y-offset.y,e.body.position.z-offset.z);
+      e.visual.position.set(p.x-offset.x,p.y-offset.y,p.z-offset.z);
     }
     return true;
   }};
