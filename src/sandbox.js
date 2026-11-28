@@ -14,7 +14,7 @@ try {
  const outdoors=createOutdoors({scene,world,renderer});
  const roomMeshes=[outdoors.ground];
  const container=createContainer({scene,world});
- const props=createCubeProps({scene,world,isProtected:body=>container.contains(body),canSpawn:(x,z,size)=>!container.blocksSpawn(x,z,size),getPlayer:()=>player,onFreeze(body){if(holding&&activeBody===body)release();}});
+ const props=createCubeProps({scene,world,storage:container,isHeld:body=>holding&&activeBody===body,isProtected:body=>container.contains(body),canSpawn:(x,z,size)=>!container.blocksSpawn(x,z,size),getPlayer:()=>player,onFreeze(body){if(holding&&activeBody===body)release();}});
  const cube=props[0].mesh,cubeBody=props[0].body;
  const hoverRay=new THREE.Raycaster(),screenCenter=new THREE.Vector2(0,0);
  const player=new CANNON.Body({mass:75,shape:new CANNON.Box(new CANNON.Vec3(.3,.85,.3)),fixedRotation:true,linearDamping:.05,allowSleep:false});player.position.set(0,.88,6);player.updateMassProperties();player.collisionFilterGroup=4;world.addBody(player);
@@ -34,7 +34,7 @@ try {
   if(holding)return;syncView();for(const prop of [...props,container])prop.mesh.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(0,0),camera);
   const hits=ray.intersectObjects([...props,container].filter(p=>!p.broken&&p.price>0).map(p=>p.mesh),true).filter(h=>h.object.isMesh&&h.face);if(!hits.length||hits[0].distance>3)return;
   const hit=hits[0];let node=hit.object,prop;while(node&&!prop){prop=[...props,container].find(p=>p.mesh===node);node=node.parent;}
-  if(!prop)return;if(prop.detach)prop.detach();activeBody=prop.body;activeMesh=prop.mesh;
+  if(!prop)return;if(prop.takeOut)prop.takeOut();if(prop.detach)prop.detach();activeBody=prop.body;activeMesh=prop.mesh;
   const p=hit.point;activeBody.pointToLocalFrame(new CANNON.Vec3(p.x,p.y,p.z),anchor);holdDistance=THREE.MathUtils.clamp(hit.distance,1.2,3);
   grabNormal.copy(hit.face.normal).transformDirection(hit.object.matrixWorld).applyQuaternion(activeMesh.getWorldQuaternion(new THREE.Quaternion()).invert()).normalize();
   holdTarget.copy(p);previousHoldTarget.copy(p);holding=true;activeBody.wakeUp();crosshair.classList.add('holding');
@@ -48,6 +48,7 @@ try {
  renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());renderer.domElement.addEventListener('wheel',e=>{if(!locked)return;e.preventDefault();const awayFromPlayer=Math.sign(-e.deltaY);holdDistance=THREE.MathUtils.clamp(holdDistance+awayFromPlayer*.25,1.2,3);},{passive:false});
  addEventListener('keydown',e=>{if(e.code==='Escape'&&locked){document.exitPointerLock();return;}if(['KeyW','KeyA','KeyS','KeyD','Space'].includes(e.code)&&locked){e.preventDefault();keys.add(e.code);if(e.code==='Space'&&!e.repeat)jump=true;}});addEventListener('keyup',e=>keys.delete(e.code));addEventListener('blur',()=>{keys.clear();release();});
  world.addEventListener('preStep',()=>{
+  for(const prop of props)prop.followStorage();
   const x=Number(keys.has('KeyD'))-Number(keys.has('KeyA')),z=Number(keys.has('KeyS'))-Number(keys.has('KeyW')),n=Math.hypot(x,z)||1;
   const grounded=world.contacts.some(c=>{
    if(c.bi===player)return c.ni.y<-.6;
