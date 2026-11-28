@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="app-id" content="arena-coin-clicker"><meta name="theme-color" content="#090b0f"><title>Кейс / Three.js</title>
+<style>*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090b0f}#scene{position:fixed;inset:0;display:grid;place-items:center;cursor:grab;touch-action:none}#scene.dragging{cursor:grabbing}canvas{display:block;position:absolute;inset:0;width:100%;height:100%;outline:none}.fallback{width:min(480px,88vw);height:auto;filter:drop-shadow(0 18px 24px #0008)}.ready .fallback{display:none}</style></head><body><main id="scene" aria-label="Кейс по центру экрана"><svg class="fallback" viewBox="0 0 480 360" role="img" aria-labelledby="case-title">
+<title id="case-title">Закрытый металлический кейс</title>
+<defs>
+ <linearGradient id="shell" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#45494f"/><stop offset=".45" stop-color="#303339"/><stop offset="1" stop-color="#23262b"/></linearGradient>
+ <linearGradient id="lid" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#555a62"/><stop offset=".13" stop-color="#42474f"/><stop offset="1" stop-color="#30343b"/></linearGradient>
+ <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d8dde4"/><stop offset=".36" stop-color="#929aa6"/><stop offset=".7" stop-color="#626b77"/><stop offset="1" stop-color="#b4bdc7"/></linearGradient>
+ <linearGradient id="lock" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f1f3f6"/><stop offset="1" stop-color="#8c96a4"/></linearGradient>
+ <linearGradient id="inner" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#24272c"/><stop offset="1" stop-color="#353940"/></linearGradient>
+ <radialGradient id="shadow"><stop stop-color="#000" stop-opacity=".6"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+ <pattern id="texture" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 6 6 0" stroke="#fff" stroke-opacity=".025" stroke-width=".6"/></pattern>
+</defs>
+<ellipse cx="240" cy="296" rx="188" ry="24" fill="url(#shadow)"/>
+<!-- Handle and rubber grip -->
+<path d="M192 103V84Q192 70 206 70H274Q288 70 288 84V103" fill="none" stroke="#090b0e" stroke-width="15"/>
+<path d="M192 100V84Q192 73 206 73H274Q285 73 285 84V100" fill="none" stroke="url(#steel)" stroke-width="7"/>
+<rect x="207" y="68" width="66" height="12" rx="5" fill="#171a1f" stroke="#4c515a"/>
+<path d="M215 72H264" stroke="#6b737f" stroke-opacity=".5"/>
+<rect x="183" y="93" width="22" height="14" rx="3" fill="#777f8b" stroke="#17191d"/>
+<rect x="275" y="93" width="22" height="14" rx="3" fill="#777f8b" stroke="#17191d"/>
+<!-- Feet -->
+<rect x="104" y="265" width="41" height="16" rx="5" fill="#111317" stroke="#3e424a"/>
+<rect x="335" y="265" width="41" height="16" rx="5" fill="#111317" stroke="#3e424a"/>
+<!-- Main body and inset panel -->
+<rect x="67" y="101" width="346" height="173" rx="17" fill="url(#shell)" stroke="#0a0c0f" stroke-width="5"/>
+<rect x="72" y="106" width="336" height="162" rx="13" fill="none" stroke="#8b939e" stroke-opacity=".45"/>
+<rect x="92" y="158" width="296" height="92" rx="7" fill="url(#inner)" stroke="#101216" stroke-width="2"/>
+<rect x="95" y="161" width="290" height="86" rx="5" fill="url(#texture)"/>
+<path d="M103 244H377" stroke="#555b65" stroke-opacity=".5"/>
+<!-- Raised lid -->
+<path d="M84 102H396Q411 102 411 118V146H69V118Q69 102 84 102Z" fill="url(#lid)"/>
+<path d="M85 107H395Q404 107 405 118" fill="none" stroke="#adb5c2" stroke-opacity=".45"/>
+<path d="M70 145H410" stroke="#0a0c0f" stroke-width="5"/>
+<path d="M74 148H406" stroke="#89909b" stroke-opacity=".3"/>
+<!-- Side reinforcements -->
+<path d="M81 106H105V135H93V154H72V119Q72 110 81 106Z" fill="url(#steel)" stroke="#21252b"/>
+<path d="M399 106H375V135H387V154H408V119Q408 110 399 106Z" fill="url(#steel)" stroke="#21252b"/>
+<path d="M72 225H91V246H107V267H84Q72 265 72 253Z" fill="url(#steel)" stroke="#20242a"/>
+<path d="M408 225H389V246H373V267H396Q408 265 408 253Z" fill="url(#steel)" stroke="#20242a"/>
+<!-- Two metal closure straps -->
+<g stroke="#171b21" stroke-width="2">
+ <rect x="124" y="125" width="30" height="50" rx="5" fill="url(#steel)"/>
+ <rect x="326" y="125" width="30" height="50" rx="5" fill="url(#steel)"/>
+</g>
+<rect x="129" y="136" width="20" height="24" rx="3" fill="#303740" stroke="#bcc4ce" stroke-opacity=".65"/>
+<rect x="331" y="136" width="20" height="24" rx="3" fill="#303740" stroke="#bcc4ce" stroke-opacity=".65"/>
+<path d="M132 142H146M334 142H348" stroke="#d8dee6" stroke-width="2"/>
+<!-- Center lock -->
+<path d="M219 145V134Q219 116 240 116Q261 116 261 134V145" fill="none" stroke="#15191f" stroke-width="10"/>
+<path d="M221 145V134Q221 119 240 119Q259 119 259 134V145" fill="none" stroke="url(#steel)" stroke-width="5"/>
+<rect x="218" y="141" width="44" height="40" rx="7" fill="url(#lock)" stroke="#171b21" stroke-width="2"/>
+<circle cx="240" cy="157" r="4" fill="#222830"/>
+<path d="M238 159 236.5 167H243.5L242 159" fill="#222830"/>
+<path d="M225 146H255" stroke="#fff" stroke-opacity=".6"/>
+<!-- Vents and rivets -->
+<g stroke="#14171c" stroke-width="3" stroke-linecap="round"><path d="M112 211H153M112 219H153M112 227H153M327 211H368M327 219H368M327 227H368"/></g>
+<g fill="#a5adb8" stroke="#252a32" stroke-width="1.5"><circle cx="83" cy="119" r="3"/><circle cx="397" cy="119" r="3"/><circle cx="83" cy="256" r="3"/><circle cx="397" cy="256" r="3"/><circle cx="139" cy="168" r="2"/><circle cx="341" cy="168" r="2"/></g>
+<path d="M183 233H297" stroke="#6e7785" stroke-opacity=".2"/>
+</svg></main>
+<script>/*__BUNDLE__*/</script>
+<script>(()=>{'use strict';
+const version='__GAME_VERSION__';let pending=false;
+async function check(){
+ if(pending||!/^https?:$/.test(location.protocol)||version.startsWith('__'))return;
+ pending=true;
+ try{const response=await fetch('/version',{cache:'no-store',signal:AbortSignal.timeout(2500)});if(!response.ok)return;const next=(await response.text()).trim();if(/^[a-f0-9]{64}$/.test(next)&&next!==version)location.reload();}catch{}finally{pending=false;}
+}
+setInterval(check,1000);addEventListener('focus',check);document.addEventListener('visibilitychange',()=>{if(!document.hidden)check();});
+})();
+</script></body></html>

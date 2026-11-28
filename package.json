@@ -1,8 +1,19 @@
 {
-  "name": "game-server-base",
+  "name": "case-game",
   "version": "2.0.0",
   "private": true,
-  "description": "Clean server foundation for a new game",
-  "scripts": { "start": "node server.js" },
-  "engines": { "node": "22.x" }
+  "description": "Self-contained Three.js case scene with live page updates",
+  "scripts": {
+    "start": "node server.js",
+    "build": "node src/build.cjs"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "dependencies": {
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.10"
+  }
 }
