@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
+import {createVoxelCar} from './voxel-car.js';
 
 try {
   const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
@@ -12,9 +12,15 @@ try {
   const camera=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.1,350);
   scene.add(new THREE.HemisphereLight(0xf2f7ff,0x7e8b75,2.5));
   const sun=new THREE.DirectionalLight(0xfff0d7,3.2);sun.position.set(-10,16,8);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-12;sun.shadow.camera.right=12;sun.shadow.camera.top=12;sun.shadow.camera.bottom=-12;sun.shadow.camera.near=.5;sun.shadow.camera.far=50;sun.shadow.normalBias=.035;sun.shadow.bias=-.00008;scene.add(sun,sun.target);
-  const groundCanvas=document.createElement('canvas');groundCanvas.width=groundCanvas.height=256;
-  const ctx=groundCanvas.getContext('2d');ctx.fillStyle='#b9c2b2';ctx.fillRect(0,0,256,256);ctx.strokeStyle='#a6b39e';ctx.lineWidth=2;ctx.strokeRect(0,0,256,256);
-  const groundTexture=new THREE.CanvasTexture(groundCanvas);groundTexture.colorSpace=THREE.SRGBColorSpace;groundTexture.wrapS=groundTexture.wrapT=THREE.RepeatWrapping;groundTexture.repeat.set(8000,8000);groundTexture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
+  const groundCanvas=document.createElement('canvas');groundCanvas.width=groundCanvas.height=32;
+  const ctx=groundCanvas.getContext('2d');
+  const grassColors=['#b6c4a5','#b4c2a2','#b2c0a1','#b8c6a7','#bac7a9'];
+  for(let x=0;x<32;x++)for(let y=0;y<32;y++){
+    const noise=((x*73856093^y*19349663)>>>0)%grassColors.length;
+    ctx.fillStyle=grassColors[noise];ctx.fillRect(x,y,1,1);
+  }
+
+  const groundTexture=new THREE.CanvasTexture(groundCanvas);groundTexture.colorSpace=THREE.SRGBColorSpace;groundTexture.wrapS=groundTexture.wrapT=THREE.RepeatWrapping;groundTexture.repeat.set(8000,8000);groundTexture.magFilter=THREE.NearestFilter;groundTexture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
   const floor=new THREE.Mesh(new THREE.PlaneGeometry(24000,24000),new THREE.MeshStandardMaterial({map:groundTexture,roughness:1,metalness:0}));floor.rotation.x=-Math.PI/2;floor.receiveShadow=true;scene.add(floor);
 
 
@@ -31,47 +37,7 @@ try {
   for(const z of [-1.22,1.22])for(const x of [-.90,.90])vehicle.addWheel({...wheelOptions,chassisConnectionPointLocal:new CANNON.Vec3(x,.08,z),isFrontWheel:z<0});
   vehicle.addToWorld(world);
 
-  const car=new THREE.Group();scene.add(car);
-  const paint=new THREE.MeshStandardMaterial({color:0xc84e2b,metalness:.48,roughness:.28});
-  const trim=new THREE.MeshStandardMaterial({color:0x222d2c,metalness:.15,roughness:.57});
-  const glass=new THREE.MeshStandardMaterial({color:0x31494d,metalness:.52,roughness:.18});
-  const chrome=new THREE.MeshStandardMaterial({color:0xaebabb,metalness:.85,roughness:.23});
-  const rubber=new THREE.MeshStandardMaterial({color:0x202625,roughness:.96});
-  const brakeRed=new THREE.MeshStandardMaterial({color:0xe13026,emissive:0xe13026,emissiveIntensity:.65,roughness:.3});
-  const whiteLight=new THREE.MeshStandardMaterial({color:0xfff2ce,emissive:0xffe6a8,emissiveIntensity:2});
-  function box(parent,size,position,material,radius=.025){const mesh=new THREE.Mesh(new RoundedBoxGeometry(...size,2,radius),material);mesh.position.set(...position);mesh.castShadow=true;mesh.receiveShadow=true;parent.add(mesh);return mesh;}
-  function profile(points,width,mat){const shape=new THREE.Shape();points.forEach(([z,y],i)=>{if(i)shape.lineTo(-z,y);else shape.moveTo(-z,y);});shape.closePath();const geo=new THREE.ExtrudeGeometry(shape,{depth:width,bevelEnabled:true,bevelSize:.045,bevelThickness:.035,bevelSegments:2,steps:1});geo.rotateY(Math.PI/2);const mesh=new THREE.Mesh(geo,mat);mesh.position.x=-width/2;mesh.castShadow=true;mesh.receiveShadow=true;car.add(mesh);return mesh;}
-  profile([[-1.93,-.04],[-1.88,.21],[-.82,.32],[.97,.34],[1.9,.23],[1.96,-.08],[1.75,-.20],[-1.7,-.20]],1.68,paint);
-  box(car,[1.69,.12,3.6],[0,-.14,0],trim,.04);
-  profile([[-.79,.31],[-.28,.86],[.69,.86],[1.29,.33]],1.38,glass);
-  box(car,[1.32,.065,1.02],[0,.91,.23],paint,.04);
-  for(const side of [-1,1]){
-    box(car,[.05,.46,.055],[side*.72,.6,.23],trim,.008);
-    const frontPillar=box(car,[.065,.75,.065],[side*.70,.59,-.53],paint,.016);frontPillar.rotation.x=.74;
-    const rearPillar=box(car,[.065,.73,.065],[side*.70,.59,1.0],paint,.016);rearPillar.rotation.x=-.82;
-    box(car,[.07,.09,1.9],[side*.84,.30,.10],paint,.02);
-    box(car,[.035,.04,.18],[side*.895,.22,.50],chrome,.008);
-    box(car,[.20,.095,.20],[side*.94,.48,-.56],trim,.035);
-    box(car,[.17,.065,1.18],[side*.89,-.1,0],trim,.02);
-    box(car,[.42,.105,.045],[side*.55,.15,-1.96],whiteLight,.018);
-    box(car,[.46,.095,.045],[side*.53,.14,1.98],brakeRed,.015);
-  }
-  box(car,[1.1,.11,.045],[0,-.04,-1.97],trim,.012);
-  box(car,[1.15,.13,.055],[0,-.04,1.98],trim,.012);
-  box(car,[.38,.095,.015],[0,.14,2.01],new THREE.MeshStandardMaterial({color:0xe4e4cc,roughness:.8}),.005);
-  for(const x of [-.55,.55]){
-    const exhaust=new THREE.Mesh(new THREE.CylinderGeometry(.045,.045,.11,16),chrome);exhaust.rotation.x=Math.PI/2;exhaust.position.set(x,-.13,2.02);car.add(exhaust);
-  }
-  const wheels=[];
-  for(let i=0;i<4;i++){
-    const group=new THREE.Group();scene.add(group);wheels.push(group);
-    const tire=new THREE.Mesh(new THREE.CylinderGeometry(.34,.34,.22,24),rubber);tire.rotation.z=Math.PI/2;tire.castShadow=true;group.add(tire);
-    for(const side of [-1,1]){
-      const rim=new THREE.Mesh(new THREE.CylinderGeometry(.225,.225,.012,20),chrome);rim.rotation.z=Math.PI/2;rim.position.x=side*.116;group.add(rim);
-      const hub=new THREE.Mesh(new THREE.CylinderGeometry(.078,.078,.016,16),trim);hub.rotation.z=Math.PI/2;hub.position.x=side*.127;group.add(hub);
-      for(let n=0;n<5;n++){const a=n*Math.PI*2/5;const slot=box(group,[.016,.07,.075],[side*.126,Math.cos(a)*.153,Math.sin(a)*.153],trim,.012);slot.rotation.x=a;}
-    }
-  }
+  const {car,wheels,brakeRed,voxelCount}=createVoxelCar(scene);
 
   const input={forward:false,back:false,left:false,right:false,brake:false};
   const keyMap={KeyW:'forward',ArrowUp:'forward',KeyS:'back',ArrowDown:'back',KeyA:'left',ArrowLeft:'left',KeyD:'right',ArrowRight:'right',Space:'brake'};
@@ -147,5 +113,5 @@ try {
   addEventListener('resize',resize);resize();reset();render(1/60);requestAnimationFrame(frame);
   renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();paused=true;clearInput();document.querySelector('#error').classList.add('show');});
   renderer.domElement.addEventListener('webglcontextrestored',()=>location.reload());
-  window.carGame={ready:true,scene,camera,renderer,car,body,world,vehicle,input,reset,get paused(){return paused;},get speed(){return Math.hypot(body.velocity.x,body.velocity.z)*3.6;},get simulationTime(){return simTime;}};
+  window.carGame={ready:true,scene,camera,renderer,car,body,world,vehicle,input,reset,voxelCount,get paused(){return paused;},get speed(){return Math.hypot(body.velocity.x,body.velocity.z)*3.6;},get simulationTime(){return simTime;}};
 } catch(error){console.error(error);document.querySelector('#error').classList.add('show');}

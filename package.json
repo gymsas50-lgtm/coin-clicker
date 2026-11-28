@@ -1,8 +1,8 @@
 {
   "name": "empty-drive",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "A fresh 3D driving playground — no updater or desktop wrapper",
+  "description": "Voxel driving playground with a detailed Aster GT coupe",
   "scripts": {
     "build": "node src/build.cjs",
     "start": "node server.js"
