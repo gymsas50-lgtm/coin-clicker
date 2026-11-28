@@ -1,6 +1,6 @@
 # Case game / Three.js
 
-Centered, detailed 3D wooden case with a fixed camera, aged oak planks, hairline splits, rusty iron straps and side ring handles, procedural wood grain, studio lighting and soft contact shadows. Version v0.2.0 is shown in the bottom-left corner. No external assets or CDN requests at runtime. A built-in SVG fallback is shown if WebGL is unavailable.
+Centered, detailed 3D wooden case with a fixed camera, aged oak planks, hairline splits, rusty iron straps and side ring handles, procedural wood grain, studio lighting and soft contact shadows. Version v0.2.1 is shown in the bottom-left corner. No external assets or CDN requests at runtime. A built-in SVG fallback is shown if WebGL is unavailable.
 
 Run `node server.js` or use the existing Windows launcher. The built `index.html` also runs offline. The live-update marker and protocol are unchanged.
 
@@ -18,3 +18,5 @@ Roblox is separate under `roblox-sync/` and is not modified by this browser-game
 ## Windows desktop
 
 `desktop/main.cjs` runs the game in an isolated Electron window, without a browser tab or Node.js installation. The packaged app includes an offline game, checks the main branch on launch and every 15 seconds, validates and caches the latest HTML in the Windows user profile, and reloads via the existing version protocol. Game updates are automatic; Electron/native launcher updates require a new desktop download. Keep all files beside the EXE.
+
+Version 0.2.1 refines the key into a symmetric antique brass design with an in-plane bow, a straight shaft and a slot-sized bit. The approach aligns before a fixed-axis insertion; the key no longer scales or bypasses depth testing.

@@ -5,38 +5,56 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
   const duration=6.9;
   let phase='closed',started=0,lastDraw=-Infinity,force=true,shadow=true,closingAngle=0;
   let manualTime=null;
-  const gold=new THREE.MeshStandardMaterial({color:0xc99a49,metalness:.88,roughness:.27,transparent:true});
-  const polished=new THREE.MeshStandardMaterial({color:0xf1cd82,metalness:.95,roughness:.21,transparent:true});
-  const darkGold=new THREE.MeshStandardMaterial({color:0x6f4a21,metalness:.72,roughness:.42,transparent:true});
-  const key=new THREE.Group();key.name='Animated skeleton key';scene.add(key);key.visible=false;
+  const gold=new THREE.MeshStandardMaterial({color:0x9e783b,metalness:.82,roughness:.34,transparent:true});
+  const polished=new THREE.MeshStandardMaterial({color:0xd6b778,metalness:.87,roughness:.26,transparent:true});
+  const darkGold=new THREE.MeshStandardMaterial({color:0x5e4528,metalness:.76,roughness:.47,transparent:true});
+  const key=new THREE.Group();key.name='Antique brass key';scene.add(key);key.visible=false;
   function mesh(geo,mat,pos) {
-    const m=new THREE.Mesh(geo,mat);m.position.set(...pos);m.castShadow=true;m.renderOrder=40;key.add(m);return m;
+    const m=new THREE.Mesh(geo,mat);m.position.set(...pos);m.castShadow=true;key.add(m);return m;
   }
   function rod(radius,len,z,mat=gold) {
-    const m=mesh(new THREE.CylinderGeometry(radius,radius,len,24),mat,[0,0,z]);m.rotation.x=Math.PI/2;return m;
+    const m=mesh(new THREE.CylinderGeometry(radius,radius,len,32),mat,[0,0,z]);m.rotation.x=Math.PI/2;return m;
   }
-  // The origin is the very tip: insertion and shaft rotation stay physically aligned.
-  rod(.037,.94,.47);
-  rod(.061,.07,.83,polished);rod(.052,.04,.90,darkGold);
-  const bow=mesh(new THREE.TorusGeometry(.235,.048,12,48),gold,[0,0,1.16]);bow.scale.set(1,.9,1);
-  const inner=mesh(new THREE.TorusGeometry(.147,.012,8,40),polished,[0,0,1.16]);inner.scale.y=.9;
-  for(const x of [-1,1]) {
-    const flourish=mesh(new THREE.TorusGeometry(.079,.019,8,24,Math.PI*1.45),gold,[x*.15,.115,1.16]);
-    flourish.rotation.z=x<0?.3:1.8;
+  // One straight shaft, tip at z=0, all ornament in the shaft's XZ plane.
+  rod(.026,.85,.44);
+  mesh(new THREE.SphereGeometry(.026,20,12),polished,[0,0,.015]);
+  rod(.038,.045,.76,polished);rod(.034,.025,.81,darkGold);
+  rod(.046,.055,.87,gold);rod(.036,.09,.91,polished);
+  function oval(rx,rz,thickness,y,mat) {
+    const pts=[];
+    for(let i=0;i<=96;i++) {
+      const angle=i/96*Math.PI*2;
+      // A restrained scalloped oval, symmetric about the shaft.
+      const flute=1+.035*Math.cos(angle*4);
+      pts.push(new THREE.Vector3(Math.cos(angle)*rx*flute,y,1.14+Math.sin(angle)*rz*flute));
+    }
+    mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts,true),96,thickness,10,true),mat,[0,0,0]);
   }
-  mesh(new THREE.SphereGeometry(.065,16,12),polished,[0,0,.94]);
-  for(const [z,w] of [[.09,.13],[.23,.105],[.33,.15]]) {
-    const tooth=mesh(new THREE.BoxGeometry(w,.07,.065),gold,[w*.40,0,z]);
-    mesh(new THREE.BoxGeometry(.035,.078,.035),polished,[w-.03,0,z]);
+  oval(.155,.205,.027,0,gold);
+  oval(.143,.191,.007,-.023,polished);
+  oval(.143,.191,.007,.023,polished);
+  // Small, mirrored scrolls are welded to the bow, never floating beside it.
+  for(const side of [-1,1]) {
+    const points=[[0,1.00],[side*.070,1.045],[side*.083,1.105],[side*.045,1.13],[side*.022,1.10]]
+      .map(([x,z])=>new THREE.Vector3(x,0,z));
+    mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),32,.012,8,false),gold,[0,0,0]);
   }
-  const glint=mesh(new THREE.SphereGeometry(.018,12,8),polished,[-.12,.13,1.20]);
-  const lockRing=new THREE.Mesh(new THREE.TorusGeometry(.075,.012,8,32),gold.clone());
-  lockRing.position.set(0,.19,1.324);model.add(lockRing);
-  const lockCenter=new THREE.Vector3(0,.19,1.33);
+  // The bit points down into the narrow lower slot of the actual keyhole.
+  const bit=new THREE.Shape();
+  bit.moveTo(.055,-.009);bit.lineTo(.055,-.095);bit.lineTo(.10,-.095);
+  bit.lineTo(.10,-.066);bit.lineTo(.137,-.066);bit.lineTo(.137,-.095);
+  bit.lineTo(.205,-.095);bit.lineTo(.205,-.009);bit.closePath();
+  const bitGeo=new THREE.ExtrudeGeometry(bit,{depth:.024,bevelEnabled:true,bevelThickness:.003,bevelSize:.003,bevelSegments:3,steps:1});
+  // Shape horizontal coordinate maps to shaft Z, extrusion maps to X.
+  bitGeo.rotateY(-Math.PI/2);bitGeo.translate(.012,0,0);
+  mesh(bitGeo,gold,[0,0,0]);
+  const lockRing=new THREE.Mesh(new THREE.TorusGeometry(.052,.008,12,48),gold.clone());
+  lockRing.position.set(0,.19,1.337);model.add(lockRing);
+  const lockCenter=new THREE.Vector3(0,.19,1.34);
   const target=new THREE.Vector3(),outside=new THREE.Vector3(),hero=new THREE.Vector3();
   let flyIn,approach;
-  const qStart=new THREE.Quaternion().setFromEuler(new THREE.Euler(.5,-.9,-.4));
-  const qHero=new THREE.Quaternion().setFromEuler(new THREE.Euler(.15,.24,-.18));
+  const qStart=new THREE.Quaternion().setFromEuler(new THREE.Euler(.75,.3,-.35));
+  const qHero=new THREE.Quaternion().setFromEuler(new THREE.Euler(1.05,.12,-.20));
   const qAligned=new THREE.Quaternion();
   const up=new THREE.Vector3(),right=new THREE.Vector3();
   function screenPoint(x,y,distance) {
@@ -45,12 +63,12 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
   }
   function paths() {
     model.updateMatrixWorld(true);model.localToWorld(target.copy(lockCenter));
-    outside.copy(target).add(new THREE.Vector3(0,0,1.13));
-    hero.copy(screenPoint(.12,-.05,7.5));
+    outside.copy(target).add(new THREE.Vector3(0,0,.55));
+    hero.copy(screenPoint(-.08,-.16,6.4));
     up.set(0,1,0).applyQuaternion(camera.quaternion);right.set(1,0,0).applyQuaternion(camera.quaternion);
-    const from=screenPoint(.15,-1.65,7.5);
+    const from=screenPoint(-.08,-1.55,6.4);
     flyIn=new THREE.CubicBezierCurve3(from,from.clone().addScaledVector(up,2.6).addScaledVector(right,.65),hero.clone().addScaledVector(right,.45).addScaledVector(up,.25),hero);
-    approach=new THREE.CubicBezierCurve3(hero,hero.clone().addScaledVector(right,-.7).addScaledVector(up,.5),outside.clone().add(new THREE.Vector3(.55,.45,.7)),outside);
+    approach=new THREE.CubicBezierCurve3(hero,hero.clone().addScaledVector(right,-.7).addScaledVector(up,.5),outside.clone().add(new THREE.Vector3(0,0,.65)),outside);
   }
   const glowCanvas=document.createElement('canvas');glowCanvas.width=glowCanvas.height=128;
   const ctx=glowCanvas.getContext('2d');const radial=ctx.createRadialGradient(64,64,3,64,64,64);
@@ -87,14 +105,14 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
     if(!flyIn) paths();
     let scale=1;
     if(t<.95) {
-      const k=easeOut(segment(t,0,.95));key.position.copy(flyIn.getPoint(k));key.quaternion.copy(qStart).slerp(qHero,k);scale=1.45;
+      const k=easeOut(segment(t,0,.95));key.position.copy(flyIn.getPoint(k));key.quaternion.copy(qStart).slerp(qHero,k);scale=1;
     } else if(t<1.35) {
       const k=segment(t,.95,1.35);key.position.copy(hero).addScaledVector(up,Math.sin(k*Math.PI)*.055);
-      key.quaternion.copy(qHero);scale=1.45;
+      key.quaternion.copy(qHero);scale=1;
     } else if(t<2.65) {
-      const k=smoother(segment(t,1.35,2.65));key.position.copy(approach.getPoint(k));key.quaternion.copy(qHero).slerp(qAligned,k);scale=THREE.MathUtils.lerp(1.45,1,k);
+      const k=smoother(segment(t,1.35,2.65));key.position.copy(approach.getPoint(k));key.quaternion.copy(qHero).slerp(qAligned,smooth(clamp(k/ .78)));scale=1;
     } else {
-      const inserted=smoother(segment(t,2.65,3.2));key.position.copy(outside).lerp(target.clone().add(new THREE.Vector3(0,0,-.17)),inserted);
+      const inserted=smoother(segment(t,2.65,3.2));key.position.copy(outside).lerp(target.clone().add(new THREE.Vector3(0,0,-.39)),inserted);
       const turn=smoother(segment(t,3.35,4.2));key.quaternion.setFromAxisAngle(new THREE.Vector3(0,0,1),turn*Math.PI*.5);
       keyholeSlot.rotation.z=-turn*Math.PI*.5;
       if(t>4.55) key.position.z+=smooth(segment(t,4.55,5.12))*.8;
@@ -103,7 +121,7 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
     key.scale.setScalar(scale);
     key.visible=t<5.55;
     const opacity=1-smooth(segment(t,5.02,5.55));
-    for(const mat of [gold,polished,darkGold]) {mat.opacity=opacity;mat.depthTest=t>=2.65;}
+    for(const mat of [gold,polished,darkGold]) {mat.opacity=opacity;mat.depthTest=true;}
     // The heavy lid moves only after the key is turned and the hasp clears the catch.
     haspPivot.rotation.x=-smooth(segment(t,4.2,4.65))*.35;
     const opening=smoother(segment(t,5.08,6.85));
