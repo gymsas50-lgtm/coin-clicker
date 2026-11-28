@@ -24,7 +24,7 @@ try {
  updateCondition();
  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(cube.geometry),new THREE.LineBasicMaterial({color:0x535353}));cube.add(edges);
  // Back-face shell draws only the silhouette, never a filled tint on the cube.
- const hoverOutline=new THREE.Mesh(cube.geometry,new THREE.MeshBasicMaterial({color:0x9bffb7,side:THREE.BackSide,depthWrite:false,toneMapped:false}));hoverOutline.scale.setScalar(1.025);hoverOutline.visible=false;hoverOutline.name='Hover outline';hoverOutline.raycast=()=>{};cube.add(hoverOutline);
+ const hoverOutline=new THREE.Mesh(cube.geometry,new THREE.MeshBasicMaterial({color:0x9bffb7,side:THREE.BackSide,depthWrite:false,toneMapped:false}));hoverOutline.scale.setScalar(1.06);hoverOutline.visible=false;hoverOutline.name='Hover outline';hoverOutline.raycast=()=>{};cube.add(hoverOutline);
  const hoverRay=new THREE.Raycaster(),screenCenter=new THREE.Vector2(0,0);
  const cubeBody=new CANNON.Body({mass:3,shape:new CANNON.Box(new CANNON.Vec3(.35,.35,.35)),linearDamping:.035,angularDamping:.025,allowSleep:true,sleepSpeedLimit:.025,sleepTimeLimit:1.5});cubeBody.position.set(0,.37,0);cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.collisionFilterGroup=2;world.addBody(cubeBody);
  cubeBody.addEventListener('collide',event=>{
@@ -104,7 +104,7 @@ try {
  world.addEventListener('postStep',()=>{contain(player);contain(cubeBody);});
  const wallRay=new THREE.Raycaster(),obstructionDirection=new THREE.Vector3();wallRay.far=1.4;
  function render(dt=1/60){syncView();outdoors.tick(camera);const p=cubeBody.interpolatedPosition,q=cubeBody.interpolatedQuaternion;cube.position.set(p.x,p.y,p.z);cube.quaternion.set(q.x,q.y,q.z,q.w);
-  cube.updateMatrixWorld(true);hoverRay.setFromCamera(screenCenter,camera);hoverOutline.visible=hoverRay.intersectObject(cube,false).length>0;
+  cube.updateMatrixWorld(true);hoverRay.setFromCamera(screenCenter,camera);const hoverHit=hoverRay.intersectObject(cube,false)[0];hoverOutline.visible=holding||!!(hoverHit&&hoverHit.distance<=3);
   const cq=cube.quaternion;const cubeTop=.35*(Math.abs(2*(cq.x*cq.y+cq.w*cq.z))+Math.abs(1-2*(cq.x*cq.x+cq.z*cq.z))+Math.abs(2*(cq.y*cq.z-cq.w*cq.x)));
   priceTag.position.set(cube.position.x,cube.position.y+cubeTop+.36,cube.position.z);
   obstructionDirection.set(.43,-.27,-1.1).applyMatrix4(camera.matrixWorld).sub(camera.position).normalize();wallRay.set(camera.position,obstructionDirection);
