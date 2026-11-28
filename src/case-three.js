@@ -3,6 +3,7 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
+import { createChestOpening } from './opening.js';
 
 const mount = document.querySelector('#scene');
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -118,10 +119,18 @@ try {
     slot.rotation.z = (x + y) * 2;
   }
   // Separate wooden lid and body, with a dark seam between them.
-  box(model, [5.5, 1.92, 2.32], [0, -0.05, 0], shell, 0.14);
-  box(model, [5.40, 0.075, 2.25], [0, 0.95, 0], dark, 0.035);
+  // A real hollow chest: the opened lid must not reveal a solid wooden cube.
+  box(model,[5.5,.24,2.32],[0,-.89,0],panel,.06);
+  box(model,[5.5,1.70,.18],[0,-.02,1.07],shell,.06);
+  box(model,[5.5,1.70,.18],[0,-.02,-1.07],shell,.06);
+  for(const side of [-1,1]) box(model,[.18,1.70,1.98],[side*2.66,-.02,0],shell,.05);
+  const lining=new THREE.MeshStandardMaterial({color:0x201911,roughness:1});
+  box(model,[5.08,.06,1.94],[0,-.73,0],lining,.025);
+  for(const z of [-1.08,1.08]) box(model,[5.36,.075,.10],[0,.95,z],dark,.02);
+  for(const x of [-2.64,2.64]) box(model,[.10,.075,2.12],[x,.95,0],dark,.02);
   box(model, [5.52, 0.62, 2.34], [0, 1.30, 0], shell, 0.13);
-  box(model, [5.28, 0.033, 2.13], [0, 0.986, 0], aluminum, 0.015);
+  for(const z of [-1.08,1.08]) box(model,[5.28,.033,.055],[0,.986,z],aluminum,.012);
+  for(const x of [-2.62,2.62]) box(model,[.055,.033,2.12],[x,.986,0],aluminum,.012);
   // Four separate wooden boards on the front and back.
   for (const side of [-1, 1]) {
     box(model, [4.80, 1.42, 0.07], [0, -0.11, side * 1.17], dark, 0.03);
@@ -149,7 +158,7 @@ try {
     box(model,[.27,.07,2.15],[x,1.70,0],aluminum,.012);
     for(const y of [-.74,-.36,.15,.63,1.35]) cylinder(model,.05,.04,[x,y,1.35],steel);
   }
-  box(model,[.32,.65,.10],[0,.81,1.29],aluminum,.025);
+  const hasp=box(model,[.32,.65,.10],[0,.81,1.29],aluminum,.025);
   cylinder(model,.065,.15,[0,.62,1.39],steel);
   // Hinge barrels and back plates are visible when the player rotates the case.
   for (const x of [-1.8, 1.8]) {
@@ -177,11 +186,25 @@ try {
   // Center badge, status light, side vents and non-slip feet.
   box(model, [0.40, 0.38, 0.055], [0, 0.15, 1.284], steel, 0.045);
   cylinder(model,.045,.012,[0,.19,1.32],dark);
-  box(model,[.045,.10,.012],[0,.13,1.33],dark,.007);
+  const keyholeSlot=box(model,[.045,.10,.012],[0,.13,1.33],dark,.007);
   for (const side of [-1, 1]) {
     box(model, [.04, 1.42, 1.65], [side*2.77,-.11,0], dark,.02);
     for (let i=0;i<4;i++) box(model,[.065,.324,1.57],[side*2.80,-.64+i*.35,0],i%2 ? shell : panel,.015);
     for (const z of [-.77,.77]) box(model,[.77,.24,.48],[side*1.93,-1.10,z],panel,.07);
+  }
+  // Rear-hinged lid: metal bands, cap boards and corner shoes travel as one assembly.
+  const lidParts=model.children.filter(p=>p.isMesh && p.position.y>1.0);
+  const lidPivot=new THREE.Group();lidPivot.position.set(0,.985,-1.16);model.add(lidPivot);
+  model.updateMatrixWorld(true);
+  for(const p of lidParts) lidPivot.attach(p);
+  const haspPivot=new THREE.Group();haspPivot.position.set(0,1.135,1.29);model.add(haspPivot);
+  model.updateMatrixWorld(true);haspPivot.attach(hasp);lidPivot.attach(haspPivot);
+  const haspTab=box(model,[.30,.12,.27],[0,1.11,1.20],aluminum,.02);
+  model.updateMatrixWorld(true);lidPivot.attach(haspTab);
+  // Visible underside cross-braces complete the interior of the raised lid.
+  for(const x of [-1.8,1.8]) {
+    const brace=box(model,[.20,.10,1.86],[x,.997,0],panel,.025);
+    model.updateMatrixWorld(true);lidPivot.attach(brace);
   }
   // Studio-style lighting with actual material reflections and grounded shadows.
   const key = new THREE.SpotLight(0xfff4e5, 95, 40, 0.65, 0.75, 2);
@@ -215,18 +238,23 @@ try {
     camera.fov = w / h < 0.65 ? 42 : 33; camera.updateProjectionMatrix(); controls.update(); dirty = true;
   }
   addEventListener('resize', resize); resize();
+  const opening=createChestOpening({scene,model,camera,renderer,lidPivot,haspPivot,keyholeSlot,reduceMotion});
   mount.classList.add('ready');
   let frame = 0, start = performance.now();
   function draw(now) {
     frame = requestAnimationFrame(draw);
     if (document.hidden) return;
     controls.update();
-    if (dirty) { renderer.render(scene, camera); dirty = false; }
+    const animated=opening.tick(now);
+    if (dirty || animated) {
+      renderer.shadowMap.needsUpdate=renderer.shadowMap.needsUpdate || opening.needsShadow;
+      renderer.render(scene,camera);dirty=false;
+    }
   }
   requestAnimationFrame(draw);
   renderer.domElement.addEventListener('webglcontextlost', event => { event.preventDefault(); cancelAnimationFrame(frame); mount.classList.remove('ready'); });
   renderer.domElement.addEventListener('webglcontextrestored', () => location.reload());
-  window.caseScene = { scene, model, renderer, camera, controls, get ready() { return mount.classList.contains('ready'); } };
+  window.caseScene = { scene, model, renderer, camera, controls, opening, get ready() { return mount.classList.contains('ready'); } };
 } catch (error) {
   console.error('3D case:', error);
   mount.classList.remove('ready');
