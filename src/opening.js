@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { createHingeMotion } from './hinge.js';
 import { createDroppedKeys } from './dropped-keys.js';
+import { createLootFlight } from './loot-flight.js';
 
 export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPivot,keyholeSlot,reduceMotion,economy,loot}) {
   const canvas=renderer.domElement;
@@ -59,6 +60,7 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
   // Shape horizontal coordinate maps to shaft Z, extrusion maps to X.
   bitGeo.rotateY(-Math.PI/2);bitGeo.translate(.012,0,0);
   mesh(bitGeo,gold,[0,0,0]);
+  const lootFlight=createLootFlight({scene,model,camera,keyTemplate:key,reduceMotion});
   const lockRing=new THREE.Mesh(new THREE.TorusGeometry(.052,.008,12,48),gold.clone());
   lockRing.position.set(0,.19,1.337);model.add(lockRing);
   const lockCenter=new THREE.Vector3(0,.19,1.34);
@@ -167,19 +169,20 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
   setPhase('closed');
   return {
     activate,
-    get dropped(){return dropped;},get phase(){return phase;},get needsShadow(){return shadow;},get key(){return key;},get lid(){return lidPivot;},
+    get lootFlight(){return lootFlight;},get dropped(){return dropped;},get phase(){return phase;},get needsShadow(){return shadow;},get key(){return key;},get lid(){return lidPivot;},
     // Deterministic timeline access is useful for visual regression tests.
     seek(t){paths();manualTime=t;setPhase(t>=duration?'open':'opening');frameAt(Math.min(t,duration));force=true;},
     tick(now) {
       const debrisAnimated=dropped.tick(now);
+      const lootAnimated=lootFlight.tick(now);
       shadow=debrisAnimated;
       if(manualTime!==null){if(force){force=false;shadow=true;return true;}return false;}
-      if(phase==='closed')return debrisAnimated;
+      if(phase==='closed')return debrisAnimated||lootAnimated;
       force=false;
       if(phase==='opening') {
         const t=(now-started)/1000*(reduceMotion?2.2:1);frameAt(Math.min(t,duration));shadow=debrisAnimated||t>=4.2;
         if(t>=5.12&&!released){frameAt(5.12);dropped.drop(key,now);released=true;frameAt(Math.min(t,duration));shadow=true;}
-        if(t>=5.7&&!rewarded){rewarded=true;loot?.award();}
+        if(t>=5.7&&!rewarded){rewarded=true;const item=loot?.award();if(item)lootFlight.spawn(item,now);}
         if(t>=duration){key.visible=false;openedAt=now;setPhase('open');}
         return true;
       }
