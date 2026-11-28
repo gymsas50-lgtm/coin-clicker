@@ -6,7 +6,7 @@ import {createOutdoors} from './outdoors.js';
 try {
  const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;renderer.setClearColor(0x858585);document.body.prepend(renderer.domElement);
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.06,2200);camera.rotation.order='YXZ';scene.add(camera);
- const world=new CANNON.World({gravity:new CANNON.Vec3(0,-9.81,0)});world.broadphase=new CANNON.SAPBroadphase(world);world.solver.iterations=20;world.solver.tolerance=.0001;world.defaultContactMaterial.friction=.55;world.defaultContactMaterial.restitution=.08;
+ const world=new CANNON.World({gravity:new CANNON.Vec3(0,-9.81,0),allowSleep:true});world.broadphase=new CANNON.SAPBroadphase(world);world.solver.iterations=20;world.solver.tolerance=.0001;world.defaultContactMaterial.friction=.55;world.defaultContactMaterial.restitution=.08;
  const material=color=>new THREE.MeshStandardMaterial({color,roughness:.85,metalness:.04});
  function box(parent,size,pos,color){const m=new THREE.Mesh(new THREE.BoxGeometry(...size),typeof color==='number'?material(color):color);m.position.set(...pos);m.receiveShadow=true;m.castShadow=parent!==scene;parent.add(m);return m;}
  const outdoors=createOutdoors({scene,world,renderer});
@@ -14,7 +14,7 @@ try {
  const cubeMaterials=[0xaaaaaa,0x969696,0xc2c2c2,0x858585,0xaeaeae,0x9d9d9d].map(material);
  const cube=box(scene,[.7,.7,.7],[0,.37,0],cubeMaterials);cube.castShadow=true;
  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(cube.geometry),new THREE.LineBasicMaterial({color:0x535353}));cube.add(edges);
- const cubeBody=new CANNON.Body({mass:3,shape:new CANNON.Box(new CANNON.Vec3(.35,.35,.35)),linearDamping:.035,angularDamping:.10,allowSleep:true,sleepSpeedLimit:.07});cubeBody.position.set(0,.37,0);cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.collisionFilterGroup=2;world.addBody(cubeBody);
+ const cubeBody=new CANNON.Body({mass:3,shape:new CANNON.Box(new CANNON.Vec3(.35,.35,.35)),linearDamping:.035,angularDamping:.025,allowSleep:true,sleepSpeedLimit:.025,sleepTimeLimit:1.5});cubeBody.position.set(0,.37,0);cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.collisionFilterGroup=2;world.addBody(cubeBody);
  const player=new CANNON.Body({mass:75,shape:new CANNON.Box(new CANNON.Vec3(.3,.85,.3)),fixedRotation:true,linearDamping:.05,allowSleep:false});player.position.set(0,.88,6);player.updateMassProperties();player.collisionFilterGroup=4;world.addBody(player);
  const props=[{mesh:cube,body:cubeBody}];
  let activeBody=cubeBody,activeMesh=cube;
@@ -78,6 +78,7 @@ try {
  });
  // Invisible map boundary, no ceiling: keep all bodies on the 25 x 25 m field.
  function contain(b){b.updateAABB();for(const axis of ['x','y','z']){
+  if(axis==='y'&&b===cubeBody){if(b.aabb.upperBound.y<-.5){b.position.y+=.35-b.position.y;b.velocity.y=0;b.aabbNeedsUpdate=true;}continue;}
   const lower=axis==='y'?0:-12.5,upper=axis==='y'?Infinity:12.5;
   if(b.aabb.lowerBound[axis]<lower){b.position[axis]+=lower-b.aabb.lowerBound[axis];if(b.velocity[axis]<0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
   if(b.aabb.upperBound[axis]>upper){b.position[axis]-=b.aabb.upperBound[axis]-upper;if(b.velocity[axis]>0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
