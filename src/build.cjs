@@ -1,2 +1,3 @@
-const fs=require('node:fs'),path=require('node:path'),esbuild=require('esbuild');
-(async()=>{const root=path.resolve(__dirname,'..');const result=await esbuild.build({entryPoints:[path.join(__dirname,'game.js')],bundle:true,minify:true,format:'iife',platform:'browser',target:'es2020',write:false,legalComments:'eof',nodePaths:(process.env.NODE_PATH||'').split(path.delimiter).filter(Boolean)});const code=result.outputFiles[0].text.replace(/<\/script/gi,'<\\/script');let html=fs.readFileSync(path.join(__dirname,'page.html'),'utf8').replace('/*__BUNDLE__*/',()=>code);const licenses=['THREE-LICENSE.txt','CANNON-LICENSE.txt'].map(n=>fs.readFileSync(path.join(__dirname,n),'utf8')).join('\n');html=html.replace('</head>','<!-- Licenses\n'+licenses+'\n--></head>');fs.writeFileSync(path.join(root,'index.html'),html);console.log('Built offline game: '+Math.round(Buffer.byteLength(html)/1024)+' KiB');})().catch(e=>{console.error(e);process.exit(1)});
+const fs=require('node:fs'),path=require('node:path');
+fs.copyFileSync(path.join(__dirname,'page.html'),path.join(__dirname,'../index.html'));
+console.log('Built blank white page');
