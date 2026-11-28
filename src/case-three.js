@@ -131,12 +131,16 @@ try {
   // Hollow barrel-vault lid, built from individually curved wooden staves.
   function archPart(x,width,start,end,material,outerOffset=0,solidEnd=false) {
     const shape=new THREE.Shape(),steps=Math.max(6,Math.ceil((end-start)*24));
-    const point=(t,inner)=>new THREE.Vector2((inner?1.025:1.17+outerOffset)*Math.cos(t),.99+(inner?.68:.84+outerOffset)*Math.sin(t));
+    // Metal is a thin shell ABOVE the wood, not a duplicate of its inner face.
+    const outerZ=1.17+outerOffset,outerY=.84+outerOffset;
+    const innerZ=outerOffset>0?outerZ-.018:1.025;
+    const innerY=outerOffset>0?outerY-.018:.68;
+    const point=(t,inner)=>new THREE.Vector2((inner?innerZ:outerZ)*Math.cos(t),.99+(inner?innerY:outerY)*Math.sin(t));
     for(let i=0;i<=steps;i++) {const v=point(start+(end-start)*i/steps,false);if(i===0)shape.moveTo(v.x,v.y);else shape.lineTo(v.x,v.y);}
     if(solidEnd) {const v=point(end,false),u=point(start,false);shape.lineTo(v.x,.99);shape.lineTo(u.x,.99);}
     else for(let i=steps;i>=0;i--) {const v=point(start+(end-start)*i/steps,true);shape.lineTo(v.x,v.y);}
     shape.closePath();
-    const geo=new THREE.ExtrudeGeometry(shape,{depth:width,bevelEnabled:true,bevelThickness:.009,bevelSize:.009,bevelSegments:2,steps:1,curveSegments:32});
+    const geo=new THREE.ExtrudeGeometry(shape,{depth:width,bevelEnabled:false,steps:1,curveSegments:32});
     geo.rotateY(Math.PI/2);
     const vertices=geo.attributes.position,uv=geo.attributes.uv;
     for(let i=0;i<vertices.count;i++) {
@@ -146,7 +150,7 @@ try {
     uv.needsUpdate=true;
     const piece=new THREE.Mesh(geo,material);piece.position.x=x;piece.castShadow=true;piece.receiveShadow=true;piece.userData.lid=true;model.add(piece);return piece;
   }
-  for(let i=0;i<10;i++) archPart(-2.62,5.24,i*Math.PI/10+.004,(i+1)*Math.PI/10-.004,i%2?shell:panel);
+  for(let i=0;i<10;i++) archPart(-2.608,5.216,i*Math.PI/10+.006,(i+1)*Math.PI/10-.006,i%2?shell:panel);
   for(const side of [-1,1]) {
     archPart(side<0?-2.76:2.62,.14,0,Math.PI,panel,0,true);
     archPart(side<0?-2.79:2.73,.065,0,Math.PI,aluminum,.026);
@@ -165,10 +169,10 @@ try {
   }
   // Reinforced corner shoes hug both faces rather than floating on the shell.
   for (const x of [-1, 1]) for (const z of [-1, 1]) {
-    box(model, [0.53, 0.48, 0.11], [x * 2.465, -0.76, z * 1.18], aluminum, 0.06);
+    box(model, [0.53, 0.48, 0.11], [x * 2.465, -0.76, z * 1.255], aluminum, 0.06);
     box(model, [0.11, 0.48, 0.54], [x * 2.74, -0.76, z * 0.96], aluminum, 0.04);
     box(model, [0.48, 0.13, 0.52], [x * 2.49, -0.985, z * 0.94], aluminum, 0.04);
-    screw(x * 2.49, -0.76, z * 1.25, z > 0);
+    screw(x * 2.49, -0.76, z * 1.325, z > 0);
   }
   // Old forged iron straps: heavy rivets instead of modern suitcase latches.
   for(const x of [-1.85,1.85]) {
@@ -192,8 +196,8 @@ try {
   }
   // A worn plank lid and simple old iron side handles.
   for(const side of [-1,1]) {
-    box(model,[.09,.47,.60],[side*2.85,.2,0],aluminum,.035);
-    for(const z of [-.2,.2]) cylinder(model,.065,.09,[side*2.94,.24,z],steel,'x');
+    box(model,[.09,.47,.60],[side*2.89,.2,0],aluminum,.035);
+    for(const z of [-.2,.2]) cylinder(model,.065,.09,[side*2.955,.24,z],steel,'x');
     const ring=new THREE.Mesh(new THREE.TorusGeometry(.29,.045,8,32),aluminum);
     ring.rotation.y=Math.PI/2;ring.scale.y=.8;ring.position.set(side*2.97,-.04,0);ring.castShadow=true;model.add(ring);
   }
