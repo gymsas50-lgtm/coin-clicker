@@ -46,13 +46,14 @@ export function createCrashSystem({scene,world,body,car}) {
   world.addContactMaterial(new CANNON.ContactMaterial(shardMaterial,shardMaterial,{friction:.6,restitution:.10}));
   world.defaultContactMaterial.friction=.55;world.defaultContactMaterial.restitution=.10;
   function spawn({position,rotation,scale,material,velocity,normal,speed,kind}){
-    if(debris.length>=260)return;
+    if(debris.length>=360)return;
     const visual=new THREE.Mesh(cube,material);visual.scale.copy(scale);visual.position.copy(position);visual.quaternion.copy(rotation);visual.castShadow=true;visual.receiveShadow=true;scene.add(visual);
     const shard=new CANNON.Body({mass:Math.max(.025,scale.x*scale.y*scale.z*(kind==='wall'?1800:450)),shape:new CANNON.Box(new CANNON.Vec3(Math.max(.007,scale.x*.48),Math.max(.007,scale.y*.48),Math.max(.007,scale.z*.48))),material:shardMaterial,linearDamping:.15,angularDamping:.25,allowSleep:true,sleepSpeedLimit:.13,sleepTimeLimit:.65,collisionFilterGroup:4,collisionFilterMask:4});
     shard.position.set(position.x,position.y,position.z);shard.quaternion.set(rotation.x,rotation.y,rotation.z,rotation.w);
     shard.previousPosition.copy(shard.position);shard.interpolatedPosition.copy(shard.position);shard.previousQuaternion.copy(shard.quaternion);shard.interpolatedQuaternion.copy(shard.quaternion);
-    const kick=Math.min(3.2,.35+speed*.11),jitter=.8;
-    shard.velocity.set(velocity.x*.25+normal.x*kick+(Math.random()-.5)*jitter,velocity.y*.20+.25+Math.random()*1.0,velocity.z*.12+normal.z*kick+(Math.random()-.5)*jitter);
+    const kick=Math.min(4,.7+speed*.14),jitter=1.2;
+    const inward=Math.min(0,velocity.x*normal.x+velocity.y*normal.y+velocity.z*normal.z);
+    shard.velocity.set((velocity.x-normal.x*inward)*.25+normal.x*kick+(Math.random()-.5)*jitter,(velocity.y-normal.y*inward)*.20+.35+Math.random()*1.1,(velocity.z-normal.z*inward)*.12+normal.z*kick+(Math.random()-.5)*jitter);
     shard.angularVelocity.set((Math.random()-.5)*9,(Math.random()-.5)*9,(Math.random()-.5)*9);
     world.addBody(shard);debris.push({body:shard,visual,born:clock,kind,source:position.clone()});
   }
@@ -69,7 +70,6 @@ export function createCrashSystem({scene,world,body,car}) {
     lastImpact=clock;impacts++;
     const center=new CANNON.Vec3();for(const p of hit.points)center.vadd(p,center);center.scale(1/hit.points.length,center);
     const local=new CANNON.Vec3();body.pointToLocalFrame(center,local);
-    const normalLocal=new CANNON.Vec3();body.vectorToLocalFrame(hit.normal,normalLocal);
     const radius=Math.min(1.25,.42+hit.speed*.035),dirty=new Set();
     // Use CURRENT block matrices, not undeformed cached positions. Distances are to the contact patch.
     const candidates=[];
@@ -80,17 +80,13 @@ export function createCrashSystem({scene,world,body,car}) {
       if(nearest<radius*radius)candidates.push({e,d:nearest});
     }
     candidates.sort((a,b)=>a.d-b.d);
-    const limit=Math.min(130,Math.floor(18+hit.speed*4));let removed=0;
+    const limit=Math.min(240,Math.floor(30+hit.speed*10));let removed=0;
     for(const {e,d} of candidates){
-      if(removed<limit&&d<radius*radius*.70){
+      if(removed<limit&&debris.length<360&&d<radius*radius*.85){
         const p=new CANNON.Vec3(),vel=new CANNON.Vec3();body.pointToWorldFrame(new CANNON.Vec3(e.position.x,e.position.y,e.position.z),p);body.getVelocityAtWorldPoint(p,vel);
         const worldQ=new THREE.Quaternion(body.quaternion.x,body.quaternion.y,body.quaternion.z,body.quaternion.w).multiply(e.rotation);
         spawn({position:new THREE.Vector3(p.x,p.y,p.z),rotation:worldQ,scale:e.scale.clone(),material:e.node.material,velocity:vel,normal:hit.normal,speed:hit.speed,kind:'car'});
         e.removed=true;e.node.setMatrixAt(e.index,hidden);dirty.add(e.node);removed++;
-      }else{
-        const weight=1-Math.sqrt(d)/radius;
-        v.copy(e.position).addScaledVector(new THREE.Vector3(normalLocal.x,normalLocal.y,normalLocal.z),weight*Math.min(.20,hit.speed*.007));
-        m.compose(v,e.rotation,e.scale);e.node.setMatrixAt(e.index,m);dirty.add(e.node);
       }
     }
     for(const node of dirty)node.instanceMatrix.needsUpdate=true;damage+=removed;
@@ -105,7 +101,7 @@ export function createCrashSystem({scene,world,body,car}) {
       for(let z=0;z<nz;z++)wallCandidates.push({x:px,y:py,z:-25+(z-(nz-1)/2)*wu,d:d+Math.abs(z-5)*.005});
     }
     wallCandidates.sort((a,b)=>a.d-b.d);
-    const wallLimit=Math.min(80,260-debris.length);
+    const wallLimit=Math.min(80,360-debris.length);
     for(let i=0;i<wallLimit&&i<wallCandidates.length;i++){
       const p=wallCandidates[Math.floor(i*wallCandidates.length/wallLimit)];
       spawn({position:new THREE.Vector3(p.x,p.y,p.z),rotation:new THREE.Quaternion(),scale:new THREE.Vector3(.099,.099,.099),material:concrete,velocity:hit.velocity,normal:new CANNON.Vec3(-hit.normal.x,0,-hit.normal.z),speed:hit.speed,kind:'wall'});
