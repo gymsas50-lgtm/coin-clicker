@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import {createGravityGun} from './gravity-gun.js';
 import {createGravityBeam} from './gravity-beam.js';
-import {createCrystal} from './crystal.js';
+import {createDefaultCube} from './crystal.js';
 import {createCubeBreak} from './cube-break.js';
 import {createOutdoors} from './outdoors.js';
 try {
@@ -13,7 +13,7 @@ try {
  function box(parent,size,pos,color){const m=new THREE.Mesh(new THREE.BoxGeometry(...size),typeof color==='number'?material(color):color);m.position.set(...pos);m.receiveShadow=true;m.castShadow=parent!==scene;parent.add(m);return m;}
  const outdoors=createOutdoors({scene,world,renderer});
  const roomMeshes=[outdoors.ground];
- const crystal=createCrystal(),cube=crystal.mesh;cube.position.set(0,.5,0);scene.add(cube);
+ const crystal=createDefaultCube(),cube=crystal.mesh;cube.position.set(0,.37,0);scene.add(cube);
  // Camera-facing price tag stays upright above the physical cube.
  const priceCanvas=document.createElement('canvas');priceCanvas.width=256;priceCanvas.height=192;
  const priceContext=priceCanvas.getContext('2d');let cubePrice=10,lastDamageTime=-Infinity,breakAt=Infinity,broken=false;
@@ -27,7 +27,7 @@ try {
  // Back-face shell draws only the silhouette, never a filled tint on the cube.
  const hoverOutline=new THREE.Mesh(cube.geometry,new THREE.MeshBasicMaterial({color:0x9bffb7,side:THREE.BackSide,depthWrite:false,toneMapped:false}));hoverOutline.scale.setScalar(1.06);hoverOutline.visible=false;hoverOutline.name='Hover outline';hoverOutline.raycast=()=>{};cube.add(hoverOutline);
  const hoverRay=new THREE.Raycaster(),screenCenter=new THREE.Vector2(0,0);
- const cubeBody=new CANNON.Body({mass:3,shape:crystal.shape,linearDamping:.035,angularDamping:.025,allowSleep:true,sleepSpeedLimit:.025,sleepTimeLimit:1.5});cubeBody.position.set(0,.5,0);cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.collisionFilterGroup=2;world.addBody(cubeBody);
+ const cubeBody=new CANNON.Body({mass:3,shape:crystal.shape,linearDamping:.035,angularDamping:.025,allowSleep:true,sleepSpeedLimit:.025,sleepTimeLimit:1.5});cubeBody.position.set(0,.37,0);cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.collisionFilterGroup=2;world.addBody(cubeBody);
  cubeBody.addEventListener('collide',event=>{
   const speed=Math.abs(event.contact.getImpactVelocityAlongNormal());
   if(speed<4||world.time-lastDamageTime<.25||cubePrice===0)return;
@@ -58,7 +58,7 @@ try {
   holdTarget.copy(p);previousHoldTarget.copy(p);holding=true;activeBody.wakeUp();crosshair.classList.add('holding');
  }
 
- function resetCube(){release();breakEffect.clear();broken=false;breakAt=Infinity;cube.visible=true;priceTag.visible=true;if(!world.bodies.includes(cubeBody))world.addBody(cubeBody);cubePrice=10;lastDamageTime=-Infinity;updateCondition();activeBody=cubeBody;activeMesh=cube;cubeBody.position.set(THREE.MathUtils.clamp(player.position.x-Math.sin(yaw)*2,-12.1,12.1),.5,THREE.MathUtils.clamp(player.position.z-Math.cos(yaw)*2,-12.1,12.1));cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
+ function resetCube(){release();breakEffect.clear();broken=false;breakAt=Infinity;cube.visible=true;priceTag.visible=true;if(!world.bodies.includes(cubeBody))world.addBody(cubeBody);cubePrice=10;lastDamageTime=-Infinity;updateCondition();activeBody=cubeBody;activeMesh=cube;cubeBody.position.set(THREE.MathUtils.clamp(player.position.x-Math.sin(yaw)*2,-12.1,12.1),.37,THREE.MathUtils.clamp(player.position.z-Math.cos(yaw)*2,-12.1,12.1));cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
  async function enter(){try{await renderer.domElement.requestPointerLock();}catch{hint.textContent='Нажми ещё раз для захвата мыши';}}
  hint.addEventListener('click',enter);renderer.domElement.addEventListener('pointerdown',e=>{if(!locked){enter();return;}if(e.button===0)grab();});
  addEventListener('pointerup',e=>{if(e.button===0)release();});addEventListener('pointercancel',release);
@@ -106,7 +106,7 @@ try {
  const wallRay=new THREE.Raycaster(),obstructionDirection=new THREE.Vector3();wallRay.far=1.4;
  function render(dt=1/60){syncView();outdoors.tick(camera);breakEffect.tick(dt);const p=cubeBody.interpolatedPosition,q=cubeBody.interpolatedQuaternion;cube.position.set(p.x,p.y,p.z);cube.quaternion.set(q.x,q.y,q.z,q.w);
   cube.updateMatrixWorld(true);hoverRay.setFromCamera(screenCenter,camera);const hoverHit=hoverRay.intersectObject(cube,false)[0];hoverOutline.visible=!broken&&(holding||!!(hoverHit&&hoverHit.distance<=3));
-  let crystalTop=-Infinity;for(const v of crystal.shape.vertices){target.set(v.x,v.y,v.z).applyQuaternion(cube.quaternion);crystalTop=Math.max(crystalTop,target.y);}
+  let crystalTop=-Infinity;for(const v of crystal.vertices){target.set(v.x,v.y,v.z).applyQuaternion(cube.quaternion);crystalTop=Math.max(crystalTop,target.y);}
   priceTag.position.set(cube.position.x,cube.position.y+crystalTop+.28,cube.position.z);
   obstructionDirection.set(.43,-.27,-1.1).applyMatrix4(camera.matrixWorld).sub(camera.position).normalize();wallRay.set(camera.position,obstructionDirection);
   const obstruction=wallRay.intersectObjects(roomMeshes,false)[0];const blocked=obstruction?THREE.MathUtils.clamp((1.25-obstruction.distance)/.9,0,1):0;
