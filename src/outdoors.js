@@ -2,9 +2,29 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 export function createOutdoors({scene,world,renderer}){
  scene.background=new THREE.Color(0xc7e3f1);scene.fog=new THREE.Fog(0xc7e3f1,170,850);
- const sky=new THREE.Mesh(new THREE.SphereGeometry(1800,24,16),new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,uniforms:{top:{value:new THREE.Color(0x5b9edc)},bottom:{value:new THREE.Color(0xd5eaf2)}},vertexShader:'varying vec3 vDirection;void main(){vDirection=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',fragmentShader:'uniform vec3 top;uniform vec3 bottom;varying vec3 vDirection;void main(){float h=clamp(normalize(vDirection).y,0.0,1.0);gl_FragColor=vec4(mix(bottom,top,pow(h,0.65)),1.0);#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}'}));
- // Shader includes must begin on a new line.
- sky.material.fragmentShader=sky.material.fragmentShader.replace(';#include',';\n#include');sky.frustumCulled=false;sky.renderOrder=-10000;sky.material.depthTest=false;scene.add(sky);
+ const sky=new THREE.Mesh(new THREE.SphereGeometry(1800,32,24),new THREE.ShaderMaterial({
+  side:THREE.BackSide,depthWrite:false,depthTest:false,toneMapped:false,
+  uniforms:{zenith:{value:new THREE.Color(0x2867c5)},upperSky:{value:new THREE.Color(0x589fe4)},lowerSky:{value:new THREE.Color(0xa2d7ef)},horizon:{value:new THREE.Color(0xf3dfce)},sunDirection:{value:new THREE.Vector3(-9,15,7).normalize()}},
+  vertexShader:`varying vec3 vDirection;
+   void main(){vDirection=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}`,
+  fragmentShader:`uniform vec3 zenith;uniform vec3 upperSky;uniform vec3 lowerSky;uniform vec3 horizon;uniform vec3 sunDirection;varying vec3 vDirection;
+   void main(){
+    vec3 direction=normalize(vDirection);float h=max(direction.y,0.0);
+    vec3 color=mix(horizon,lowerSky,smoothstep(0.0,0.16,h));
+    color=mix(color,upperSky,smoothstep(0.10,0.55,h));
+    color=mix(color,zenith,smoothstep(0.40,1.0,h));
+    float facing=max(dot(direction,sunDirection),0.0);
+    float halo=pow(facing,18.0)*0.20+pow(facing,100.0)*0.13;
+    color=mix(color,vec3(1.0,0.88,0.68),halo);
+    float disc=smoothstep(0.99965,0.99985,facing);
+    color=mix(color,vec3(1.0,0.96,0.83),disc*0.92);
+    // Tiny screen-space dither avoids visible bands across the smooth gradient.
+    float noise=fract(sin(dot(gl_FragCoord.xy,vec2(12.9898,78.233)))*43758.5453)-0.5;
+    gl_FragColor=vec4(color+noise/512.0,1.0);
+    #include <colorspace_fragment>
+   }`
+ }));
+ sky.name='Gradient sky';sky.frustumCulled=false;sky.renderOrder=-10000;scene.add(sky);
  const canvas=document.createElement('canvas');canvas.width=canvas.height=256;const ctx=canvas.getContext('2d');ctx.fillStyle='#3e5d2c';ctx.fillRect(0,0,256,256);
  let seed=7341;function random(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}
  const colors=['#365326','#506e36','#41612e','#5b7a40','#304d23','#476632'];
