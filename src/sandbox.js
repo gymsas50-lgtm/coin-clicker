@@ -12,16 +12,16 @@ try {
  const outdoors=createOutdoors({scene,world,renderer});
  const roomMeshes=[outdoors.ground];
  const cubeMaterials=[0xaaaaaa,0x969696,0xc2c2c2,0x858585,0xaeaeae,0x9d9d9d].map(material);
- const cube=box(scene,[1.2,1.2,1.2],[0,.62,0],cubeMaterials);cube.castShadow=true;
+ const cube=box(scene,[.7,.7,.7],[0,.37,0],cubeMaterials);cube.castShadow=true;
  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(cube.geometry),new THREE.LineBasicMaterial({color:0x535353}));cube.add(edges);
- const cubeBody=new CANNON.Body({mass:12,shape:new CANNON.Box(new CANNON.Vec3(.6,.6,.6)),linearDamping:.035,angularDamping:.10,allowSleep:true,sleepSpeedLimit:.07});cubeBody.position.set(0,.62,0);cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.collisionFilterGroup=2;world.addBody(cubeBody);
+ const cubeBody=new CANNON.Body({mass:3,shape:new CANNON.Box(new CANNON.Vec3(.35,.35,.35)),linearDamping:.035,angularDamping:.10,allowSleep:true,sleepSpeedLimit:.07});cubeBody.position.set(0,.37,0);cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.collisionFilterGroup=2;world.addBody(cubeBody);
  const player=new CANNON.Body({mass:75,shape:new CANNON.Box(new CANNON.Vec3(.3,.85,.3)),fixedRotation:true,linearDamping:.05,allowSleep:false});player.position.set(0,.88,6);player.updateMassProperties();player.collisionFilterGroup=4;world.addBody(player);
  const props=[{mesh:cube,body:cubeBody}];
  let activeBody=cubeBody,activeMesh=cube;
  const weapon=createGravityGun(camera),gun=weapon.gun;
  const energyBeam=createGravityBeam(scene);
  const gunLight=new THREE.PointLight(0x88ffb0,1.0,2.7,2);gunLight.position.set(.3,.12,-.32);camera.add(gunLight);
- const hint=document.querySelector('#hint'),crosshair=document.querySelector('#crosshair'),keys=new Set();let yaw=0,pitch=-.12,locked=false,holding=false,holdDistance=4,last=null,jump=false;
+ const hint=document.querySelector('#hint'),crosshair=document.querySelector('#crosshair'),keys=new Set();let yaw=0,pitch=-.12,locked=false,holding=false,holdDistance=2.5,last=null,jump=false;
  const orbRay=new THREE.Raycaster(),orbDirection=new THREE.Vector3();
  const grabNormal=new THREE.Vector3(0,0,1),beamNormal=new THREE.Vector3(),muzzleDirection=new THREE.Vector3();
  const holdTarget=new THREE.Vector3(),previousHoldTarget=new THREE.Vector3(),targetVelocity=new THREE.Vector3(),goalDelta=new THREE.Vector3();
@@ -31,21 +31,21 @@ try {
  function release(){holding=false;energyBeam.hide();crosshair.classList.remove('holding');}
  function grab(){
   if(holding)return;syncView();for(const prop of props)prop.mesh.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(0,0),camera);
-  const hits=ray.intersectObjects(props.map(p=>p.mesh),true).filter(h=>h.object.isMesh&&h.face);if(!hits.length||hits[0].distance>7)return;
+  const hits=ray.intersectObjects(props.map(p=>p.mesh),true).filter(h=>h.object.isMesh&&h.face);if(!hits.length||hits[0].distance>3)return;
   const hit=hits[0];let node=hit.object,prop;while(node&&!prop){prop=props.find(p=>p.mesh===node);node=node.parent;}
   if(!prop)return;if(prop.detach)prop.detach();activeBody=prop.body;activeMesh=prop.mesh;
-  const p=hit.point;activeBody.pointToLocalFrame(new CANNON.Vec3(p.x,p.y,p.z),anchor);holdDistance=THREE.MathUtils.clamp(hit.distance,1.8,6.5);
+  const p=hit.point;activeBody.pointToLocalFrame(new CANNON.Vec3(p.x,p.y,p.z),anchor);holdDistance=THREE.MathUtils.clamp(hit.distance,1.2,3);
   grabNormal.copy(hit.face.normal).transformDirection(hit.object.matrixWorld).applyQuaternion(activeMesh.getWorldQuaternion(new THREE.Quaternion()).invert()).normalize();
   holdTarget.copy(p);previousHoldTarget.copy(p);holding=true;activeBody.wakeUp();crosshair.classList.add('holding');
  }
 
- function resetCube(){release();activeBody=cubeBody;activeMesh=cube;cubeBody.position.set(player.position.x-Math.sin(yaw)*3,.62,player.position.z-Math.cos(yaw)*3);cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
+ function resetCube(){release();activeBody=cubeBody;activeMesh=cube;cubeBody.position.set(THREE.MathUtils.clamp(player.position.x-Math.sin(yaw)*2,-12.1,12.1),.37,THREE.MathUtils.clamp(player.position.z-Math.cos(yaw)*2,-12.1,12.1));cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
  async function enter(){try{await renderer.domElement.requestPointerLock();}catch{hint.textContent='Нажми ещё раз для захвата мыши';}}
  hint.addEventListener('click',enter);renderer.domElement.addEventListener('pointerdown',e=>{if(!locked){enter();return;}if(e.button===0)grab();});
  addEventListener('pointerup',e=>{if(e.button===0)release();});addEventListener('pointercancel',release);
  document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement===renderer.domElement;hint.classList.toggle('hidden',locked);if(!locked){keys.clear();jump=false;release();}last=null;});
  document.addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0023;pitch=THREE.MathUtils.clamp(pitch-e.movementY*.0023,-1.48,1.48);});
- renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());renderer.domElement.addEventListener('wheel',e=>{if(!locked)return;e.preventDefault();const awayFromPlayer=Math.sign(-e.deltaY);holdDistance=THREE.MathUtils.clamp(holdDistance+awayFromPlayer*.35,1.8,6.5);},{passive:false});
+ renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());renderer.domElement.addEventListener('wheel',e=>{if(!locked)return;e.preventDefault();const awayFromPlayer=Math.sign(-e.deltaY);holdDistance=THREE.MathUtils.clamp(holdDistance+awayFromPlayer*.25,1.2,3);},{passive:false});
  addEventListener('keydown',e=>{if(e.code==='Escape'&&locked){document.exitPointerLock();return;}if(['KeyW','KeyA','KeyS','KeyD','Space','KeyR'].includes(e.code)&&locked){e.preventDefault();keys.add(e.code);if(e.code==='Space'&&!e.repeat)jump=true;if(e.code==='KeyR'&&!e.repeat)resetCube();}});addEventListener('keyup',e=>keys.delete(e.code));addEventListener('blur',()=>{keys.clear();release();});
  world.addEventListener('preStep',()=>{
   const x=Number(keys.has('KeyD'))-Number(keys.has('KeyA')),z=Number(keys.has('KeyS'))-Number(keys.has('KeyW')),n=Math.hypot(x,z)||1;
@@ -61,8 +61,8 @@ try {
    syncView();camera.getWorldDirection(forward);target.copy(camera.position).addScaledVector(forward,holdDistance);
    roomFrom.set(camera.position.x,camera.position.y,camera.position.z);roomTo.set(target.x,target.y,target.z);roomHit.reset();
    world.raycastClosest(roomFrom,roomTo,{collisionFilterMask:1},roomHit);
-   if(roomHit.hasHit)target.copy(camera.position).addScaledVector(forward,Math.max(.4,roomHit.distance-.72));
-   target.y=Math.max(.65,target.y);
+   if(roomHit.hasHit)target.copy(camera.position).addScaledVector(forward,Math.max(.4,roomHit.distance-.42));
+   target.x=THREE.MathUtils.clamp(target.x,-12.1,12.1);target.y=Math.max(.4,target.y);target.z=THREE.MathUtils.clamp(target.z,-12.1,12.1);
    previousHoldTarget.copy(holdTarget);goalDelta.subVectors(target,holdTarget).clampLength(0,7/120);holdTarget.add(goalDelta);targetVelocity.subVectors(holdTarget,previousHoldTarget).multiplyScalar(120);
    activeBody.pointToWorldFrame(anchor,grabWorld);activeBody.getVelocityAtWorldPoint(grabWorld,grabVelocity);grabWorld.vsub(activeBody.position,relative);
    errorDirection.set(holdTarget.x-grabWorld.x,holdTarget.y-grabWorld.y,holdTarget.z-grabWorld.z);
@@ -76,8 +76,12 @@ try {
   }
 
  });
- // Keep ground contact reliable without introducing world walls or a ceiling.
- function contain(b){b.updateAABB();if(b.aabb.lowerBound.y<0){b.position.y-=b.aabb.lowerBound.y;if(b.velocity.y<0)b.velocity.y*=-.08;b.aabbNeedsUpdate=true;}}
+ // Invisible map boundary, no ceiling: keep all bodies on the 25 x 25 m field.
+ function contain(b){b.updateAABB();for(const axis of ['x','y','z']){
+  const lower=axis==='y'?0:-12.5,upper=axis==='y'?Infinity:12.5;
+  if(b.aabb.lowerBound[axis]<lower){b.position[axis]+=lower-b.aabb.lowerBound[axis];if(b.velocity[axis]<0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
+  if(b.aabb.upperBound[axis]>upper){b.position[axis]-=b.aabb.upperBound[axis]-upper;if(b.velocity[axis]>0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
+ }}
  world.addEventListener('postStep',()=>{contain(player);contain(cubeBody);});
  const wallRay=new THREE.Raycaster(),obstructionDirection=new THREE.Vector3();wallRay.far=1.4;
  function render(dt=1/60){syncView();outdoors.tick(camera);const p=cubeBody.interpolatedPosition,q=cubeBody.interpolatedQuaternion;cube.position.set(p.x,p.y,p.z);cube.quaternion.set(q.x,q.y,q.z,q.w);
