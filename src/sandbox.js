@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import {createGravityGun} from './gravity-gun.js';
 import {createGravityBeam} from './gravity-beam.js';
+import {createDetachableLamps} from './detachable-lamps.js';
 try {
  const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;renderer.setClearColor(0x858585);document.body.prepend(renderer.domElement);
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.06,80);camera.rotation.order='YXZ';scene.add(camera);
@@ -12,19 +13,15 @@ try {
  function staticBox(size,pos,color){const m=box(scene,size,pos,color);const b=new CANNON.Body({mass:0,shape:new CANNON.Box(new CANNON.Vec3(...size.map(v=>v/2)))});b.position.set(...pos);world.addBody(b);roomMeshes.push(m);return m;}
  staticBox([20,.3,20],[0,-.15,0],0x777777);staticBox([20,.3,20],[0,6.15,0],0x999999);
  staticBox([20,6,.3],[0,3,-10.15],0x8b8b8b);staticBox([20,6,.3],[0,3,10.15],0x858585);staticBox([.3,6,20],[-10.15,3,0],0x818181);staticBox([.3,6,20],[10.15,3,0],0x919191);
- // Recessed ceiling luminaires, with one shadow-casting light for predictable performance.
- scene.add(new THREE.HemisphereLight(0xdce8ff,0x6f6458,.8));
- for(const z of [-3,3]){
-  box(scene,[2.65,.10,1.35],[0,5.91,z],0x333c44);
-  box(scene,[2.43,.025,1.13],[0,5.845,z],new THREE.MeshBasicMaterial({color:0xe8f2ff,toneMapped:false}));
-  const fill=new THREE.PointLight(0xd9e8ff,30,17,2);fill.position.set(0,5.65,z);scene.add(fill);
- }
- const overhead=new THREE.SpotLight(0xe7efff,145,25,1.20,.65,2);overhead.position.set(-1,5.65,1);overhead.target.position.set(0,0,0);overhead.castShadow=true;overhead.shadow.mapSize.set(1024,1024);overhead.shadow.camera.near=.3;overhead.shadow.camera.far=26;overhead.shadow.bias=-.0002;overhead.shadow.normalBias=.015;overhead.shadow.radius=3;scene.add(overhead,overhead.target);
+ scene.add(new THREE.HemisphereLight(0xdce8ff,0x6f6458,.35));
+ const lampSystem=createDetachableLamps({scene,world});
  const cubeMaterials=[0xaaaaaa,0x969696,0xc2c2c2,0x858585,0xaeaeae,0x9d9d9d].map(material);
  const cube=box(scene,[1.2,1.2,1.2],[0,.62,0],cubeMaterials);cube.castShadow=true;
  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(cube.geometry),new THREE.LineBasicMaterial({color:0x535353}));cube.add(edges);
  const cubeBody=new CANNON.Body({mass:12,shape:new CANNON.Box(new CANNON.Vec3(.6,.6,.6)),linearDamping:.035,angularDamping:.10,allowSleep:true,sleepSpeedLimit:.07});cubeBody.position.set(0,.62,0);cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.collisionFilterGroup=2;world.addBody(cubeBody);
  const player=new CANNON.Body({mass:75,shape:new CANNON.Box(new CANNON.Vec3(.3,.85,.3)),fixedRotation:true,linearDamping:.05,allowSleep:false});player.position.set(0,.88,6);player.updateMassProperties();player.collisionFilterGroup=4;world.addBody(player);
+ const props=[{mesh:cube,body:cubeBody},...lampSystem.lamps];
+ let activeBody=cubeBody,activeMesh=cube;
  const weapon=createGravityGun(camera),gun=weapon.gun;
  const energyBeam=createGravityBeam(scene);
  const gunLight=new THREE.PointLight(0x88ffb0,1.0,2.7,2);gunLight.position.set(.3,.12,-.32);camera.add(gunLight);
@@ -36,9 +33,17 @@ try {
  const ray=new THREE.Raycaster(),anchor=new CANNON.Vec3(),target=new THREE.Vector3(),forward=new THREE.Vector3(),gunTip=new THREE.Vector3(),grabWorld=new CANNON.Vec3(),grabVelocity=new CANNON.Vec3(),force=new CANNON.Vec3(),relative=new CANNON.Vec3();
  function syncView(){camera.position.set(player.position.x,player.position.y+.70,player.position.z);camera.rotation.set(pitch,yaw,0);camera.updateMatrixWorld(true);}
  function release(){holding=false;energyBeam.hide();crosshair.classList.remove('holding');}
- function grab(){if(holding)return;syncView();cube.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(0,0),camera);const hits=ray.intersectObject(cube,false);if(!hits.length||hits[0].distance>7)return;const p=hits[0].point;cubeBody.pointToLocalFrame(new CANNON.Vec3(p.x,p.y,p.z),anchor);holdDistance=THREE.MathUtils.clamp(hits[0].distance,1.8,6.5);grabNormal.copy(hits[0].face.normal);holdTarget.copy(p);previousHoldTarget.copy(p);holding=true;cubeBody.wakeUp();crosshair.classList.add('holding');}
+ function grab(){
+  if(holding)return;syncView();for(const prop of props)prop.mesh.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(0,0),camera);
+  const hits=ray.intersectObjects(props.map(p=>p.mesh),true).filter(h=>h.object.isMesh&&h.face);if(!hits.length||hits[0].distance>7)return;
+  const hit=hits[0];let node=hit.object,prop;while(node&&!prop){prop=props.find(p=>p.mesh===node);node=node.parent;}
+  if(!prop)return;if(prop.detach)prop.detach();activeBody=prop.body;activeMesh=prop.mesh;
+  const p=hit.point;activeBody.pointToLocalFrame(new CANNON.Vec3(p.x,p.y,p.z),anchor);holdDistance=THREE.MathUtils.clamp(hit.distance,1.8,6.5);
+  grabNormal.copy(hit.face.normal).transformDirection(hit.object.matrixWorld).applyQuaternion(activeMesh.getWorldQuaternion(new THREE.Quaternion()).invert()).normalize();
+  holdTarget.copy(p);previousHoldTarget.copy(p);holding=true;activeBody.wakeUp();crosshair.classList.add('holding');
+ }
 
- function resetCube(){release();cubeBody.position.set(0,.62,0);cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
+ function resetCube(){release();lampSystem.reset();activeBody=cubeBody;activeMesh=cube;cubeBody.position.set(0,.62,0);cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
  async function enter(){try{await renderer.domElement.requestPointerLock();}catch{hint.textContent='Нажми ещё раз для захвата мыши';}}
  hint.addEventListener('click',enter);renderer.domElement.addEventListener('pointerdown',e=>{if(!locked){enter();return;}if(e.button===0)grab();});
  addEventListener('pointerup',e=>{if(e.button===0)release();});addEventListener('pointercancel',release);
@@ -63,15 +68,15 @@ try {
    if(roomHit.hasHit)target.copy(camera.position).addScaledVector(forward,Math.max(.4,roomHit.distance-.72));
    target.x=THREE.MathUtils.clamp(target.x,-9.25,9.25);target.y=THREE.MathUtils.clamp(target.y,.65,5.25);target.z=THREE.MathUtils.clamp(target.z,-9.25,9.25);
    previousHoldTarget.copy(holdTarget);goalDelta.subVectors(target,holdTarget).clampLength(0,7/120);holdTarget.add(goalDelta);targetVelocity.subVectors(holdTarget,previousHoldTarget).multiplyScalar(120);
-   cubeBody.pointToWorldFrame(anchor,grabWorld);cubeBody.getVelocityAtWorldPoint(grabWorld,grabVelocity);grabWorld.vsub(cubeBody.position,relative);
+   activeBody.pointToWorldFrame(anchor,grabWorld);activeBody.getVelocityAtWorldPoint(grabWorld,grabVelocity);grabWorld.vsub(activeBody.position,relative);
    errorDirection.set(holdTarget.x-grabWorld.x,holdTarget.y-grabWorld.y,holdTarget.z-grabWorld.z);
    const error=errorDirection.length();if(error>4){release();return;}if(error>.001)errorDirection.scale(1/error,errorDirection);else errorDirection.set(0,1,0);
-   relative.cross(errorDirection,crossR);cubeBody.invInertiaWorld.vmult(crossR,inertiaCross);
-   const effectiveMass=1/(cubeBody.invMass+crossR.dot(inertiaCross));
+   relative.cross(errorDirection,crossR);activeBody.invInertiaWorld.vmult(crossR,inertiaCross);
+   const effectiveMass=1/(activeBody.invMass+crossR.dot(inertiaCross));
    const stiffness=effectiveMass*196,damping=effectiveMass*26.6;
    force.set((holdTarget.x-grabWorld.x)*stiffness+(targetVelocity.x-grabVelocity.x)*damping,(holdTarget.y-grabWorld.y)*stiffness+(targetVelocity.y-grabVelocity.y)*damping,(holdTarget.z-grabWorld.z)*stiffness+(targetVelocity.z-grabVelocity.z)*damping);
    const magnitude=force.length();if(magnitude>1500)force.scale(1500/magnitude,force);
-   cubeBody.applyForce(force,relative);cubeBody.wakeUp();
+   activeBody.applyForce(force,relative);activeBody.wakeUp();
   }
 
  });
@@ -81,18 +86,18 @@ try {
    if(b.aabb.lowerBound[axis]<lower){b.position[axis]+=lower-b.aabb.lowerBound[axis];if(b.velocity[axis]<0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
    if(b.aabb.upperBound[axis]>upper){b.position[axis]-=b.aabb.upperBound[axis]-upper;if(b.velocity[axis]>0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
  }}
- world.addEventListener('postStep',()=>{contain(player);contain(cubeBody);});
+ world.addEventListener('postStep',()=>{contain(player);contain(cubeBody);for(const lamp of lampSystem.lamps)if(lamp.detached)contain(lamp.body);});
  const wallRay=new THREE.Raycaster(),obstructionDirection=new THREE.Vector3();wallRay.far=1.4;
- function render(dt=1/60){syncView();const p=cubeBody.interpolatedPosition,q=cubeBody.interpolatedQuaternion;cube.position.set(p.x,p.y,p.z);cube.quaternion.set(q.x,q.y,q.z,q.w);
+ function render(dt=1/60){syncView();lampSystem.tick(dt);const p=cubeBody.interpolatedPosition,q=cubeBody.interpolatedQuaternion;cube.position.set(p.x,p.y,p.z);cube.quaternion.set(q.x,q.y,q.z,q.w);
   obstructionDirection.set(.43,-.27,-1.1).applyMatrix4(camera.matrixWorld).sub(camera.position).normalize();wallRay.set(camera.position,obstructionDirection);
   const obstruction=wallRay.intersectObjects(roomMeshes,false)[0];const blocked=obstruction?THREE.MathUtils.clamp((1.25-obstruction.distance)/.9,0,1):0;
   weapon.update(dt,blocked,holding);
-  if(holding){cubeBody.pointToWorldFrame(anchor,grabWorld);weapon.muzzle(gunTip);target.copy(grabNormal).applyQuaternion(cube.quaternion).normalize();beamNormal.copy(target);muzzleDirection.set(0,0,-1).transformDirection(gun.matrixWorld);target.copy(anchor).applyQuaternion(cube.quaternion).add(cube.position);cube.updateMatrixWorld(true);orbDirection.subVectors(target,camera.position);const orbDistance=orbDirection.length();orbDirection.normalize();orbRay.set(camera.position,orbDirection);orbRay.far=orbDistance;
-   const orbBlock=orbRay.intersectObject(cube,false)[0];const contactVisible=!orbBlock||orbBlock.distance>=orbDistance-.045;
+  if(holding){activeBody.pointToWorldFrame(anchor,grabWorld);weapon.muzzle(gunTip);target.copy(grabNormal).applyQuaternion(activeMesh.quaternion).normalize();beamNormal.copy(target);muzzleDirection.set(0,0,-1).transformDirection(gun.matrixWorld);target.copy(anchor).applyQuaternion(activeMesh.quaternion).add(activeMesh.position);activeMesh.updateMatrixWorld(true);orbDirection.subVectors(target,camera.position);const orbDistance=orbDirection.length();orbDirection.normalize();orbRay.set(camera.position,orbDirection);orbRay.far=orbDistance;
+   const orbBlock=orbRay.intersectObject(activeMesh,true).find(h=>h.object.isMesh);const contactVisible=!orbBlock||orbBlock.distance>=orbDistance-.045;
    energyBeam.update(gunTip,target,dt,{direction:muzzleDirection,normal:beamNormal,contactVisible});}else energyBeam.hide();
   renderer.render(scene,camera);
  }
  function frame(now){requestAnimationFrame(frame);if(document.hidden){last=null;return;}const dt=last===null?1/120:Math.min(.06,(now-last)/1000);last=now;world.step(1/120,dt,8);render(dt);}
  addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});syncView();render();requestAnimationFrame(frame);
- window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,player,weapon,energyBeam,grab,release,resetCube,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
+ window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,player,weapon,energyBeam,lampSystem,get heldBody(){return holding?activeBody:null;},grab,release,resetCube,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
 }catch(e){console.error(e);document.querySelector('#error').style.display='grid';}
