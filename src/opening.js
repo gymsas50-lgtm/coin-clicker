@@ -60,7 +60,7 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
   // Shape horizontal coordinate maps to shaft Z, extrusion maps to X.
   bitGeo.rotateY(-Math.PI/2);bitGeo.translate(.012,0,0);
   mesh(bitGeo,gold,[0,0,0]);
-  const lootFlight=createLootFlight({scene,model,camera,keyTemplate:key,reduceMotion});
+  const lootFlight=createLootFlight({scene,model,camera,keyTemplate:key,reduceMotion,physics:dropped});
   const lockRing=new THREE.Mesh(new THREE.TorusGeometry(.052,.008,12,48),gold.clone());
   lockRing.position.set(0,.19,1.337);model.add(lockRing);
   const lockCenter=new THREE.Vector3(0,.19,1.34);

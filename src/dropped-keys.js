@@ -8,7 +8,7 @@ export function createDroppedKeys(scene) {
   world.addContactMaterial(new CANNON.ContactMaterial(brass,brass,{friction:.48,restitution:.16}));
   const floor=new CANNON.Body({mass:0,material:groundMat,shape:new CANNON.Plane()});
   floor.quaternion.setFromEuler(-Math.PI/2,0,0);floor.position.y=.20;world.addBody(floor);
-  const chest=new CANNON.Body({mass:0,material:groundMat,shape:new CANNON.Box(new CANNON.Vec3(2.84,1.15,1.25))});chest.position.set(0,1.7,0);world.addBody(chest);
+  const chest=new CANNON.Body({mass:0,material:groundMat,shape:new CANNON.Box(new CANNON.Vec3(2.84,1.15,1.25))});chest.collisionFilterGroup=2;chest.position.set(0,1.7,0);world.addBody(chest);
   const items=[];let previous=null;
   const center=new THREE.Vector3(0,0,.65),offset=new THREE.Vector3();
   function drop(source,now) {
@@ -28,9 +28,9 @@ export function createDroppedKeys(scene) {
     body.addEventListener('collide',event=>{if(entry.landed===null&&event.body!==chest)entry.landed=performance.now();});
     world.addBody(body);items.push(entry);
   }
-  return {drop,get count(){return items.length;},get items(){return items;},tick(now){
+  return {drop,world,brass,get count(){return items.length;},get items(){return items;},tick(now){
     const dt=previous===null?0:Math.min(.1,Math.max(0,(now-previous)/1000));previous=now;
-    if(!items.length)return false;
+    if(!items.length&&world.bodies.length<=2)return false;
     world.step(1/120,dt,12);
     for(let i=items.length-1;i>=0;i--){const e=items[i];
       if(now-(e.landed??e.born)> (e.landed===null?14000:10000)){

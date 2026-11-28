@@ -1,6 +1,6 @@
 # Case game / Three.js
 
-Centered, detailed 3D wooden case with a fixed camera, aged oak planks, hairline splits, rusty iron straps and side ring handles, procedural wood grain, studio lighting and soft contact shadows. Version v0.6.1 is shown in the bottom-left corner. No external assets or CDN requests at runtime. A built-in SVG fallback is shown if WebGL is unavailable.
+Centered, detailed 3D wooden case with a fixed camera, aged oak planks, hairline splits, rusty iron straps and side ring handles, procedural wood grain, studio lighting and soft contact shadows. Version v0.6.2 is shown in the bottom-left corner. No external assets or CDN requests at runtime. A built-in SVG fallback is shown if WebGL is unavailable.
 
 Run `node server.js` or use the existing Windows launcher. The built `index.html` also runs offline. The live-update marker and protocol are unchanged.
 
@@ -36,3 +36,5 @@ Version 0.5.0 automatically closes the chest after opening. Extracted keys becom
 Version 0.6.0 adds an embedded custom brass cursor, one loot roll per opening (key 10%, wooden sword 50%, stone sword 25%, iron sword 15%), a result toast and sword counts. Key rewards credit the spendable key balance; sword counts persist in localStorage when available.
 
 Version 0.6.1 adds 3D loot emergence: type-specific sword models or a key rise from inside the chest, spin, hover and fly toward their HUD counter. Models, private materials and geometries are cleaned after each flight; reward odds and one-roll-per-opening behavior are unchanged.
+
+Version 0.6.2 removes the loot result toast and replaces the scripted inventory flight with physical ejection. Loot receives upward/forward impulse and angular velocity in the same cannon-es world as dropped keys; it falls, bounces and collides with other items, then is removed 10 seconds after landing. Inventory rewards and probabilities are unchanged.

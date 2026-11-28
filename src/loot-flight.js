@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-export function createLootFlight({scene,model,camera,keyTemplate,reduceMotion}) {
+import * as CANNON from 'cannon-es';
+export function createLootFlight({scene,model,camera,keyTemplate,reduceMotion,physics}) {
   const active=[];
-  const smooth=t=>t*t*(3-2*t),clamp=t=>Math.max(0,Math.min(1,t));
   function spawn(item,now) {
     const root=new THREE.Group(),materials=new Set(),geometries=new Set();
     const material=(color,metalness,roughness)=>{const m=new THREE.MeshStandardMaterial({color,metalness,roughness,transparent:true});materials.add(m);return m;};
@@ -24,19 +24,34 @@ export function createLootFlight({scene,model,camera,keyTemplate,reduceMotion}) 
       for(let i=0;i<5;i++) {const band=mesh(new THREE.TorusGeometry(.048,.009,6,16),guard,0,-.35-i*.045,0);band.rotation.x=Math.PI/2;}
       mesh(new THREE.SphereGeometry(.072,12,8),guard,0,-.63,0);
     }
-    const origin=model.localToWorld(new THREE.Vector3(0,.45,.35));
-    const hero=model.localToWorld(new THREE.Vector3(0,2.0,1.9));
+    const origin=model.localToWorld(new THREE.Vector3(0,.65,.45));
     root.position.copy(origin);root.rotation.set(.1,-.4,-.16);scene.add(root);
-    const curve=new THREE.CubicBezierCurve3(origin,origin.clone().add(new THREE.Vector3(0,1.6,.1)),hero.clone().add(new THREE.Vector3(-.35,.5,-.15)),hero);
-    active.push({root,materials,geometries,start:now,curve,hero,id:item.id});
+    const body=new CANNON.Body({mass:item.id==='key'?.16:item.id==='wood'?.45:item.id==='stone'?1.2:.9,material:physics.brass,linearDamping:.06,angularDamping:.09,allowSleep:true,sleepSpeedLimit:.09,sleepTimeLimit:.8});
+    if(item.id==='key') {
+      body.addShape(new CANNON.Box(new CANNON.Vec3(.027,.43,.027)),new CANNON.Vec3(0,.16,0));
+      for(let i=0;i<16;i++){const a=i*Math.PI/8;body.addShape(new CANNON.Sphere(.032),new CANNON.Vec3(0,-.54+Math.sin(a)*.205,Math.cos(a)*.155));}
+    } else {
+      body.addShape(new CANNON.Box(new CANNON.Vec3(.11,.49,.045)),new CANNON.Vec3(0,.28,0));
+      body.addShape(new CANNON.Box(new CANNON.Vec3(.27,.045,.045)),new CANNON.Vec3(0,-.27,0));
+      body.addShape(new CANNON.Box(new CANNON.Vec3(.05,.18,.05)),new CANNON.Vec3(0,-.47,0));
+    }
+    body.position.set(origin.x,origin.y,origin.z);body.quaternion.set(root.quaternion.x,root.quaternion.y,root.quaternion.z,root.quaternion.w);
+    body.velocity.set((Math.random()-.5)*.65,6.2,2.25);body.angularVelocity.set(1.3,2.1,-.8);
+    // Ignore the body's simplified solid chest collider until the item clears the opening.
+    body.collisionFilterMask=1;
+    const entry={root,materials,geometries,start:now,body,landed:null};
+    body.addEventListener('collide',event=>{if(entry.landed===null&&event.body.collisionFilterGroup!==2)entry.landed=performance.now();});
+    physics.world.addBody(body);active.push(entry);
   }
   return {spawn,get count(){return active.length;},get objects(){return active.map(e=>e.root);},tick(now){
     const wasActive=active.length>0;
-    for(let i=active.length-1;i>=0;i--){const e=active[i],t=Math.max(0,(now-e.start)/1000)*(reduceMotion?1.5:1);
-      if(t>=2.9){scene.remove(e.root);for(const m of e.materials)m.dispose();for(const g of e.geometries)g.dispose();active.splice(i,1);continue;}
-      if(t<.85){const k=1-Math.pow(1-t/.85,3);e.root.position.copy(e.curve.getPoint(k));e.root.rotation.y=-.4+k*Math.PI*2;}
-      else if(t<1.9){e.root.position.copy(e.hero);e.root.position.y+=Math.sin((t-.85)*3)*.06;e.root.rotation.y=Math.PI*2-.4+(t-.85)*.65;}
-      else {const k=smooth(clamp((t-1.9)/1));camera.updateMatrixWorld();const destination=new THREE.Vector3(.79,e.id==='key'?.7:-.74,.5).unproject(camera).sub(camera.position).normalize().multiplyScalar(8).add(camera.position);e.root.position.copy(e.hero).lerp(destination,k);e.root.rotation.z=-.16+k*.6;e.root.scale.setScalar(1-k*.83);for(const m of e.materials)m.opacity=1-smooth(clamp((k-.55)/.45));}
+    for(let i=active.length-1;i>=0;i--){const e=active[i],age=now-e.start;
+      if(age>400)e.body.collisionFilterMask=-1;
+      if(now-(e.landed??e.start)>(e.landed===null?15000:10000)){
+        physics.world.removeBody(e.body);scene.remove(e.root);for(const m of e.materials)m.dispose();for(const g of e.geometries)g.dispose();active.splice(i,1);continue;
+      }
+      const p=e.body.interpolatedPosition,q=e.body.interpolatedQuaternion;
+      e.root.position.set(p.x,p.y,p.z);e.root.quaternion.set(q.x,q.y,q.z,q.w);
     }
     return wasActive;
   }};
