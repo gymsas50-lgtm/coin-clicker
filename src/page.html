@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="app-id" content="arena-coin-clicker"><meta name="theme-color" content="#090b0f"><title>Кейс / Three.js</title>
-<style>*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090b0f}#scene{position:fixed;inset:0;display:grid;place-items:center;cursor:grab;touch-action:none}#scene.dragging{cursor:grabbing}canvas{display:block;position:absolute;inset:0;width:100%;height:100%;outline:none}.fallback{width:min(480px,88vw);height:auto;filter:drop-shadow(0 18px 24px #0008)}.ready .fallback{display:none}</style></head><body><main id="scene" aria-label="Кейс по центру экрана"><svg class="fallback" viewBox="0 0 480 360" role="img" aria-labelledby="case-title">
-<title id="case-title">Закрытый металлический кейс</title>
+<style>*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#090b0f}#scene{position:fixed;inset:0;display:grid;place-items:center;cursor:default;touch-action:auto}#scene.dragging{cursor:default}canvas{display:block;position:absolute;inset:0;width:100%;height:100%;outline:none}.fallback{width:min(480px,88vw);height:auto;filter:drop-shadow(0 18px 24px #0008)}.ready .fallback{display:none}.version{position:fixed;bottom:16px;left:20px;z-index:5;color:#737779;font:11px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;user-select:none;pointer-events:none}</style></head><body><main id="scene" aria-label="Кейс по центру экрана"><svg class="fallback" viewBox="0 0 480 360" role="img" aria-labelledby="case-title">
+<title id="case-title">Деревянный сундук</title>
 <defs>
- <linearGradient id="shell" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#45494f"/><stop offset=".45" stop-color="#303339"/><stop offset="1" stop-color="#23262b"/></linearGradient>
- <linearGradient id="lid" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#555a62"/><stop offset=".13" stop-color="#42474f"/><stop offset="1" stop-color="#30343b"/></linearGradient>
+ <linearGradient id="shell" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#956537"/><stop offset=".45" stop-color="#76502d"/><stop offset="1" stop-color="#51371f"/></linearGradient>
+ <linearGradient id="lid" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#ad7b49"/><stop offset=".13" stop-color="#8c6036"/><stop offset="1" stop-color="#654526"/></linearGradient>
  <linearGradient id="steel" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d8dde4"/><stop offset=".36" stop-color="#929aa6"/><stop offset=".7" stop-color="#626b77"/><stop offset="1" stop-color="#b4bdc7"/></linearGradient>
  <linearGradient id="lock" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#f1f3f6"/><stop offset="1" stop-color="#8c96a4"/></linearGradient>
- <linearGradient id="inner" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#24272c"/><stop offset="1" stop-color="#353940"/></linearGradient>
+ <linearGradient id="inner" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#624024"/><stop offset="1" stop-color="#916236"/></linearGradient>
  <radialGradient id="shadow"><stop stop-color="#000" stop-opacity=".6"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
  <pattern id="texture" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 6 6 0" stroke="#fff" stroke-opacity=".025" stroke-width=".6"/></pattern>
 </defs>
@@ -57,7 +57,7 @@
 <g stroke="#14171c" stroke-width="3" stroke-linecap="round"><path d="M112 211H153M112 219H153M112 227H153M327 211H368M327 219H368M327 227H368"/></g>
 <g fill="#a5adb8" stroke="#252a32" stroke-width="1.5"><circle cx="83" cy="119" r="3"/><circle cx="397" cy="119" r="3"/><circle cx="83" cy="256" r="3"/><circle cx="397" cy="256" r="3"/><circle cx="139" cy="168" r="2"/><circle cx="341" cy="168" r="2"/></g>
 <path d="M183 233H297" stroke="#6e7785" stroke-opacity=".2"/>
-</svg></main>
+</svg></main><span class="version">v0.1.1</span>
 <script>/*__BUNDLE__*/</script>
 <script>(()=>{'use strict';
 const version='__GAME_VERSION__';let pending=false;

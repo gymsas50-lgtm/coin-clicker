@@ -18,7 +18,7 @@ try {
   renderer.toneMappingExposure = 1.25;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   mount.appendChild(renderer.domElement);
-  renderer.domElement.setAttribute('aria-label', 'Объёмный металлический кейс. Потяни, чтобы повернуть.');
+  renderer.domElement.setAttribute('aria-label', 'Деревянный сундук с металлическими креплениями.');
   renderer.domElement.setAttribute('role', 'img');
   RectAreaLightUniformsLib.init();
   const scene = new THREE.Scene();
@@ -46,10 +46,36 @@ try {
   grainContext.putImageData(image, 0, 0);
   const grain = new THREE.CanvasTexture(grainCanvas);
   grain.wrapS = grain.wrapT = THREE.RepeatWrapping; grain.repeat.set(5, 3);
-  const shell = new THREE.MeshStandardMaterial({ color: 0x313a43, metalness: 0.65, roughness: 0.42, roughnessMap: grain, bumpMap: grain, bumpScale: 0.009 });
-  const panel = new THREE.MeshStandardMaterial({ color: 0x252d35, metalness: 0.55, roughness: 0.5, roughnessMap: grain });
-  const aluminum = new THREE.MeshStandardMaterial({ color: 0xaebdc8, metalness: 0.94, roughness: 0.25 });
-  const steel = new THREE.MeshStandardMaterial({ color: 0x54626e, metalness: 0.9, roughness: 0.32 });
+  // Procedural oak grain with long fibers, pores and natural dark growth lines.
+  const woodCanvas = document.createElement('canvas'); woodCanvas.width = woodCanvas.height = 512;
+  const wc = woodCanvas.getContext('2d');
+  const woodImage = wc.createImageData(512, 512);
+  let noiseSeed = 9121;
+  for (let y = 0; y < 512; y++) for (let x = 0; x < 512; x++) {
+    noiseSeed = (Math.imul(noiseSeed, 1664525) + 1013904223) >>> 0;
+    const warp = y + Math.sin(x * .012) * 7 + Math.sin(x * .031 + y * .013) * 2;
+    const line = Math.sin(warp * .65) * 5 + Math.sin(warp * 2.2) * 2;
+    const broad = Math.sin(warp * .046) * 9 + Math.sin(x * .006 + y * .02) * 3;
+    const noise = (noiseSeed % 17) - 8;
+    const i = (y * 512 + x) * 4;
+    woodImage.data[i] = 126 + broad + line + noise;
+    woodImage.data[i+1] = 77 + broad*.65 + line*.7 + noise*.6;
+    woodImage.data[i+2] = 39 + broad*.38 + line*.45 + noise*.4;
+    woodImage.data[i+3] = 255;
+  }
+  wc.putImageData(woodImage, 0, 0);
+  for (const [x,y] of [[110,180],[370,390]]) {
+    for (let r=2; r<22; r+=3) {
+      wc.strokeStyle='rgba(45,23,10,'+(0.22-r*.004)+')';wc.lineWidth=.8;
+      wc.beginPath();wc.ellipse(x,y,r*2.8,r*.38,.03,0,Math.PI*2);wc.stroke();
+    }
+  }
+  const wood = new THREE.CanvasTexture(woodCanvas); wood.colorSpace = THREE.SRGBColorSpace;
+  wood.wrapS = wood.wrapT = THREE.RepeatWrapping; wood.anisotropy = Math.min(8,renderer.capabilities.getMaxAnisotropy());
+  const shell = new THREE.MeshStandardMaterial({ color: 0xd7b98d, map:wood, metalness: 0, roughness: .78, bumpMap: wood, bumpScale: .025 });
+  const panel = new THREE.MeshStandardMaterial({ color: 0xc49e73, map:wood, metalness: 0, roughness: .85, bumpMap: wood, bumpScale: .03 });
+  const aluminum = new THREE.MeshStandardMaterial({ color: 0x53514c, metalness: .84, roughness: .48 });
+  const steel = new THREE.MeshStandardMaterial({ color: 0x353632, metalness: .8, roughness: .5 });
   const rubber = new THREE.MeshStandardMaterial({ color: 0x11161c, metalness: 0.03, roughness: 0.82 });
   const dark = new THREE.MeshStandardMaterial({ color: 0x080d12, metalness: 0.4, roughness: 0.45 });
   const indicator = new THREE.MeshStandardMaterial({ color: 0x93ccc3, metalness: 0.55, roughness: 0.3, emissive: 0x366c62, emissiveIntensity: 0.35 });
@@ -74,18 +100,19 @@ try {
     const slot = box(model, [0.043, 0.009, 0.007], [x, y, z + (front ? 0.015 : -0.015)], dark, 0.002);
     slot.rotation.z = (x + y) * 2;
   }
-  // Separate lid and body, with a genuine dark gasket between them.
+  // Separate wooden lid and body, with a dark seam between them.
   box(model, [5.5, 1.92, 2.32], [0, -0.05, 0], shell, 0.14);
   box(model, [5.40, 0.075, 2.25], [0, 0.95, 0], dark, 0.035);
   box(model, [5.52, 0.62, 2.34], [0, 1.30, 0], shell, 0.13);
   box(model, [5.28, 0.033, 2.13], [0, 0.986, 0], aluminum, 0.015);
-  // Recessed, finely ribbed front and rear panels.
+  // Four separate wooden boards on the front and back.
   for (const side of [-1, 1]) {
-    box(model, [4.72, 1.38, 0.065], [0, -0.11, side * 1.17], panel, 0.095);
-    for (const x of [-1.48, -1.20, 1.20, 1.48]) {
-      box(model, [0.095, 1.04, 0.085], [x, -0.12, side * 1.213], shell, 0.035);
+    box(model, [4.80, 1.42, 0.07], [0, -0.11, side * 1.17], dark, 0.03);
+    for (let board=0; board<4; board++) {
+      const plank = box(model, [4.72, .324, .075], [0, -.64 + board*.35, side * 1.214], board%2 ? shell : panel, .018);
     }
-    box(model, [4.61, 0.028, 0.016], [0, -0.73, side * 1.212], steel, 0.007);
+    // Recessed nails, not futuristic panel ribs.
+    for (const x of [-2.18,2.18]) for (const y of [-.62,-.27,.08,.43]) screw(x,y,side*1.265,side>0);
   }
   // Reinforced corner shoes hug both faces rather than floating on the shell.
   for (const x of [-1, 1]) for (const z of [-1, 1]) {
@@ -130,14 +157,13 @@ try {
   box(model, [1.24, 0.24, 0.25], [0, 2.29, 0], rubber, 0.07);
   for (let i = -5; i <= 5; i++) box(model, [0.035, 0.245, 0.255], [i * 0.094, 2.29, 0], dark, 0.009);
   // Center badge, status light, side vents and non-slip feet.
-  box(model, [0.91, 0.37, 0.035], [0, 0.15, 1.225], steel, 0.045);
-  box(model, [0.52, 0.047, 0.018], [-0.04, 0.20, 1.251], aluminum, 0.012);
-  box(model, [0.31, 0.028, 0.018], [-0.145, 0.09, 1.251], aluminum, 0.009);
-  box(model, [0.055, 0.055, 0.025], [0.30, 0.145, 1.26], indicator, 0.015);
+  box(model, [0.40, 0.38, 0.055], [0, 0.15, 1.284], steel, 0.045);
+  cylinder(model,.045,.012,[0,.19,1.32],dark);
+  box(model,[.045,.10,.012],[0,.13,1.33],dark,.007);
   for (const side of [-1, 1]) {
-    box(model, [0.035, 1.0, 1.43], [side * 2.763, -0.1, 0], panel, 0.015);
-    for (let i = -2; i <= 2; i++) box(model, [0.025, 0.055, 0.90], [side * 2.79, -0.1 + i * 0.14, 0], dark, 0.012);
-    for (const z of [-0.77, 0.77]) box(model, [0.77, 0.24, 0.48], [side * 1.93, -1.10, z], rubber, 0.07);
+    box(model, [.04, 1.42, 1.65], [side*2.77,-.11,0], dark,.02);
+    for (let i=0;i<4;i++) box(model,[.065,.324,1.57],[side*2.80,-.64+i*.35,0],i%2 ? shell : panel,.015);
+    for (const z of [-.77,.77]) box(model,[.77,.24,.48],[side*1.93,-1.10,z],rubber,.07);
   }
   // Studio-style lighting with actual material reflections and grounded shadows.
   const key = new THREE.SpotLight(0xfff4e5, 95, 40, 0.65, 0.75, 2);
@@ -156,7 +182,7 @@ try {
   contact.rotation.x = -Math.PI / 2; contact.position.y = 0.208; scene.add(contact);
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.target.set(0, 1.88, 0); controls.enableDamping = true; controls.dampingFactor = 0.07;
-  controls.enablePan = false; controls.enableZoom = false;
+  controls.enablePan = false; controls.enableZoom = false; controls.enableRotate = false; controls.enabled = false;
   controls.minPolarAngle = Math.PI * 0.27; controls.maxPolarAngle = Math.PI * 0.49;
   let interacting = false, dirty = true;
   controls.addEventListener('change', () => { dirty = true; });
