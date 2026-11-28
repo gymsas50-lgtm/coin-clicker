@@ -29,6 +29,7 @@ try {
  const energyBeam=createGravityBeam(scene);
  const gunLight=new THREE.PointLight(0x88ffb0,1.0,2.7,2);gunLight.position.set(.3,.12,-.32);camera.add(gunLight);
  const hint=document.querySelector('#hint'),crosshair=document.querySelector('#crosshair'),keys=new Set();let yaw=0,pitch=-.12,locked=false,holding=false,holdDistance=4,last=null,jump=false;
+ const orbRay=new THREE.Raycaster(),orbDirection=new THREE.Vector3();
  const grabNormal=new THREE.Vector3(0,0,1),beamNormal=new THREE.Vector3(),muzzleDirection=new THREE.Vector3();
  const holdTarget=new THREE.Vector3(),previousHoldTarget=new THREE.Vector3(),targetVelocity=new THREE.Vector3(),goalDelta=new THREE.Vector3();
  const roomHit=new CANNON.RaycastResult(),roomFrom=new CANNON.Vec3(),roomTo=new CANNON.Vec3(),errorDirection=new CANNON.Vec3(),crossR=new CANNON.Vec3(),inertiaCross=new CANNON.Vec3();
@@ -86,7 +87,9 @@ try {
   obstructionDirection.set(.43,-.27,-1.1).applyMatrix4(camera.matrixWorld).sub(camera.position).normalize();wallRay.set(camera.position,obstructionDirection);
   const obstruction=wallRay.intersectObjects(roomMeshes,false)[0];const blocked=obstruction?THREE.MathUtils.clamp((1.25-obstruction.distance)/.9,0,1):0;
   weapon.update(dt,blocked,holding);
-  if(holding){cubeBody.pointToWorldFrame(anchor,grabWorld);weapon.muzzle(gunTip);target.copy(grabNormal).applyQuaternion(cube.quaternion).normalize();beamNormal.copy(target);muzzleDirection.set(0,0,-1).transformDirection(gun.matrixWorld);target.copy(anchor).applyQuaternion(cube.quaternion).add(cube.position);energyBeam.update(gunTip,target,dt,{direction:muzzleDirection,normal:beamNormal});}else energyBeam.hide();
+  if(holding){cubeBody.pointToWorldFrame(anchor,grabWorld);weapon.muzzle(gunTip);target.copy(grabNormal).applyQuaternion(cube.quaternion).normalize();beamNormal.copy(target);muzzleDirection.set(0,0,-1).transformDirection(gun.matrixWorld);target.copy(anchor).applyQuaternion(cube.quaternion).add(cube.position);cube.updateMatrixWorld(true);orbDirection.subVectors(target,camera.position);const orbDistance=orbDirection.length();orbDirection.normalize();orbRay.set(camera.position,orbDirection);orbRay.far=orbDistance;
+   const orbBlock=orbRay.intersectObject(cube,false)[0];const contactVisible=!orbBlock||orbBlock.distance>=orbDistance-.045;
+   energyBeam.update(gunTip,target,dt,{direction:muzzleDirection,normal:beamNormal,contactVisible});}else energyBeam.hide();
   renderer.render(scene,camera);
  }
  function frame(now){requestAnimationFrame(frame);if(document.hidden){last=null;return;}const dt=last===null?1/120:Math.min(.06,(now-last)/1000);last=now;world.step(1/120,dt,8);render(dt);}

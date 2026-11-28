@@ -21,14 +21,14 @@ export function createGravityBeam(scene){
  const xAxis=new THREE.Vector3(1,0,0);
  // The physical prop provides the lag: the beam itself stays straight and attached.
  function curvePoint(from,to,t,length,out){return out.copy(from).lerp(to,t);}
- return {group,hide(){group.visible=false;light.intensity=0;},update(from,to,dt){
+ return {group,hide(){group.visible=false;light.intensity=0;},update(from,to,dt,options={}){
   dt=Math.max(.001,Math.min(dt,.05));time+=dt;group.visible=true;axis.subVectors(to,from);const length=axis.length();axis.normalize();
   side.crossVectors(axis,Math.abs(axis.y)>.94?xAxis:normal).normalize();up.crossVectors(side,axis).normalize();
   for(const s of strands){const a=s.geo.attributes.position;for(let i=0;i<=segments;i++){const t=i/segments,envelope=Math.sin(Math.PI*t),phase=t*length*7-time*6;
     curvePoint(from,to,t,length,p);
     for(let j=0;j<=radial;j++){const angle=j/radial*Math.PI*2,index=i*(radial+1)+j;a.setXYZ(index,p.x+(side.x*Math.cos(angle)+up.x*Math.sin(angle))*s.radius,p.y+(side.y*Math.cos(angle)+up.y*Math.sin(angle))*s.radius,p.z+(side.z*Math.cos(angle)+up.z*Math.sin(angle))*s.radius);}
    }a.needsUpdate=true;}
-  contact.position.copy(to);contact.scale.setScalar(.22+Math.sin(time*12)*.012);startGlow.position.copy(from);light.position.copy(to);light.intensity=1.2;
+  contact.visible=options.contactVisible!==false;contact.position.copy(to);contact.scale.setScalar(.22+Math.sin(time*12)*.012);startGlow.position.copy(from);light.position.copy(to);if(options.normal)light.position.addScaledVector(options.normal,.035);light.intensity=contact.visible?1.2:0;
   for(let i=0;i<pulses.length;i++){const t=(time*1.3+i/pulses.length)%1;curvePoint(from,to,t,length,pulses[i].position);}
  }};
 }
