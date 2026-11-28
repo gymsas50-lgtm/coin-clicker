@@ -12,7 +12,7 @@ export function createDefaultCube(){
  const light=new THREE.PointLight(0xffffff,1.5,2.3,2);light.name='Faint white light';mesh.add(light);
  const canvas=document.createElement('canvas');canvas.width=canvas.height=128;const ctx=canvas.getContext('2d'),gradient=ctx.createRadialGradient(64,64,12,64,64,64);gradient.addColorStop(0,'rgba(255,255,255,.4)');gradient.addColorStop(.45,'rgba(255,255,255,.18)');gradient.addColorStop(1,'rgba(255,255,255,0)');ctx.fillStyle=gradient;ctx.fillRect(0,0,128,128);
  const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
- const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,blending:THREE.AdditiveBlending,depthWrite:false,toneMapped:false}));glow.name='Soft white glow';glow.scale.set(1.6,1.6,1);glow.raycast=()=>{};mesh.add(glow);
+ const glow=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,blending:THREE.AdditiveBlending,depthTest:false,depthWrite:false,toneMapped:false}));glow.name='Soft white glow';glow.renderOrder=1000;glow.scale.set(1.6,1.6,1);glow.raycast=()=>{};mesh.add(glow);
  const vertices=[];for(const x of [-.35,.35])for(const y of [-.35,.35])for(const z of [-.35,.35])vertices.push(new CANNON.Vec3(x,y,z));
  return{mesh,vertices,shape:new CANNON.Box(new CANNON.Vec3(.35,.35,.35))};
 }
