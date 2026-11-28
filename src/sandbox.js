@@ -22,7 +22,7 @@ try {
  const priceTexture=new THREE.CanvasTexture(priceCanvas);priceTexture.colorSpace=THREE.SRGBColorSpace;
  const priceTag=new THREE.Sprite(new THREE.SpriteMaterial({map:priceTexture,depthTest:true,depthWrite:false,toneMapped:false}));priceTag.scale.set(.68,.51,1);priceTag.name='Cube price 10$';scene.add(priceTag);
  function updateCondition(){
-  priceContext.clearRect(0,0,256,192);priceContext.font='bold 76px Arial';priceContext.textAlign='center';priceContext.textBaseline='middle';priceContext.lineJoin='round';priceContext.lineWidth=3;priceContext.strokeStyle='rgba(0,0,0,.8)';priceContext.strokeText(cubePrice+'$',128,66);priceContext.fillStyle=cubePrice===10?'#ffffff':cubePrice>3?'#ffd578':'#ff7979';priceContext.fillText(cubePrice+'$',128,66);priceContext.font='36px Arial';priceContext.fillStyle='#e4e7eb';priceContext.lineWidth=2;priceContext.strokeText('Default',128,132);priceContext.fillText('Default',128,132);priceTexture.needsUpdate=true;priceTag.name='Default '+cubePrice+'$';
+  priceContext.clearRect(0,0,256,192);priceContext.font='bold 60px Arial';priceContext.textAlign='center';priceContext.textBaseline='middle';priceContext.lineJoin='round';priceContext.lineWidth=3;priceContext.strokeStyle='rgba(0,0,0,.8)';priceContext.strokeText(cubePrice+'$',128,66);priceContext.fillStyle=cubePrice===10?'#ffffff':cubePrice>3?'#ffd578':'#ff7979';priceContext.fillText(cubePrice+'$',128,66);priceContext.font='36px Arial';priceContext.fillStyle='#e4e7eb';priceContext.lineWidth=2;priceContext.strokeText('Default',128,132);priceContext.fillText('Default',128,132);priceTexture.needsUpdate=true;priceTag.name='Default '+cubePrice+'$';
  }
  updateCondition();
  // Back-face shell draws only the silhouette, never a filled tint on the cube.
