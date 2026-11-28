@@ -18,6 +18,7 @@ try {
  const priceCanvas=document.createElement('canvas');priceCanvas.width=256;priceCanvas.height=192;
  const priceContext=priceCanvas.getContext('2d');let cubePrice=10,lastDamageTime=-Infinity,breakAt=Infinity,broken=false;
  const breakEffect=createCubeBreak(scene,world);
+ const frozenPosition=new CANNON.Vec3(),frozenQuaternion=new CANNON.Quaternion();
  const priceTexture=new THREE.CanvasTexture(priceCanvas);priceTexture.colorSpace=THREE.SRGBColorSpace;
  const priceTag=new THREE.Sprite(new THREE.SpriteMaterial({map:priceTexture,depthTest:true,depthWrite:false,toneMapped:false}));priceTag.scale.set(.68,.51,1);priceTag.name='Cube price 10$';scene.add(priceTag);
  function updateCondition(){
@@ -32,7 +33,7 @@ try {
   const speed=Math.abs(event.contact.getImpactVelocityAlongNormal());
   if(speed<4||world.time-lastDamageTime<.25||cubePrice===0)return;
   const loss=Math.max(1,Math.round((speed*speed-16)/14));
-  cubePrice=Math.max(0,cubePrice-loss);lastDamageTime=world.time;if(cubePrice===0)breakAt=world.time+.2;updateCondition();
+  cubePrice=Math.max(0,cubePrice-loss);lastDamageTime=world.time;if(cubePrice===0){breakAt=world.time+.2;release();frozenPosition.copy(cubeBody.position);frozenQuaternion.copy(cubeBody.quaternion);cubeBody.type=CANNON.Body.STATIC;cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.updateSolveMassProperties();}updateCondition();
  });
  const player=new CANNON.Body({mass:75,shape:new CANNON.Box(new CANNON.Vec3(.3,.85,.3)),fixedRotation:true,linearDamping:.05,allowSleep:false});player.position.set(0,.88,6);player.updateMassProperties();player.collisionFilterGroup=4;world.addBody(player);
  const props=[{mesh:cube,body:cubeBody}];
@@ -49,7 +50,7 @@ try {
  function syncView(){camera.position.set(player.position.x,player.position.y+.70,player.position.z);camera.rotation.set(pitch,yaw,0);camera.updateMatrixWorld(true);}
  function release(){holding=false;energyBeam.hide();crosshair.classList.remove('holding');}
  function grab(){
-  if(holding||broken)return;syncView();for(const prop of props)prop.mesh.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(0,0),camera);
+  if(holding||broken||cubePrice===0)return;syncView();for(const prop of props)prop.mesh.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(0,0),camera);
   const hits=ray.intersectObjects(props.map(p=>p.mesh),true).filter(h=>h.object.isMesh&&h.face);if(!hits.length||hits[0].distance>3)return;
   const hit=hits[0];let node=hit.object,prop;while(node&&!prop){prop=props.find(p=>p.mesh===node);node=node.parent;}
   if(!prop)return;if(prop.detach)prop.detach();activeBody=prop.body;activeMesh=prop.mesh;
@@ -58,7 +59,7 @@ try {
   holdTarget.copy(p);previousHoldTarget.copy(p);holding=true;activeBody.wakeUp();crosshair.classList.add('holding');
  }
 
- function resetCube(){release();breakEffect.clear();broken=false;breakAt=Infinity;cube.visible=true;priceTag.visible=true;if(!world.bodies.includes(cubeBody))world.addBody(cubeBody);cubePrice=10;lastDamageTime=-Infinity;updateCondition();activeBody=cubeBody;activeMesh=cube;cubeBody.position.set(THREE.MathUtils.clamp(player.position.x-Math.sin(yaw)*2,-12.1,12.1),.37,THREE.MathUtils.clamp(player.position.z-Math.cos(yaw)*2,-12.1,12.1));cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
+ function resetCube(){release();cubeBody.type=CANNON.Body.DYNAMIC;cubeBody.updateMassProperties();breakEffect.clear();broken=false;breakAt=Infinity;cube.visible=true;priceTag.visible=true;if(!world.bodies.includes(cubeBody))world.addBody(cubeBody);cubePrice=10;lastDamageTime=-Infinity;updateCondition();activeBody=cubeBody;activeMesh=cube;cubeBody.position.set(THREE.MathUtils.clamp(player.position.x-Math.sin(yaw)*2,-12.1,12.1),.37,THREE.MathUtils.clamp(player.position.z-Math.cos(yaw)*2,-12.1,12.1));cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
  async function enter(){try{await renderer.domElement.requestPointerLock();}catch{hint.textContent='Нажми ещё раз для захвата мыши';}}
  hint.addEventListener('click',enter);renderer.domElement.addEventListener('pointerdown',e=>{if(!locked){enter();return;}if(e.button===0)grab();});
  addEventListener('pointerup',e=>{if(e.button===0)release();});addEventListener('pointercancel',release);
@@ -102,10 +103,10 @@ try {
   if(b.aabb.lowerBound[axis]<lower){b.position[axis]+=lower-b.aabb.lowerBound[axis];if(b.velocity[axis]<0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
   if(b.aabb.upperBound[axis]>upper){b.position[axis]-=b.aabb.upperBound[axis]-upper;if(b.velocity[axis]>0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
  }}
- world.addEventListener('postStep',()=>{contain(player);if(!broken)contain(cubeBody);if(!broken&&world.time>=breakAt){broken=true;release();breakEffect.burst(cubeBody);world.removeBody(cubeBody);cube.visible=false;priceTag.visible=false;hoverOutline.visible=false;}});
+ world.addEventListener('postStep',()=>{contain(player);if(!broken&&cubePrice===0){cubeBody.position.copy(frozenPosition);cubeBody.quaternion.copy(frozenQuaternion);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.previousPosition.copy(frozenPosition);cubeBody.interpolatedPosition.copy(frozenPosition);cubeBody.previousQuaternion.copy(frozenQuaternion);cubeBody.interpolatedQuaternion.copy(frozenQuaternion);cubeBody.aabbNeedsUpdate=true;}else if(!broken)contain(cubeBody);if(!broken&&world.time>=breakAt){broken=true;release();breakEffect.burst(cubeBody);world.removeBody(cubeBody);cube.visible=false;priceTag.visible=false;hoverOutline.visible=false;}});
  const wallRay=new THREE.Raycaster(),obstructionDirection=new THREE.Vector3();wallRay.far=1.4;
  function render(dt=1/60){syncView();outdoors.tick(camera);breakEffect.tick(dt);const p=cubeBody.interpolatedPosition,q=cubeBody.interpolatedQuaternion;cube.position.set(p.x,p.y,p.z);cube.quaternion.set(q.x,q.y,q.z,q.w);
-  cube.updateMatrixWorld(true);hoverRay.setFromCamera(screenCenter,camera);const hoverHit=hoverRay.intersectObject(cube,false)[0];hoverOutline.visible=!broken&&(holding||!!(hoverHit&&hoverHit.distance<=3));
+  cube.updateMatrixWorld(true);hoverRay.setFromCamera(screenCenter,camera);const hoverHit=hoverRay.intersectObject(cube,false)[0];hoverOutline.visible=!broken&&cubePrice>0&&(holding||!!(hoverHit&&hoverHit.distance<=3));
   let crystalTop=-Infinity;for(const v of crystal.vertices){target.set(v.x,v.y,v.z).applyQuaternion(cube.quaternion);crystalTop=Math.max(crystalTop,target.y);}
   priceTag.position.set(cube.position.x,cube.position.y+crystalTop+.28,cube.position.z);
   obstructionDirection.set(.43,-.27,-1.1).applyMatrix4(camera.matrixWorld).sub(camera.position).normalize();wallRay.set(camera.position,obstructionDirection);
