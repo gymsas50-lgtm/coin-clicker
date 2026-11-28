@@ -1,11 +1,14 @@
 import * as THREE from 'three';
 import { createHingeMotion } from './hinge.js';
+import { createDroppedKeys } from './dropped-keys.js';
 
 export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPivot,keyholeSlot,reduceMotion,economy}) {
   const canvas=renderer.domElement;
-  const duration=8.88;
+  const duration=7.0;
   let phase='closed',started=0,force=true,shadow=true,closingAngle=0;
   let manualTime=null;
+  const dropped=createDroppedKeys(scene);
+  let released=false,openedAt=0;
   const openHinge=createHingeMotion(true);
   let closeHinge=createHingeMotion(false,1.62);
   const gold=new THREE.MeshStandardMaterial({color:0x9e783b,metalness:.82,roughness:.34,transparent:true});
@@ -124,11 +127,11 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
       const turn=smoother(segment(t,3.35,4.2));key.quaternion.setFromAxisAngle(new THREE.Vector3(0,0,1),turn*Math.PI*.5);
       keyholeSlot.rotation.z=-turn*Math.PI*.5;
       if(t>4.55) key.position.z+=smooth(segment(t,4.55,5.12))*.8;
-      if(t>4.95) key.position.addScaledVector(up,-smooth(segment(t,4.95,5.55))*.7);
+
     }
     key.scale.setScalar(scale);
-    key.visible=t<5.55;
-    const opacity=1-smooth(segment(t,5.02,5.55));
+    key.visible=t<5.12;
+    const opacity=1;
     for(const mat of [gold,polished,darkGold]) {mat.opacity=opacity;mat.depthTest=true;}
     // The heavy lid moves only after the key is turned and the hasp clears the catch.
     haspPivot.rotation.x=-smooth(segment(t,4.2,4.65))*.35;
@@ -137,14 +140,14 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
   }
   function setPhase(next) {
     phase=next;canvas.dataset.state=phase;
-    canvas.setAttribute('aria-label',phase==='open'?'Открытый сундук. Нажми, чтобы закрыть.':'Старый сундук. Нажми, чтобы открыть ключом.');
+    canvas.setAttribute('aria-label',phase==='open'?'Открытый сундук. Скоро закроется сам.':'Старый сундук. Нажми, чтобы открыть ключом.');
     canvas.style.cursor=(phase==='opening'||phase==='closing')?'wait':'pointer';
   }
   function activate() {
     if(phase==='opening'||phase==='closing')return;
     if(phase==='closed' && economy && !economy.consumeKey())return;
     manualTime=null;started=performance.now();force=true;
-    if(phase==='closed') {paths();setPhase('opening');key.visible=true;}
+    if(phase==='closed') {released=false;paths();setPhase('opening');key.visible=true;}
     else {closingAngle=lidPivot.rotation.x;closeHinge=createHingeMotion(false,-closingAngle);key.visible=false;setPhase('closing');}
   }
   const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();let press=null;
@@ -164,17 +167,19 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
   setPhase('closed');
   return {
     activate,
-    get phase(){return phase;},get needsShadow(){return shadow;},get key(){return key;},get lid(){return lidPivot;},
+    get dropped(){return dropped;},get phase(){return phase;},get needsShadow(){return shadow;},get key(){return key;},get lid(){return lidPivot;},
     // Deterministic timeline access is useful for visual regression tests.
     seek(t){paths();manualTime=t;setPhase(t>=duration?'open':'opening');frameAt(Math.min(t,duration));force=true;},
     tick(now) {
-      shadow=false;
+      const debrisAnimated=dropped.tick(now);
+      shadow=debrisAnimated;
       if(manualTime!==null){if(force){force=false;shadow=true;return true;}return false;}
-      if(phase==='closed')return false;
+      if(phase==='closed')return debrisAnimated;
       force=false;
       if(phase==='opening') {
-        const t=(now-started)/1000*(reduceMotion?2.2:1);frameAt(Math.min(t,duration));shadow=t>=4.2;
-        if(t>=duration){key.visible=false;setPhase('open');}
+        const t=(now-started)/1000*(reduceMotion?2.2:1);frameAt(Math.min(t,duration));shadow=debrisAnimated||t>=4.2;
+        if(t>=5.12&&!released){frameAt(5.12);dropped.drop(key,now);released=true;frameAt(Math.min(t,duration));shadow=true;}
+        if(t>=duration){key.visible=false;openedAt=now;setPhase('open');}
         return true;
       }
       if(phase==='closing') {
@@ -183,10 +188,10 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
         lidPivot.rotation.x=-angle;
         haspPivot.rotation.x=-.35*clamp(angle/.28);
         lightLevel(smooth(clamp(angle/1.62)),elapsed);shadow=true;
-        if(elapsed>=2.5){lidPivot.rotation.x=0;haspPivot.rotation.x=0;keyholeSlot.rotation.z=0;lightLevel(0,0);setPhase('closed');}
+        if(elapsed>=1.5){lidPivot.rotation.x=0;haspPivot.rotation.x=0;keyholeSlot.rotation.z=0;lightLevel(0,0);setPhase('closed');}
         return true;
       }
-      if(phase==='open'){lightLevel(1,(now-started)/1000);return true;}
+      if(phase==='open'){lightLevel(1,(now-started)/1000);if(now-openedAt>=250){manualTime=null;started=now;closingAngle=lidPivot.rotation.x;closeHinge=createHingeMotion(false,-closingAngle);setPhase('closing');}return true;}
       return false;
     }
   };

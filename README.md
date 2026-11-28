@@ -1,6 +1,6 @@
 # Case game / Three.js
 
-Centered, detailed 3D wooden case with a fixed camera, aged oak planks, hairline splits, rusty iron straps and side ring handles, procedural wood grain, studio lighting and soft contact shadows. Version v0.4.1 is shown in the bottom-left corner. No external assets or CDN requests at runtime. A built-in SVG fallback is shown if WebGL is unavailable.
+Centered, detailed 3D wooden case with a fixed camera, aged oak planks, hairline splits, rusty iron straps and side ring handles, procedural wood grain, studio lighting and soft contact shadows. Version v0.5.0 is shown in the bottom-left corner. No external assets or CDN requests at runtime. A built-in SVG fallback is shown if WebGL is unavailable.
 
 Run `node server.js` or use the existing Windows launcher. The built `index.html` also runs offline. The live-update marker and protocol are unchanged.
 
@@ -30,3 +30,5 @@ Version 0.3.1 separates wood and metal shell surfaces, removes overlapping stave
 Version 0.4.0 adds a top-right money/key HUD, +15 money per elapsed second while running, a 100-money key purchase, and one-key-per-opening consumption. Balances use localStorage when available (scoped to the browser origin); this is client-side currency, not a server-authoritative economy.
 
 Version 0.4.1 changes key price to 1,000 money and models lid motion with a fixed-step angular torque simulation: spring-assisted opening, gravity, friction and damped rebounds at mechanical stops. Closing falls under gravity with a small closing torque; results are independent of display refresh rate.
+
+Version 0.5.0 automatically closes the chest after opening. Extracted keys become cannon-es rigid bodies with gravity, friction, angular velocity, floor/chest collisions and compound key-to-key contacts. Each key is removed 10 seconds after its first landing contact; removal releases its body and cloned materials. Physics uses a fixed 120 Hz step with interpolated transforms. cannon-es 0.20.0 is bundled offline (MIT).
