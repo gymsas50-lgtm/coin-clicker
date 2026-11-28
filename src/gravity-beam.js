@@ -28,7 +28,7 @@ export function createGravityBeam(scene){
     curvePoint(from,to,t,length,p);
     for(let j=0;j<=radial;j++){const angle=j/radial*Math.PI*2,index=i*(radial+1)+j;a.setXYZ(index,p.x+(side.x*Math.cos(angle)+up.x*Math.sin(angle))*s.radius,p.y+(side.y*Math.cos(angle)+up.y*Math.sin(angle))*s.radius,p.z+(side.z*Math.cos(angle)+up.z*Math.sin(angle))*s.radius);}
    }a.needsUpdate=true;}
-  contact.visible=options.contactVisible!==false;contact.position.copy(to);contact.scale.setScalar(.22+Math.sin(time*12)*.012);startGlow.position.copy(from);light.position.copy(to);if(options.normal)light.position.addScaledVector(options.normal,.035);light.intensity=contact.visible?1.2:0;
+  contact.visible=options.contactVisible!==false;contact.position.copy(to);contact.scale.setScalar(.22+Math.sin(time*12)*.012);startGlow.position.copy(from);light.position.copy(to);if(options.normal)light.position.addScaledVector(options.normal,.035);light.intensity=1.2;
   for(let i=0;i<pulses.length;i++){const t=(time*1.3+i/pulses.length)%1;curvePoint(from,to,t,length,pulses[i].position);}
  }};
 }
