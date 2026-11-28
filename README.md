@@ -14,3 +14,7 @@ Source: `src/case-three.js`, `src/opening.js`, and `src/page.html`. Build helper
 Three.js 0.180.0, MIT; license in `src/THREE-LICENSE.txt`.
 
 Roblox is separate under `roblox-sync/` and is not modified by this browser-game update.
+
+## Windows desktop
+
+`desktop/main.cjs` runs the game in an isolated Electron window, without a browser tab or Node.js installation. The packaged app includes an offline game, checks the main branch on launch and every 15 seconds, validates and caches the latest HTML in the Windows user profile, and reloads via the existing version protocol. Game updates are automatic; Electron/native launcher updates require a new desktop download. Keep all files beside the EXE.
