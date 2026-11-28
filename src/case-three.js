@@ -4,6 +4,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RectAreaLightUniformsLib } from 'three/addons/lights/RectAreaLightUniformsLib.js';
 import { createChestOpening } from './opening.js';
+import { createEconomy } from './economy.js';
+const economy=createEconomy();
 
 const mount = document.querySelector('#scene');
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -262,7 +264,7 @@ try {
     camera.fov = w / h < 0.65 ? 42 : 33; camera.updateProjectionMatrix(); controls.update(); dirty = true;
   }
   addEventListener('resize', resize); resize();
-  const opening=createChestOpening({scene,model,camera,renderer,lidPivot,haspPivot,keyholeSlot,reduceMotion});
+  const opening=createChestOpening({scene,model,camera,renderer,lidPivot,haspPivot,keyholeSlot,reduceMotion,economy});
   mount.classList.add('ready');
   let frame = 0, start = performance.now();
   function draw(now) {
@@ -278,7 +280,7 @@ try {
   requestAnimationFrame(draw);
   renderer.domElement.addEventListener('webglcontextlost', event => { event.preventDefault(); cancelAnimationFrame(frame); mount.classList.remove('ready'); });
   renderer.domElement.addEventListener('webglcontextrestored', () => location.reload());
-  window.caseScene = { scene, model, renderer, camera, controls, opening, get ready() { return mount.classList.contains('ready'); } };
+  window.caseScene = { scene, model, renderer, camera, controls, opening, economy, get ready() { return mount.classList.contains('ready'); } };
 } catch (error) {
   console.error('3D case:', error);
   mount.classList.remove('ready');

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPivot,keyholeSlot,reduceMotion}) {
+export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPivot,keyholeSlot,reduceMotion,economy}) {
   const canvas=renderer.domElement;
   const duration=6.9;
   let phase='closed',started=0,force=true,shadow=true,closingAngle=0;
@@ -140,6 +140,7 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
   }
   function activate() {
     if(phase==='opening'||phase==='closing')return;
+    if(phase==='closed' && economy && !economy.consumeKey())return;
     manualTime=null;started=performance.now();force=true;
     if(phase==='closed') {paths();setPhase('opening');key.visible=true;}
     else {closingAngle=lidPivot.rotation.x;key.visible=false;setPhase('closing');}
