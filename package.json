@@ -1,8 +1,8 @@
 {
   "name": "empty-drive",
-  "version": "0.4.2",
+  "version": "0.1.0",
   "private": true,
-  "description": "Dense voxel sedan driving and crash-test playground",
+  "description": "Minimal first-person physics room with a gravity gun",
   "scripts": {
     "build": "node src/build.cjs",
     "start": "node server.js"
