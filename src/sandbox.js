@@ -36,7 +36,7 @@ try {
  function syncView(){camera.position.set(player.position.x,player.position.y+.70,player.position.z);camera.rotation.set(pitch,yaw,0);camera.updateMatrixWorld(true);}
  function release(){holding=false;energyBeam.hide();crosshair.classList.remove('holding');}
  function grab(){if(holding)return;syncView();cube.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(0,0),camera);const hits=ray.intersectObject(cube,false);if(!hits.length||hits[0].distance>7)return;const p=hits[0].point;cubeBody.pointToLocalFrame(new CANNON.Vec3(p.x,p.y,p.z),anchor);holdDistance=THREE.MathUtils.clamp(hits[0].distance,1.8,6.5);grabNormal.copy(hits[0].face.normal);holdTarget.copy(p);previousHoldTarget.copy(p);holding=true;cubeBody.wakeUp();crosshair.classList.add('holding');}
- function throwCube(){if(!holding)return;weapon.kick();camera.getWorldDirection(forward);release();cubeBody.applyImpulse(new CANNON.Vec3(forward.x*125,forward.y*125,forward.z*125));}
+ function throwCube(){if(!holding)return;weapon.kick();camera.getWorldDirection(forward);cubeBody.vectorToWorldFrame(anchor,relative);release();cubeBody.applyImpulse(new CANNON.Vec3(forward.x*125,forward.y*125,forward.z*125),relative);}
  function resetCube(){release();cubeBody.position.set(0,.62,0);cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
  async function enter(){try{await renderer.domElement.requestPointerLock();}catch{hint.textContent='Нажми ещё раз для захвата мыши';}}
  hint.addEventListener('click',enter);renderer.domElement.addEventListener('pointerdown',e=>{if(!locked){enter();return;}if(e.button===0)grab();if(e.button===2)throwCube();});
@@ -52,10 +52,8 @@ try {
    if(c.bj===player)return c.ni.y>.6;
    return false;
   });
-  const wantedX=(Math.cos(yaw)*x+Math.sin(yaw)*z)/n*4.5,wantedZ=(-Math.sin(yaw)*x+Math.cos(yaw)*z)/n*4.5;
-  const acceleration=(grounded?24:7)/120;
-  player.velocity.x+=THREE.MathUtils.clamp(wantedX-player.velocity.x,-acceleration,acceleration);
-  player.velocity.z+=THREE.MathUtils.clamp(wantedZ-player.velocity.z,-acceleration,acceleration);
+  player.velocity.x=(Math.cos(yaw)*x+Math.sin(yaw)*z)/n*4.5;
+  player.velocity.z=(-Math.sin(yaw)*x+Math.cos(yaw)*z)/n*4.5;
   if(jump&&grounded)player.velocity.y=5;jump=false;
   if(holding){
    syncView();camera.getWorldDirection(forward);target.copy(camera.position).addScaledVector(forward,holdDistance);
