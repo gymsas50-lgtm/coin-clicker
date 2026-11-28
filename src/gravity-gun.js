@@ -3,8 +3,8 @@ import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js'
 export function createGravityGun(camera){
  const gun=new THREE.Group();gun.name='Gravity manipulator';camera.add(gun);
  gun.position.set(.41,-.25,-.60);gun.rotation.set(.01,-.08,-.035);gun.scale.setScalar(.60);
- const mat=c=>new THREE.MeshBasicMaterial({color:c});
- const dark=mat(0x252b30),black=mat(0x151b20),steel=mat(0x7c8990),edge=mat(0xa8b1b2),orange=mat(0xa66a30),copper=mat(0xc69150),glow=mat(0xffba57),white=mat(0xffe5a1),grip=mat(0x41454a);
+ const mat=c=>new THREE.MeshStandardMaterial({color:c,metalness:.68,roughness:.34});
+ const dark=mat(0x252b30),black=mat(0x151b20),steel=mat(0x7c8990),edge=mat(0xa8b1b2),orange=mat(0xa66a30),copper=mat(0xc69150),glow=new THREE.MeshBasicMaterial({color:0xffba57,toneMapped:false}),white=new THREE.MeshBasicMaterial({color:0xffe5a1,toneMapped:false}),grip=mat(0x41454a);
  function part(geometry,material,position){const m=new THREE.Mesh(geometry,material);m.position.set(...position);gun.add(m);return m;}
  const box=(size,pos,m,r=.015)=>part(new RoundedBoxGeometry(...size,2,r),m,pos);
  function tube(radius,length,pos,m,r2=radius){const o=part(new THREE.CylinderGeometry(radius,r2,length,24),m,pos);o.rotation.x=Math.PI/2;return o;}
@@ -42,6 +42,17 @@ export function createGravityGun(camera){
  const display=box([.09,.015,.09],[0,.155,.18],black,.007);display.rotation.x=-.10;
  for(let i=0;i<3;i++)box([.018,.008,.05],[-.025+i*.025,.165,.18],glow,.002);
  box([.09,.08,.23],[.015,-.34,.43],grip,.025);box([.13,.095,.14],[.01,-.27,.31],mat(0x8a7765),.025);
+ const neon=new THREE.MeshBasicMaterial({color:0x5de1ff,toneMapped:false});
+ // Inset luminous rails, vented armour and a second coil colour.
+ for(const side of [-1,1]){
+  const plate=box([.022,.10,.25],[side*.153,-.005,.15],black,.006);plate.rotation.z=side*.08;
+  box([.007,.012,.20],[side*.168,.028,.15],neon,.003);
+  box([.007,.008,.10],[side*.168,-.018,.20],glow,.002);
+  for(let n=0;n<3;n++)box([.008,.030,.009],[side*.170,-.017,.06+n*.03],steel,.002);
+  cable([[side*.12,.08,-.04],[side*.155,.10,-.15],[side*.13,.07,-.27]],.005,neon);
+ }
+ ring(.114,.005,-.13,neon);ring(.114,.005,-.23,neon);
+ box([.13,.012,.08],[0,.15,.02],black,.004);box([.10,.005,.009],[0,.159,.015],neon,.001);
  let recoil=0,retract=0;
  return {gun,kick(){recoil=.08;},update(dt,blocked,holding){recoil*=Math.exp(-13*dt);retract=THREE.MathUtils.damp(retract,blocked,13,dt);gun.position.set(.41,-.25-retract*.14,-.60+retract*.70+recoil);gun.rotation.x=.01-retract*.70;white.color.setHex(holding?0xffefd0:0xffdfa1);},muzzle(target){gun.updateWorldMatrix(true,false);return target.set(0,.025,-.81).applyMatrix4(gun.matrixWorld);}};
 }

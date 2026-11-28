@@ -1,29 +1,37 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import {createGravityGun} from './gravity-gun.js';
+import {createGravityBeam} from './gravity-beam.js';
 try {
- const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=false;renderer.setClearColor(0x858585);document.body.prepend(renderer.domElement);
+ const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;renderer.setClearColor(0x858585);document.body.prepend(renderer.domElement);
  const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,.06,80);camera.rotation.order='YXZ';scene.add(camera);
  const world=new CANNON.World({gravity:new CANNON.Vec3(0,-9.81,0)});world.broadphase=new CANNON.SAPBroadphase(world);world.solver.iterations=12;world.defaultContactMaterial.friction=.55;world.defaultContactMaterial.restitution=.08;
- const material=color=>new THREE.MeshBasicMaterial({color});
- function box(parent,size,pos,color){const m=new THREE.Mesh(new THREE.BoxGeometry(...size),typeof color==='number'?material(color):color);m.position.set(...pos);parent.add(m);return m;}
+ const material=color=>new THREE.MeshStandardMaterial({color,roughness:.85,metalness:.04});
+ function box(parent,size,pos,color){const m=new THREE.Mesh(new THREE.BoxGeometry(...size),typeof color==='number'?material(color):color);m.position.set(...pos);m.receiveShadow=true;m.castShadow=parent!==scene;parent.add(m);return m;}
  const roomMeshes=[];
  function staticBox(size,pos,color){const m=box(scene,size,pos,color);const b=new CANNON.Body({mass:0,shape:new CANNON.Box(new CANNON.Vec3(...size.map(v=>v/2)))});b.position.set(...pos);world.addBody(b);roomMeshes.push(m);return m;}
  staticBox([20,.3,20],[0,-.15,0],0x777777);staticBox([20,.3,20],[0,6.15,0],0x999999);
  staticBox([20,6,.3],[0,3,-10.15],0x8b8b8b);staticBox([20,6,.3],[0,3,10.15],0x858585);staticBox([.3,6,20],[-10.15,3,0],0x818181);staticBox([.3,6,20],[10.15,3,0],0x919191);
- // Unlit face colours keep depth legible without lights, shadows or post-processing.
+ // Recessed ceiling luminaires, with one shadow-casting light for predictable performance.
+ scene.add(new THREE.HemisphereLight(0xdce8ff,0x6f6458,.8));
+ for(const z of [-3,3]){
+  box(scene,[2.65,.10,1.35],[0,5.91,z],0x333c44);
+  box(scene,[2.43,.025,1.13],[0,5.845,z],new THREE.MeshBasicMaterial({color:0xe8f2ff,toneMapped:false}));
+  const fill=new THREE.PointLight(0xd9e8ff,30,17,2);fill.position.set(0,5.65,z);scene.add(fill);
+ }
+ const overhead=new THREE.SpotLight(0xe7efff,145,25,1.20,.65,2);overhead.position.set(-1,5.65,1);overhead.target.position.set(0,0,0);overhead.castShadow=true;overhead.shadow.mapSize.set(1024,1024);overhead.shadow.camera.near=.3;overhead.shadow.camera.far=26;overhead.shadow.bias=-.0002;overhead.shadow.normalBias=.015;overhead.shadow.radius=3;scene.add(overhead,overhead.target);
  const cubeMaterials=[0xaaaaaa,0x969696,0xc2c2c2,0x858585,0xaeaeae,0x9d9d9d].map(material);
- const cube=box(scene,[1.2,1.2,1.2],[0,.62,0],cubeMaterials);
+ const cube=box(scene,[1.2,1.2,1.2],[0,.62,0],cubeMaterials);cube.castShadow=true;
  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(cube.geometry),new THREE.LineBasicMaterial({color:0x535353}));cube.add(edges);
  const cubeBody=new CANNON.Body({mass:12,shape:new CANNON.Box(new CANNON.Vec3(.6,.6,.6)),linearDamping:.08,angularDamping:.18,allowSleep:true,sleepSpeedLimit:.07});cubeBody.position.set(0,.62,0);cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);world.addBody(cubeBody);
  const player=new CANNON.Body({mass:75,shape:new CANNON.Box(new CANNON.Vec3(.3,.85,.3)),fixedRotation:true,linearDamping:.05,allowSleep:false});player.position.set(0,.88,6);player.updateMassProperties();world.addBody(player);
- const weapon=createGravityGun(camera),gun=weapon.gun,glow=new THREE.MeshBasicMaterial({color:0xffba57});
- const beamGeometry=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]);const beam=new THREE.Line(beamGeometry,new THREE.LineBasicMaterial({color:0xffae39,transparent:true,opacity:.85,depthTest:true}));beam.frustumCulled=false;scene.add(beam);beam.visible=false;
- const point=new THREE.Mesh(new THREE.SphereGeometry(.035,8,6),glow);scene.add(point);point.visible=false;
+ const weapon=createGravityGun(camera),gun=weapon.gun;
+ const energyBeam=createGravityBeam(scene);
+ const gunLight=new THREE.PointLight(0xa3dfff,1.0,2.7,2);gunLight.position.set(.3,.12,-.32);camera.add(gunLight);
  const hint=document.querySelector('#hint'),crosshair=document.querySelector('#crosshair'),keys=new Set();let yaw=0,pitch=-.12,locked=false,holding=false,holdDistance=4,last=null,jump=false;
  const ray=new THREE.Raycaster(),anchor=new CANNON.Vec3(),target=new THREE.Vector3(),forward=new THREE.Vector3(),gunTip=new THREE.Vector3(),grabWorld=new CANNON.Vec3(),grabVelocity=new CANNON.Vec3(),force=new CANNON.Vec3(),relative=new CANNON.Vec3();
  function syncView(){camera.position.set(player.position.x,player.position.y+.70,player.position.z);camera.rotation.set(pitch,yaw,0);camera.updateMatrixWorld(true);}
- function release(){holding=false;beam.visible=false;point.visible=false;crosshair.classList.remove('holding');}
+ function release(){holding=false;energyBeam.hide();crosshair.classList.remove('holding');}
  function grab(){if(holding)return;syncView();cube.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(0,0),camera);const hits=ray.intersectObject(cube,false);if(!hits.length||hits[0].distance>7)return;const p=hits[0].point;cubeBody.pointToLocalFrame(new CANNON.Vec3(p.x,p.y,p.z),anchor);holdDistance=THREE.MathUtils.clamp(hits[0].distance,1.8,6.5);holding=true;cubeBody.wakeUp();crosshair.classList.add('holding');}
  function throwCube(){if(!holding)return;weapon.kick();camera.getWorldDirection(forward);release();cubeBody.applyImpulse(new CANNON.Vec3(forward.x*125,forward.y*125,forward.z*125));}
  function resetCube(){release();cubeBody.position.set(0,.62,0);cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
@@ -56,10 +64,10 @@ try {
   obstructionDirection.set(.43,-.27,-1.1).applyMatrix4(camera.matrixWorld).sub(camera.position).normalize();wallRay.set(camera.position,obstructionDirection);
   const obstruction=wallRay.intersectObjects(roomMeshes,false)[0];const blocked=obstruction?THREE.MathUtils.clamp((1.25-obstruction.distance)/.9,0,1):0;
   weapon.update(dt,blocked,holding);
-  if(holding){cubeBody.pointToWorldFrame(anchor,grabWorld);weapon.muzzle(gunTip);const a=beamGeometry.attributes.position;a.setXYZ(0,gunTip.x,gunTip.y,gunTip.z);a.setXYZ(1,grabWorld.x,grabWorld.y,grabWorld.z);a.needsUpdate=true;beam.visible=true;point.visible=true;point.position.set(grabWorld.x,grabWorld.y,grabWorld.z);}else{beam.visible=false;point.visible=false;}
+  if(holding){cubeBody.pointToWorldFrame(anchor,grabWorld);weapon.muzzle(gunTip);target.set(grabWorld.x,grabWorld.y,grabWorld.z);energyBeam.update(gunTip,target,dt);}else energyBeam.hide();
   renderer.render(scene,camera);
  }
  function frame(now){requestAnimationFrame(frame);if(document.hidden){last=null;return;}const dt=last===null?1/120:Math.min(.06,(now-last)/1000);last=now;world.step(1/120,dt,8);render(dt);}
  addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});syncView();render();requestAnimationFrame(frame);
- window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,player,weapon,grab,release,throwCube,resetCube,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
+ window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,player,weapon,energyBeam,grab,release,throwCube,resetCube,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
 }catch(e){console.error(e);document.querySelector('#error').style.display='grid';}
