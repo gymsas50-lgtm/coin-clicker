@@ -1,9 +1,2 @@
-# Local runtime state and private data
-runtime/
-server-base-version.json
-player-data.json*
-world-data.json*
-progress-reset-version.json
-index.previous.html
-*.download.*
-update-status.txt
+node_modules/
+.cache/
