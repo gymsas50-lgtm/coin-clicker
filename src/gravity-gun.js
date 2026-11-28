@@ -58,10 +58,10 @@ export function createGravityGun(camera){
  return {gun,kick(){recoil=.08;},update(dt,blocked,holding){
   const deltaYaw=Math.atan2(Math.sin(camera.rotation.y-lastYaw),Math.cos(camera.rotation.y-lastYaw));
   const deltaPitch=camera.rotation.x-lastPitch;lastYaw=camera.rotation.y;lastPitch=camera.rotation.x;
-  sway.x=THREE.MathUtils.clamp(sway.x+deltaYaw*.55,-.12,.12);sway.y=THREE.MathUtils.clamp(sway.y-deltaPitch*.55,-.09,.09);
+  swayVelocity.x=THREE.MathUtils.clamp(swayVelocity.x+deltaYaw*6,-1.2,1.2);swayVelocity.y=THREE.MathUtils.clamp(swayVelocity.y-deltaPitch*6,-.9,.9);
   // Substepped damped spring keeps camera lag stable across frame rates.
   const duration=Math.min(Math.max(dt,0),.06),steps=Math.max(1,Math.ceil(duration*240)),h=duration/steps;
-  for(let i=0;i<steps;i++){swayVelocity.addScaledVector(sway,-144*h);swayVelocity.multiplyScalar(Math.exp(-20*h));sway.addScaledVector(swayVelocity,h);}
+  for(let i=0;i<steps;i++){swayVelocity.addScaledVector(sway,-100*h);swayVelocity.multiplyScalar(Math.exp(-20*h));sway.addScaledVector(swayVelocity,h);sway.x=THREE.MathUtils.clamp(sway.x,-.12,.12);sway.y=THREE.MathUtils.clamp(sway.y,-.09,.09);}
   recoil*=Math.exp(-13*dt);retract=THREE.MathUtils.damp(retract,blocked,13,dt);
   gun.position.set(.41+sway.x,-.25-retract*.14+sway.y,-.60+retract*.70+recoil);
   gun.rotation.set(.01-retract*.70+sway.y*.65,-.08-sway.x*.8,-.035-sway.x*.5);

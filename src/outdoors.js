@@ -5,9 +5,9 @@ export function createOutdoors({scene,world,renderer}){
  const sky=new THREE.Mesh(new THREE.SphereGeometry(1800,24,16),new THREE.ShaderMaterial({side:THREE.BackSide,depthWrite:false,uniforms:{top:{value:new THREE.Color(0x5b9edc)},bottom:{value:new THREE.Color(0xd5eaf2)}},vertexShader:'varying vec3 vDirection;void main(){vDirection=position;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',fragmentShader:'uniform vec3 top;uniform vec3 bottom;varying vec3 vDirection;void main(){float h=clamp(normalize(vDirection).y,0.0,1.0);gl_FragColor=vec4(mix(bottom,top,pow(h,0.65)),1.0);#include <tonemapping_fragment>\n#include <colorspace_fragment>\n}'}));
  // Shader includes must begin on a new line.
  sky.material.fragmentShader=sky.material.fragmentShader.replace(';#include',';\n#include');sky.frustumCulled=false;sky.renderOrder=-10000;sky.material.depthTest=false;scene.add(sky);
- const canvas=document.createElement('canvas');canvas.width=canvas.height=256;const ctx=canvas.getContext('2d');ctx.fillStyle='#608342';ctx.fillRect(0,0,256,256);
+ const canvas=document.createElement('canvas');canvas.width=canvas.height=256;const ctx=canvas.getContext('2d');ctx.fillStyle='#3e5d2c';ctx.fillRect(0,0,256,256);
  let seed=7341;function random(){seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;}
- const colors=['#587b3b','#73964e','#628546','#82a15a','#4c7135','#6d8d49'];
+ const colors=['#365326','#506e36','#41612e','#5b7a40','#304d23','#476632'];
  for(let i=0;i<18000;i++){const x=random()*256,y=random()*256;ctx.strokeStyle=colors[Math.floor(random()*colors.length)];ctx.lineWidth=.6+random()*.8;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x+(random()-.5)*3,y-1-random()*4);ctx.stroke();}
  const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;texture.wrapS=texture.wrapT=THREE.RepeatWrapping;texture.repeat.set(6.25,6.25);texture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
  const ground=new THREE.Mesh(new THREE.PlaneGeometry(25,25),new THREE.MeshStandardMaterial({map:texture,roughness:1,metalness:0}));ground.rotation.x=-Math.PI/2;ground.receiveShadow=true;ground.name='Grass field';scene.add(ground);
