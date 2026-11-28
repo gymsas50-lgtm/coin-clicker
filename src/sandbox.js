@@ -27,7 +27,7 @@ try {
  const player=new CANNON.Body({mass:75,shape:new CANNON.Box(new CANNON.Vec3(.3,.85,.3)),fixedRotation:true,linearDamping:.05,allowSleep:false});player.position.set(0,.88,6);player.updateMassProperties();player.collisionFilterGroup=4;world.addBody(player);
  const weapon=createGravityGun(camera),gun=weapon.gun;
  const energyBeam=createGravityBeam(scene);
- const gunLight=new THREE.PointLight(0xa3dfff,1.0,2.7,2);gunLight.position.set(.3,.12,-.32);camera.add(gunLight);
+ const gunLight=new THREE.PointLight(0x88ffb0,1.0,2.7,2);gunLight.position.set(.3,.12,-.32);camera.add(gunLight);
  const hint=document.querySelector('#hint'),crosshair=document.querySelector('#crosshair'),keys=new Set();let yaw=0,pitch=-.12,locked=false,holding=false,holdDistance=4,last=null,jump=false;
  const grabNormal=new THREE.Vector3(0,0,1),beamNormal=new THREE.Vector3(),muzzleDirection=new THREE.Vector3();
  const holdTarget=new THREE.Vector3(),previousHoldTarget=new THREE.Vector3(),targetVelocity=new THREE.Vector3(),goalDelta=new THREE.Vector3();
