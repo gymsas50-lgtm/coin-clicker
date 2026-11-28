@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import {createVoxelCar} from './voxel-car.js';
+import {createCrashSystem} from './crash.js';
 
 try {
   const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});
@@ -38,6 +39,7 @@ try {
   vehicle.addToWorld(world);
 
   const {car,wheels,brakeRed,voxelCount}=createVoxelCar(scene);
+  const crash=createCrashSystem({scene,world,body,car});
 
   const input={forward:false,back:false,left:false,right:false,brake:false};
   const keyMap={KeyW:'forward',ArrowUp:'forward',KeyS:'back',ArrowDown:'back',KeyA:'left',ArrowLeft:'left',KeyD:'right',ArrowRight:'right',Space:'brake'};
@@ -59,7 +61,7 @@ try {
   const desiredCamera=new THREE.Vector3(),lookAt=new THREE.Vector3(),carPosition=new THREE.Vector3(),carRotation=new THREE.Quaternion(),cameraOffset=new THREE.Vector3(),targetOffset=new THREE.Vector3(),sunOffset=new THREE.Vector3(-10,16,8);
   const localWheel=new THREE.Vector3(),wheelSteer=new THREE.Quaternion(),wheelSpin=new THREE.Quaternion(),upAxis=new THREE.Vector3(0,1,0),axleAxis=new THREE.Vector3(-1,0,0);
   let cameraInitialized=false;
-  function reset(){clearInput();body.position.set(0,.9,0);body.quaternion.set(0,0,0,1);body.previousPosition.copy(body.position);body.interpolatedPosition.copy(body.position);body.previousQuaternion.copy(body.quaternion);body.interpolatedQuaternion.copy(body.quaternion);body.velocity.setZero();body.angularVelocity.setZero();body.force.setZero();body.torque.setZero();body.aabbNeedsUpdate=true;body.wakeUp();steer=0;for(let i=0;i<4;i++){vehicle.setSteeringValue(0,i);vehicle.applyEngineForce(0,i);vehicle.setBrake(0,i);vehicle.wheelInfos[i].rotation=0;vehicle.wheelInfos[i].deltaRotation=0;}world.accumulator=0;last=null;cameraInitialized=false;}
+  function reset(){crash.reset();clearInput();body.position.set(0,.9,0);body.quaternion.set(0,0,0,1);body.previousPosition.copy(body.position);body.interpolatedPosition.copy(body.position);body.previousQuaternion.copy(body.quaternion);body.interpolatedQuaternion.copy(body.quaternion);body.velocity.setZero();body.angularVelocity.setZero();body.force.setZero();body.torque.setZero();body.aabbNeedsUpdate=true;body.wakeUp();steer=0;for(let i=0;i<4;i++){vehicle.setSteeringValue(0,i);vehicle.applyEngineForce(0,i);vehicle.setBrake(0,i);vehicle.wheelInfos[i].rotation=0;vehicle.wheelInfos[i].deltaRotation=0;}world.accumulator=0;last=null;cameraInitialized=false;}
   document.querySelector('#reset').addEventListener('click',reset);
   const localVelocity=new CANNON.Vec3();
   function applyControls(dt){
@@ -82,7 +84,7 @@ try {
   }
   world.addEventListener('preStep',()=>applyControls(1/120));
   function simulate(dt){
-    world.step(1/120,dt,12);simTime+=dt;
+    world.step(1/120,dt,12);simTime+=dt;crash.tick(dt);
     if(body.position.y< -5||Math.abs(body.position.x)>9000||Math.abs(body.position.z)>9000)reset();
   }
   function render(dt){
@@ -113,5 +115,5 @@ try {
   addEventListener('resize',resize);resize();reset();render(1/60);requestAnimationFrame(frame);
   renderer.domElement.addEventListener('webglcontextlost',e=>{e.preventDefault();paused=true;clearInput();document.querySelector('#error').classList.add('show');});
   renderer.domElement.addEventListener('webglcontextrestored',()=>location.reload());
-  window.carGame={ready:true,scene,camera,renderer,car,body,world,vehicle,input,reset,voxelCount,get paused(){return paused;},get speed(){return Math.hypot(body.velocity.x,body.velocity.z)*3.6;},get simulationTime(){return simTime;}};
+  window.carGame={ready:true,scene,camera,renderer,car,body,world,vehicle,input,reset,voxelCount,crash,get paused(){return paused;},get speed(){return Math.hypot(body.velocity.x,body.velocity.z)*3.6;},get simulationTime(){return simTime;}};
 } catch(error){console.error(error);document.querySelector('#error').classList.add('show');}
