@@ -12,7 +12,7 @@ try {
  function box(parent,size,pos,color){const m=new THREE.Mesh(new THREE.BoxGeometry(...size),typeof color==='number'?material(color):color);m.position.set(...pos);m.receiveShadow=true;m.castShadow=parent!==scene;parent.add(m);return m;}
  const outdoors=createOutdoors({scene,world,renderer});
  const roomMeshes=[outdoors.ground];
- const props=createCubeProps({scene,world,onFreeze(body){if(holding&&activeBody===body)release();}});
+ const props=createCubeProps({scene,world,getPlayer:()=>player,onFreeze(body){if(holding&&activeBody===body)release();}});
  const cube=props[0].mesh,cubeBody=props[0].body;
  const hoverRay=new THREE.Raycaster(),screenCenter=new THREE.Vector2(0,0);
  const player=new CANNON.Body({mass:75,shape:new CANNON.Box(new CANNON.Vec3(.3,.85,.3)),fixedRotation:true,linearDamping:.05,allowSleep:false});player.position.set(0,.88,6);player.updateMassProperties();player.collisionFilterGroup=4;world.addBody(player);
@@ -96,7 +96,7 @@ try {
    energyBeam.update(gunTip,target,dt,{direction:muzzleDirection,normal:beamNormal,contactVisible});}else energyBeam.hide();
   renderer.render(scene,camera);
  }
- function frame(now){requestAnimationFrame(frame);if(document.hidden){last=null;return;}const dt=last===null?1/120:Math.min(.06,(now-last)/1000);last=now;world.step(1/120,dt,8);render(dt);}
+ function frame(now){requestAnimationFrame(frame);if(document.hidden){last=null;return;}const dt=last===null?1/120:Math.min(.06,(now-last)/1000);last=now;world.step(1/120,dt,8);props.tickSpawns();render(dt);}
  addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});syncView();render();requestAnimationFrame(frame);
  window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,props,player,weapon,energyBeam,outdoors,get heldBody(){return holding?activeBody:null;},grab,release,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
 }catch(e){console.error(e);document.querySelector('#error').style.display='grid';}

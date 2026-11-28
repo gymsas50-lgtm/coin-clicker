@@ -8,7 +8,7 @@ export function createCubeBreak(scene,world){
  const dust=new THREE.Points(dustGeometry,new THREE.PointsMaterial({color:0xe8f0ff,size:.11,transparent:true,opacity:.55,depthWrite:false}));dust.visible=false;scene.add(dust);
  let age=0;
  function clear(){for(const p of pieces){scene.remove(p.mesh);world.removeBody(p.body);}pieces.length=0;dust.visible=false;age=0;}
- return{pieces,clear,burst(source){clear();
+ return{pieces,clear,dispose(){clear();scene.remove(dust);geometry.dispose();material.dispose();dustGeometry.dispose();dust.material.dispose();},burst(source){clear();
   // Split the original volume into 50 irregular rectangular chunks without overlap.
   const side=source.shapes[0].halfExtents.x*2;
   const chunks=[{center:[0,0,0],size:[side,side,side]}];

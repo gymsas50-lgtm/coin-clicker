@@ -2,11 +2,11 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import {createDefaultCube} from './crystal.js';
 import {createCubeBreak} from './cube-break.js';
-export function createCubeProps({scene,world,onFreeze}){
+export function createCubeProps({scene,world,onFreeze,getPlayer}){
  const specs=[{name:'Default',price:5,size:.7,x:-2},{name:'Small cube',price:8,size:.42,x:0},{name:'Big cube',price:12,size:1,x:2}];
- return specs.map(spec=>{
+ function create(spec){
   const model=createDefaultCube(spec.size),mesh=model.mesh;mesh.name=spec.name;scene.add(mesh);
-  const body=new CANNON.Body({mass:3*(spec.size/.7)**3,shape:model.shape,linearDamping:.035,angularDamping:.025,allowSleep:true,sleepSpeedLimit:.025,sleepTimeLimit:1.5});body.position.set(spec.x,spec.size/2+.02,0);body.previousPosition.copy(body.position);body.interpolatedPosition.copy(body.position);body.collisionFilterGroup=2;world.addBody(body);mesh.position.copy(body.position);
+  const body=new CANNON.Body({mass:3*(spec.size/.7)**3,shape:model.shape,linearDamping:.035,angularDamping:.025,allowSleep:true,sleepSpeedLimit:.025,sleepTimeLimit:1.5});body.position.set(spec.x,spec.size/2+.02,spec.z||0);body.previousPosition.copy(body.position);body.interpolatedPosition.copy(body.position);body.collisionFilterGroup=2;world.addBody(body);mesh.position.copy(body.position);
   const canvas=document.createElement('canvas');canvas.width=256;canvas.height=192;const ctx=canvas.getContext('2d'),texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
   const tag=new THREE.Sprite(new THREE.SpriteMaterial({map:texture,depthWrite:false,toneMapped:false}));tag.scale.set(.68,.51,1);scene.add(tag);
   const outline=new THREE.Mesh(mesh.geometry,new THREE.MeshBasicMaterial({color:0x9bffb7,side:THREE.BackSide,depthWrite:false,toneMapped:false}));outline.scale.setScalar(1.06);outline.visible=false;outline.raycast=()=>{};mesh.add(outline);
@@ -22,6 +22,21 @@ export function createCubeProps({scene,world,onFreeze}){
   };
   const point=new THREE.Vector3();
   prop.render=(dt,hovered,held)=>{effect.tick(dt);if(prop.broken)return;mesh.position.copy(body.interpolatedPosition);mesh.quaternion.copy(body.interpolatedQuaternion);mesh.updateMatrixWorld(true);outline.visible=prop.price>0&&(hovered||held);let top=-Infinity;for(const v of model.vertices){point.set(v.x,v.y,v.z).applyQuaternion(mesh.quaternion);top=Math.max(top,point.y);}tag.position.set(mesh.position.x,mesh.position.y+top+.28,mesh.position.z);};
+  prop.dispose=()=>{effect.dispose();scene.remove(mesh,tag);if(world.bodies.includes(body))world.removeBody(body);const geometries=new Set(),materials=new Set();mesh.traverse(o=>{if(o.geometry)geometries.add(o.geometry);if(o.material)for(const m of Array.isArray(o.material)?o.material:[o.material])materials.add(m);});for(const g of geometries)g.dispose();for(const m of materials){if(m.map)m.map.dispose();m.dispose();}texture.dispose();tag.material.dispose();};
   return prop;
- });
+ }
+ const props=specs.map(create);let nextSpawn=world.time+2;
+ props.tickSpawns=()=>{
+  for(let i=props.length-1;i>=0;i--)if(props[i].broken&&world.time-props[i].breakAt>6.2){props[i].dispose();props.splice(i,1);}
+  if(world.time+1e-8<nextSpawn)return;nextSpawn=world.time+2;
+  if(props.filter(p=>!p.broken).length>=5)return;
+  const spec=specs[Math.floor(Math.random()*specs.length)],player=getPlayer();
+  for(let attempt=0;attempt<50;attempt++){
+   const x=(Math.random()*2-1)*(12.5-spec.size/2-.3),z=(Math.random()*2-1)*(12.5-spec.size/2-.3);
+   if(player&&Math.hypot(x-player.position.x,z-player.position.z)<spec.size/2+1.2)continue;
+   if(props.some(p=>!p.broken&&Math.hypot(x-p.body.position.x,z-p.body.position.z)<(spec.size+p.size)*.71+.3))continue;
+   props.push(create({...spec,x,z}));break;
+  }
+ };
+ return props;
 }
