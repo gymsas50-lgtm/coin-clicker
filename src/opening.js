@@ -3,14 +3,14 @@ import * as THREE from 'three';
 export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPivot,keyholeSlot,reduceMotion}) {
   const canvas=renderer.domElement;
   const duration=6.9;
-  let phase='closed',started=0,lastDraw=-Infinity,force=true,shadow=true,closingAngle=0;
+  let phase='closed',started=0,force=true,shadow=true,closingAngle=0;
   let manualTime=null;
   const gold=new THREE.MeshStandardMaterial({color:0x9e783b,metalness:.82,roughness:.34,transparent:true});
   const polished=new THREE.MeshStandardMaterial({color:0xd6b778,metalness:.87,roughness:.26,transparent:true});
   const darkGold=new THREE.MeshStandardMaterial({color:0x5e4528,metalness:.76,roughness:.47,transparent:true});
   const key=new THREE.Group();key.name='Antique brass key';scene.add(key);key.visible=false;
   function mesh(geo,mat,pos) {
-    const m=new THREE.Mesh(geo,mat);m.position.set(...pos);m.castShadow=true;key.add(m);return m;
+    const m=new THREE.Mesh(geo,mat);m.position.set(...pos);m.castShadow=false;key.add(m);return m;
   }
   function rod(radius,len,z,mat=gold) {
     const m=mesh(new THREE.CylinderGeometry(radius,radius,len,32),mat,[0,0,z]);m.rotation.x=Math.PI/2;return m;
@@ -20,6 +20,7 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
   mesh(new THREE.SphereGeometry(.026,20,12),polished,[0,0,.015]);
   rod(.038,.045,.76,polished);rod(.034,.025,.81,darkGold);
   rod(.046,.055,.87,gold);rod(.036,.09,.91,polished);
+  const bowStart=key.children.length;
   function oval(rx,rz,thickness,y,mat) {
     const pts=[];
     for(let i=0;i<=96;i++) {
@@ -39,6 +40,10 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
       .map(([x,z])=>new THREE.Vector3(x,0,z));
     mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points),32,.012,8,false),gold,[0,0,0]);
   }
+  const bowGroup=new THREE.Group();bowGroup.position.set(0,0,1.14);key.add(bowGroup);
+  key.updateMatrixWorld(true);
+  for(const part of key.children.slice(bowStart).filter(part=>part!==bowGroup))bowGroup.attach(part);
+  bowGroup.rotation.z=Math.PI/2;
   // The bit points down into the narrow lower slot of the actual keyhole.
   const bit=new THREE.Shape();
   bit.moveTo(.055,-.009);bit.lineTo(.055,-.095);bit.lineTo(.10,-.095);
@@ -135,7 +140,7 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
   }
   function activate() {
     if(phase==='opening'||phase==='closing')return;
-    manualTime=null;started=performance.now();lastDraw=-Infinity;force=true;
+    manualTime=null;started=performance.now();force=true;
     if(phase==='closed') {paths();setPhase('opening');key.visible=true;}
     else {closingAngle=lidPivot.rotation.x;key.visible=false;setPhase('closing');}
   }
@@ -163,10 +168,9 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
       shadow=false;
       if(manualTime!==null){if(force){force=false;shadow=true;return true;}return false;}
       if(phase==='closed')return false;
-      if(now-lastDraw<1000/30&&!force)return false;
-      force=false;lastDraw=now;
+      force=false;
       if(phase==='opening') {
-        const t=(now-started)/1000*(reduceMotion?2.2:1);frameAt(Math.min(t,duration));shadow=true;
+        const t=(now-started)/1000*(reduceMotion?2.2:1);frameAt(Math.min(t,duration));shadow=t>=4.2;
         if(t>=duration){key.visible=false;setPhase('open');}
         return true;
       }
