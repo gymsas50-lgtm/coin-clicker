@@ -1,2 +1,7 @@
 node_modules/
 .cache/
+runtime/
+server-base-version.json
+index.previous.html
+*.download.*
+update-status.txt
