@@ -13,6 +13,11 @@ try {
  const roomMeshes=[outdoors.ground];
  const cubeMaterials=[0xaaaaaa,0x969696,0xc2c2c2,0x858585,0xaeaeae,0x9d9d9d].map(material);
  const cube=box(scene,[.7,.7,.7],[0,.37,0],cubeMaterials);cube.castShadow=true;
+ // Camera-facing price tag stays upright above the physical cube.
+ const priceCanvas=document.createElement('canvas');priceCanvas.width=256;priceCanvas.height=128;
+ const priceContext=priceCanvas.getContext('2d');priceContext.font='bold 76px Arial';priceContext.textAlign='center';priceContext.textBaseline='middle';priceContext.lineJoin='round';priceContext.lineWidth=9;priceContext.strokeStyle='rgba(0,0,0,.8)';priceContext.strokeText('10$',128,66);priceContext.fillStyle='#ffffff';priceContext.fillText('10$',128,66);
+ const priceTexture=new THREE.CanvasTexture(priceCanvas);priceTexture.colorSpace=THREE.SRGBColorSpace;
+ const priceTag=new THREE.Sprite(new THREE.SpriteMaterial({map:priceTexture,depthTest:true,depthWrite:false,toneMapped:false}));priceTag.scale.set(.85,.425,1);priceTag.name='Cube price 10$';scene.add(priceTag);
  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(cube.geometry),new THREE.LineBasicMaterial({color:0x535353}));cube.add(edges);
  const cubeBody=new CANNON.Body({mass:3,shape:new CANNON.Box(new CANNON.Vec3(.35,.35,.35)),linearDamping:.035,angularDamping:.025,allowSleep:true,sleepSpeedLimit:.025,sleepTimeLimit:1.5});cubeBody.position.set(0,.37,0);cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.collisionFilterGroup=2;world.addBody(cubeBody);
  const player=new CANNON.Body({mass:75,shape:new CANNON.Box(new CANNON.Vec3(.3,.85,.3)),fixedRotation:true,linearDamping:.05,allowSleep:false});player.position.set(0,.88,6);player.updateMassProperties();player.collisionFilterGroup=4;world.addBody(player);
@@ -86,6 +91,8 @@ try {
  world.addEventListener('postStep',()=>{contain(player);contain(cubeBody);});
  const wallRay=new THREE.Raycaster(),obstructionDirection=new THREE.Vector3();wallRay.far=1.4;
  function render(dt=1/60){syncView();outdoors.tick(camera);const p=cubeBody.interpolatedPosition,q=cubeBody.interpolatedQuaternion;cube.position.set(p.x,p.y,p.z);cube.quaternion.set(q.x,q.y,q.z,q.w);
+  const cq=cube.quaternion;const cubeTop=.35*(Math.abs(2*(cq.x*cq.y+cq.w*cq.z))+Math.abs(1-2*(cq.x*cq.x+cq.z*cq.z))+Math.abs(2*(cq.y*cq.z-cq.w*cq.x)));
+  priceTag.position.set(cube.position.x,cube.position.y+cubeTop+.36,cube.position.z);
   obstructionDirection.set(.43,-.27,-1.1).applyMatrix4(camera.matrixWorld).sub(camera.position).normalize();wallRay.set(camera.position,obstructionDirection);
   const obstruction=wallRay.intersectObjects(roomMeshes,false)[0];const blocked=obstruction?THREE.MathUtils.clamp((1.25-obstruction.distance)/.9,0,1):0;
   weapon.update(dt,blocked,holding);
@@ -96,5 +103,5 @@ try {
  }
  function frame(now){requestAnimationFrame(frame);if(document.hidden){last=null;return;}const dt=last===null?1/120:Math.min(.06,(now-last)/1000);last=now;world.step(1/120,dt,8);render(dt);}
  addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});syncView();render();requestAnimationFrame(frame);
- window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,player,weapon,energyBeam,outdoors,get heldBody(){return holding?activeBody:null;},grab,release,resetCube,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
+ window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,player,weapon,energyBeam,outdoors,priceTag,get heldBody(){return holding?activeBody:null;},grab,release,resetCube,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
 }catch(e){console.error(e);document.querySelector('#error').style.display='grid';}
