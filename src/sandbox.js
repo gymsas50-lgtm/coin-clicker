@@ -15,11 +15,34 @@ try {
  const cube=box(scene,[.7,.7,.7],[0,.37,0],cubeMaterials);cube.castShadow=true;
  // Camera-facing price tag stays upright above the physical cube.
  const priceCanvas=document.createElement('canvas');priceCanvas.width=256;priceCanvas.height=128;
- const priceContext=priceCanvas.getContext('2d');priceContext.font='bold 76px Arial';priceContext.textAlign='center';priceContext.textBaseline='middle';priceContext.lineJoin='round';priceContext.lineWidth=9;priceContext.strokeStyle='rgba(0,0,0,.8)';priceContext.strokeText('10$',128,66);priceContext.fillStyle='#ffffff';priceContext.fillText('10$',128,66);
+ const priceContext=priceCanvas.getContext('2d');let cubePrice=10,lastDamageTime=-Infinity;
  const priceTexture=new THREE.CanvasTexture(priceCanvas);priceTexture.colorSpace=THREE.SRGBColorSpace;
  const priceTag=new THREE.Sprite(new THREE.SpriteMaterial({map:priceTexture,depthTest:true,depthWrite:false,toneMapped:false}));priceTag.scale.set(.85,.425,1);priceTag.name='Cube price 10$';scene.add(priceTag);
+ const cracks=[];
+ for(let stage=0;stage<3;stage++){
+  const vertices=[];
+  for(let axis=0;axis<3;axis++)for(const sign of [-1,1]){
+   const points=[[-.25+stage*.1,-.3],[-.08+stage*.07,-.12],[-.14+stage*.08,.02],[.02+stage*.07,.14],[.08+stage*.07,.3]];
+   const v=(u,w)=>{const p=[0,0,0];p[axis]=sign*.351;p[(axis+1)%3]=u;p[(axis+2)%3]=w;return p;};
+   for(let j=1;j<points.length;j++)vertices.push(...v(...points[j-1]),...v(...points[j]));
+   vertices.push(...v(...points[2]),...v(points[2][0]+.15,points[2][1]+.04));
+  }
+  const mesh=new THREE.LineSegments(new THREE.BufferGeometry().setAttribute('position',new THREE.Float32BufferAttribute(vertices,3)),new THREE.LineBasicMaterial({color:0x292522}));mesh.visible=false;cube.add(mesh);cracks.push(mesh);
+ }
+ const originalColors=cubeMaterials.map(m=>m.color.clone());
+ function updateCondition(){
+  priceContext.clearRect(0,0,256,128);priceContext.font='bold 76px Arial';priceContext.textAlign='center';priceContext.textBaseline='middle';priceContext.lineJoin='round';priceContext.lineWidth=9;priceContext.strokeStyle='rgba(0,0,0,.8)';priceContext.strokeText(cubePrice+'$',128,66);priceContext.fillStyle=cubePrice===10?'#ffffff':cubePrice>3?'#ffd578':'#ff7979';priceContext.fillText(cubePrice+'$',128,66);priceTexture.needsUpdate=true;priceTag.name='Cube price '+cubePrice+'$';
+  cracks.forEach((m,i)=>m.visible=cubePrice<10-i*3);cubeMaterials.forEach((m,i)=>m.color.copy(originalColors[i]).multiplyScalar(.75+.25*cubePrice/10));
+ }
+ updateCondition();
  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(cube.geometry),new THREE.LineBasicMaterial({color:0x535353}));cube.add(edges);
  const cubeBody=new CANNON.Body({mass:3,shape:new CANNON.Box(new CANNON.Vec3(.35,.35,.35)),linearDamping:.035,angularDamping:.025,allowSleep:true,sleepSpeedLimit:.025,sleepTimeLimit:1.5});cubeBody.position.set(0,.37,0);cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.collisionFilterGroup=2;world.addBody(cubeBody);
+ cubeBody.addEventListener('collide',event=>{
+  const speed=Math.abs(event.contact.getImpactVelocityAlongNormal());
+  if(speed<4||world.time-lastDamageTime<.25||cubePrice===0)return;
+  const loss=Math.max(1,Math.round((speed*speed-16)/14));
+  cubePrice=Math.max(0,cubePrice-loss);lastDamageTime=world.time;updateCondition();
+ });
  const player=new CANNON.Body({mass:75,shape:new CANNON.Box(new CANNON.Vec3(.3,.85,.3)),fixedRotation:true,linearDamping:.05,allowSleep:false});player.position.set(0,.88,6);player.updateMassProperties();player.collisionFilterGroup=4;world.addBody(player);
  const props=[{mesh:cube,body:cubeBody}];
  let activeBody=cubeBody,activeMesh=cube;
@@ -44,7 +67,7 @@ try {
   holdTarget.copy(p);previousHoldTarget.copy(p);holding=true;activeBody.wakeUp();crosshair.classList.add('holding');
  }
 
- function resetCube(){release();activeBody=cubeBody;activeMesh=cube;cubeBody.position.set(THREE.MathUtils.clamp(player.position.x-Math.sin(yaw)*2,-12.1,12.1),.37,THREE.MathUtils.clamp(player.position.z-Math.cos(yaw)*2,-12.1,12.1));cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
+ function resetCube(){release();cubePrice=10;lastDamageTime=-Infinity;updateCondition();activeBody=cubeBody;activeMesh=cube;cubeBody.position.set(THREE.MathUtils.clamp(player.position.x-Math.sin(yaw)*2,-12.1,12.1),.37,THREE.MathUtils.clamp(player.position.z-Math.cos(yaw)*2,-12.1,12.1));cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
  async function enter(){try{await renderer.domElement.requestPointerLock();}catch{hint.textContent='Нажми ещё раз для захвата мыши';}}
  hint.addEventListener('click',enter);renderer.domElement.addEventListener('pointerdown',e=>{if(!locked){enter();return;}if(e.button===0)grab();});
  addEventListener('pointerup',e=>{if(e.button===0)release();});addEventListener('pointercancel',release);
@@ -103,5 +126,5 @@ try {
  }
  function frame(now){requestAnimationFrame(frame);if(document.hidden){last=null;return;}const dt=last===null?1/120:Math.min(.06,(now-last)/1000);last=now;world.step(1/120,dt,8);render(dt);}
  addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});syncView();render();requestAnimationFrame(frame);
- window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,player,weapon,energyBeam,outdoors,priceTag,get heldBody(){return holding?activeBody:null;},grab,release,resetCube,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
+ window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,player,weapon,energyBeam,outdoors,priceTag,get cubePrice(){return cubePrice;},get heldBody(){return holding?activeBody:null;},grab,release,resetCube,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
 }catch(e){console.error(e);document.querySelector('#error').style.display='grid';}
