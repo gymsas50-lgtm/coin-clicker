@@ -1,6 +1,6 @@
 {
   "name": "empty-drive",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "private": true,
   "description": "Minimal first-person physics room with a gravity gun",
   "scripts": {
