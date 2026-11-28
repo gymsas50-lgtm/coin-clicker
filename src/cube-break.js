@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 export function createCubeBreak(scene,world){
  const pieces=[],geometry=new THREE.BoxGeometry(1,1,1);
- const material=new THREE.MeshStandardMaterial({color:0xd6d6d6,roughness:.2,metalness:.3,flatShading:true});
+ const material=new THREE.MeshStandardMaterial({color:0xf0f0f0,roughness:.2,metalness:.3,flatShading:true});
  const dustGeometry=new THREE.BufferGeometry(),dustPositions=new Float32Array(72*3),dustVelocities=[];
  dustGeometry.setAttribute('position',new THREE.BufferAttribute(dustPositions,3));
  const dust=new THREE.Points(dustGeometry,new THREE.PointsMaterial({color:0xe8f0ff,size:.11,transparent:true,opacity:.55,depthWrite:false}));dust.visible=false;scene.add(dust);
@@ -10,7 +10,8 @@ export function createCubeBreak(scene,world){
  function clear(){for(const p of pieces){scene.remove(p.mesh);world.removeBody(p.body);}pieces.length=0;dust.visible=false;age=0;}
  return{pieces,clear,burst(source){clear();
   // Split the original volume into 50 irregular rectangular chunks without overlap.
-  const chunks=[{center:[0,0,0],size:[.7,.7,.7]}];
+  const side=source.shapes[0].halfExtents.x*2;
+  const chunks=[{center:[0,0,0],size:[side,side,side]}];
   const volume=c=>c.size[0]*c.size[1]*c.size[2];
   while(chunks.length<50){
    let index=0;for(let i=1;i<chunks.length;i++)if(volume(chunks[i])>volume(chunks[index]))index=i;
@@ -20,7 +21,7 @@ export function createCubeBreak(scene,world){
   }
   for(const chunk of chunks){
    const local=new CANNON.Vec3(...chunk.center),offset=source.quaternion.vmult(local),size=new THREE.Vector3(...chunk.size).multiplyScalar(.94);
-   const body=new CANNON.Body({mass:source.mass*volume(chunk)/(.7**3),shape:new CANNON.Box(new CANNON.Vec3(size.x/2,size.y/2,size.z/2)),linearDamping:.12,angularDamping:.16,allowSleep:true});
+   const body=new CANNON.Body({mass:source.mass*volume(chunk)/(side**3),shape:new CANNON.Box(new CANNON.Vec3(size.x/2,size.y/2,size.z/2)),linearDamping:.12,angularDamping:.16,allowSleep:true});
    source.position.vadd(offset,body.position);body.quaternion.copy(source.quaternion);body.velocity.copy(source.velocity);body.velocity.x+=offset.x*7+(Math.random()-.5)*1.2;body.velocity.y+=1.5+Math.random()*1.8+offset.y*4;body.velocity.z+=offset.z*7+(Math.random()-.5)*1.2;body.angularVelocity.set((Math.random()-.5)*12,(Math.random()-.5)*12,(Math.random()-.5)*12);body.collisionFilterGroup=8;body.collisionFilterMask=1|4;world.addBody(body);body.previousPosition.copy(body.position);body.interpolatedPosition.copy(body.position);body.previousQuaternion.copy(body.quaternion);body.interpolatedQuaternion.copy(body.quaternion);
    const mesh=new THREE.Mesh(geometry,material);mesh.scale.copy(size);mesh.castShadow=true;mesh.receiveShadow=true;mesh.position.copy(body.position);mesh.quaternion.copy(body.quaternion);scene.add(mesh);pieces.push({body,mesh,baseScale:size});
   }

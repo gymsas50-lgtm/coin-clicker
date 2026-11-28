@@ -2,8 +2,7 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import {createGravityGun} from './gravity-gun.js';
 import {createGravityBeam} from './gravity-beam.js';
-import {createDefaultCube} from './crystal.js';
-import {createCubeBreak} from './cube-break.js';
+import {createCubeProps} from './cube-props.js';
 import {createOutdoors} from './outdoors.js';
 try {
  const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.25;renderer.setClearColor(0x858585);document.body.prepend(renderer.domElement);
@@ -13,30 +12,10 @@ try {
  function box(parent,size,pos,color){const m=new THREE.Mesh(new THREE.BoxGeometry(...size),typeof color==='number'?material(color):color);m.position.set(...pos);m.receiveShadow=true;m.castShadow=parent!==scene;parent.add(m);return m;}
  const outdoors=createOutdoors({scene,world,renderer});
  const roomMeshes=[outdoors.ground];
- const crystal=createDefaultCube(),cube=crystal.mesh;cube.position.set(0,.37,0);scene.add(cube);
- // Camera-facing price tag stays upright above the physical cube.
- const priceCanvas=document.createElement('canvas');priceCanvas.width=256;priceCanvas.height=192;
- const priceContext=priceCanvas.getContext('2d');let cubePrice=10,lastDamageTime=-Infinity,breakAt=Infinity,broken=false;
- const breakEffect=createCubeBreak(scene,world);
- const frozenPosition=new CANNON.Vec3(),frozenQuaternion=new CANNON.Quaternion();
- const priceTexture=new THREE.CanvasTexture(priceCanvas);priceTexture.colorSpace=THREE.SRGBColorSpace;
- const priceTag=new THREE.Sprite(new THREE.SpriteMaterial({map:priceTexture,depthTest:true,depthWrite:false,toneMapped:false}));priceTag.scale.set(.68,.51,1);priceTag.name='Cube price 10$';scene.add(priceTag);
- function updateCondition(){
-  priceContext.clearRect(0,0,256,192);priceContext.font='bold 60px Arial';priceContext.textAlign='center';priceContext.textBaseline='middle';priceContext.lineJoin='round';priceContext.lineWidth=3;priceContext.strokeStyle='rgba(0,0,0,.8)';priceContext.strokeText(cubePrice+'$',128,66);priceContext.fillStyle=cubePrice===10?'#ffffff':cubePrice>3?'#ffd578':'#ff7979';priceContext.fillText(cubePrice+'$',128,66);priceContext.font='36px Arial';priceContext.fillStyle='#e4e7eb';priceContext.lineWidth=2;priceContext.strokeText('Default',128,132);priceContext.fillText('Default',128,132);priceTexture.needsUpdate=true;priceTag.name='Default '+cubePrice+'$';
- }
- updateCondition();
- // Back-face shell draws only the silhouette, never a filled tint on the cube.
- const hoverOutline=new THREE.Mesh(cube.geometry,new THREE.MeshBasicMaterial({color:0x9bffb7,side:THREE.BackSide,depthWrite:false,toneMapped:false}));hoverOutline.scale.setScalar(1.06);hoverOutline.visible=false;hoverOutline.name='Hover outline';hoverOutline.raycast=()=>{};cube.add(hoverOutline);
+ const props=createCubeProps({scene,world,onFreeze(body){if(holding&&activeBody===body)release();}});
+ const cube=props[0].mesh,cubeBody=props[0].body;
  const hoverRay=new THREE.Raycaster(),screenCenter=new THREE.Vector2(0,0);
- const cubeBody=new CANNON.Body({mass:3,shape:crystal.shape,linearDamping:.035,angularDamping:.025,allowSleep:true,sleepSpeedLimit:.025,sleepTimeLimit:1.5});cubeBody.position.set(0,.37,0);cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.collisionFilterGroup=2;world.addBody(cubeBody);
- cubeBody.addEventListener('collide',event=>{
-  const speed=Math.abs(event.contact.getImpactVelocityAlongNormal());
-  if(speed<4||world.time-lastDamageTime<.25||cubePrice===0)return;
-  const loss=Math.max(1,Math.round((speed*speed-16)/14));
-  cubePrice=Math.max(0,cubePrice-loss);lastDamageTime=world.time;if(cubePrice===0){breakAt=world.time+.2;release();frozenPosition.copy(cubeBody.position);frozenQuaternion.copy(cubeBody.quaternion);cubeBody.type=CANNON.Body.STATIC;cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.updateSolveMassProperties();}updateCondition();
- });
  const player=new CANNON.Body({mass:75,shape:new CANNON.Box(new CANNON.Vec3(.3,.85,.3)),fixedRotation:true,linearDamping:.05,allowSleep:false});player.position.set(0,.88,6);player.updateMassProperties();player.collisionFilterGroup=4;world.addBody(player);
- const props=[{mesh:cube,body:cubeBody}];
  let activeBody=cubeBody,activeMesh=cube;
  const weapon=createGravityGun(camera),gun=weapon.gun;
  const energyBeam=createGravityBeam(scene);
@@ -50,8 +29,8 @@ try {
  function syncView(){camera.position.set(player.position.x,player.position.y+.70,player.position.z);camera.rotation.set(pitch,yaw,0);camera.updateMatrixWorld(true);}
  function release(){holding=false;energyBeam.hide();crosshair.classList.remove('holding');}
  function grab(){
-  if(holding||broken||cubePrice===0)return;syncView();for(const prop of props)prop.mesh.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(0,0),camera);
-  const hits=ray.intersectObjects(props.map(p=>p.mesh),true).filter(h=>h.object.isMesh&&h.face);if(!hits.length||hits[0].distance>3)return;
+  if(holding)return;syncView();for(const prop of props)prop.mesh.updateMatrixWorld(true);ray.setFromCamera(new THREE.Vector2(0,0),camera);
+  const hits=ray.intersectObjects(props.filter(p=>!p.broken&&p.price>0).map(p=>p.mesh),true).filter(h=>h.object.isMesh&&h.face);if(!hits.length||hits[0].distance>3)return;
   const hit=hits[0];let node=hit.object,prop;while(node&&!prop){prop=props.find(p=>p.mesh===node);node=node.parent;}
   if(!prop)return;if(prop.detach)prop.detach();activeBody=prop.body;activeMesh=prop.mesh;
   const p=hit.point;activeBody.pointToLocalFrame(new CANNON.Vec3(p.x,p.y,p.z),anchor);holdDistance=THREE.MathUtils.clamp(hit.distance,1.2,3);
@@ -59,14 +38,13 @@ try {
   holdTarget.copy(p);previousHoldTarget.copy(p);holding=true;activeBody.wakeUp();crosshair.classList.add('holding');
  }
 
- function resetCube(){release();cubeBody.type=CANNON.Body.DYNAMIC;cubeBody.updateMassProperties();breakEffect.clear();broken=false;breakAt=Infinity;cube.visible=true;priceTag.visible=true;if(!world.bodies.includes(cubeBody))world.addBody(cubeBody);cubePrice=10;lastDamageTime=-Infinity;updateCondition();activeBody=cubeBody;activeMesh=cube;cubeBody.position.set(THREE.MathUtils.clamp(player.position.x-Math.sin(yaw)*2,-12.1,12.1),.37,THREE.MathUtils.clamp(player.position.z-Math.cos(yaw)*2,-12.1,12.1));cubeBody.quaternion.set(0,0,0,1);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.force.setZero();cubeBody.torque.setZero();cubeBody.previousPosition.copy(cubeBody.position);cubeBody.interpolatedPosition.copy(cubeBody.position);cubeBody.previousQuaternion.copy(cubeBody.quaternion);cubeBody.interpolatedQuaternion.copy(cubeBody.quaternion);cubeBody.aabbNeedsUpdate=true;cubeBody.wakeUp();}
  async function enter(){try{await renderer.domElement.requestPointerLock();}catch{hint.textContent='Нажми ещё раз для захвата мыши';}}
  hint.addEventListener('click',enter);renderer.domElement.addEventListener('pointerdown',e=>{if(!locked){enter();return;}if(e.button===0)grab();});
  addEventListener('pointerup',e=>{if(e.button===0)release();});addEventListener('pointercancel',release);
  document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement===renderer.domElement;hint.classList.toggle('hidden',locked);if(!locked){keys.clear();jump=false;release();}last=null;});
  document.addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0023;pitch=THREE.MathUtils.clamp(pitch-e.movementY*.0023,-1.48,1.48);});
  renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());renderer.domElement.addEventListener('wheel',e=>{if(!locked)return;e.preventDefault();const awayFromPlayer=Math.sign(-e.deltaY);holdDistance=THREE.MathUtils.clamp(holdDistance+awayFromPlayer*.25,1.2,3);},{passive:false});
- addEventListener('keydown',e=>{if(e.code==='Escape'&&locked){document.exitPointerLock();return;}if(['KeyW','KeyA','KeyS','KeyD','Space','KeyR'].includes(e.code)&&locked){e.preventDefault();keys.add(e.code);if(e.code==='Space'&&!e.repeat)jump=true;if(e.code==='KeyR'&&!e.repeat)resetCube();}});addEventListener('keyup',e=>keys.delete(e.code));addEventListener('blur',()=>{keys.clear();release();});
+ addEventListener('keydown',e=>{if(e.code==='Escape'&&locked){document.exitPointerLock();return;}if(['KeyW','KeyA','KeyS','KeyD','Space'].includes(e.code)&&locked){e.preventDefault();keys.add(e.code);if(e.code==='Space'&&!e.repeat)jump=true;}});addEventListener('keyup',e=>keys.delete(e.code));addEventListener('blur',()=>{keys.clear();release();});
  world.addEventListener('preStep',()=>{
   const x=Number(keys.has('KeyD'))-Number(keys.has('KeyA')),z=Number(keys.has('KeyS'))-Number(keys.has('KeyW')),n=Math.hypot(x,z)||1;
   const grounded=world.contacts.some(c=>{
@@ -98,17 +76,18 @@ try {
  });
  // Invisible map boundary, no ceiling: keep all bodies on the 25 x 25 m field.
  function contain(b){b.updateAABB();for(const axis of ['x','y','z']){
-  if(axis==='y'&&b===cubeBody){if(b.aabb.upperBound.y<-.5){b.position.y+=.35-b.position.y;b.velocity.y=0;b.aabbNeedsUpdate=true;}continue;}
+  if(axis==='y'&&b!==player){if(b.aabb.upperBound.y<-.5){b.position.y=b.shapes[0].halfExtents.y;b.velocity.y=0;b.aabbNeedsUpdate=true;}continue;}
   const lower=axis==='y'?0:-12.5,upper=axis==='y'?Infinity:12.5;
   if(b.aabb.lowerBound[axis]<lower){b.position[axis]+=lower-b.aabb.lowerBound[axis];if(b.velocity[axis]<0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
   if(b.aabb.upperBound[axis]>upper){b.position[axis]-=b.aabb.upperBound[axis]-upper;if(b.velocity[axis]>0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
  }}
- world.addEventListener('postStep',()=>{contain(player);if(!broken&&cubePrice===0){cubeBody.position.copy(frozenPosition);cubeBody.quaternion.copy(frozenQuaternion);cubeBody.velocity.setZero();cubeBody.angularVelocity.setZero();cubeBody.previousPosition.copy(frozenPosition);cubeBody.interpolatedPosition.copy(frozenPosition);cubeBody.previousQuaternion.copy(frozenQuaternion);cubeBody.interpolatedQuaternion.copy(frozenQuaternion);cubeBody.aabbNeedsUpdate=true;}else if(!broken)contain(cubeBody);if(!broken&&world.time>=breakAt){broken=true;release();breakEffect.burst(cubeBody);world.removeBody(cubeBody);cube.visible=false;priceTag.visible=false;hoverOutline.visible=false;}});
+ world.addEventListener('postStep',()=>{contain(player);for(const prop of props){if(!prop.broken&&prop.price>0)contain(prop.body);prop.physics();}});
  const wallRay=new THREE.Raycaster(),obstructionDirection=new THREE.Vector3();wallRay.far=1.4;
- function render(dt=1/60){syncView();outdoors.tick(camera);breakEffect.tick(dt);const p=cubeBody.interpolatedPosition,q=cubeBody.interpolatedQuaternion;cube.position.set(p.x,p.y,p.z);cube.quaternion.set(q.x,q.y,q.z,q.w);
-  cube.updateMatrixWorld(true);hoverRay.setFromCamera(screenCenter,camera);const hoverHit=hoverRay.intersectObject(cube,false)[0];hoverOutline.visible=!broken&&cubePrice>0&&(holding||!!(hoverHit&&hoverHit.distance<=3));
-  let crystalTop=-Infinity;for(const v of crystal.vertices){target.set(v.x,v.y,v.z).applyQuaternion(cube.quaternion);crystalTop=Math.max(crystalTop,target.y);}
-  priceTag.position.set(cube.position.x,cube.position.y+crystalTop+.28,cube.position.z);
+ function render(dt=1/60){syncView();outdoors.tick(camera);
+  // First synchronize all transforms, then select only the nearest grabbable object.
+  for(const prop of props)prop.render(dt,false,holding&&activeBody===prop.body);
+  hoverRay.setFromCamera(screenCenter,camera);const hoverHit=hoverRay.intersectObjects(props.filter(p=>!p.broken&&p.price>0).map(p=>p.mesh),false)[0];
+  if(hoverHit&&hoverHit.distance<=3){const hovered=props.find(p=>p.mesh===hoverHit.object);if(hovered)hovered.outline.visible=true;}
   obstructionDirection.set(.43,-.27,-1.1).applyMatrix4(camera.matrixWorld).sub(camera.position).normalize();wallRay.set(camera.position,obstructionDirection);
   const obstruction=wallRay.intersectObjects(roomMeshes,false)[0];const blocked=obstruction?THREE.MathUtils.clamp((1.25-obstruction.distance)/.9,0,1):0;
   weapon.update(dt,blocked,holding);
@@ -119,5 +98,5 @@ try {
  }
  function frame(now){requestAnimationFrame(frame);if(document.hidden){last=null;return;}const dt=last===null?1/120:Math.min(.06,(now-last)/1000);last=now;world.step(1/120,dt,8);render(dt);}
  addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();});syncView();render();requestAnimationFrame(frame);
- window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,player,weapon,energyBeam,outdoors,priceTag,hoverOutline,breakEffect,get broken(){return broken;},get cubePrice(){return cubePrice;},get heldBody(){return holding?activeBody:null;},grab,release,resetCube,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
+ window.sandboxGame={ready:true,world,scene,camera,renderer,cube,cubeBody,props,player,weapon,energyBeam,outdoors,get heldBody(){return holding?activeBody:null;},grab,release,get holdDistance(){return holdDistance;},get holding(){return holding;},get locked(){return locked;}};
 }catch(e){console.error(e);document.querySelector('#error').style.display='grid';}
