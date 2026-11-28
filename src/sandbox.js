@@ -65,6 +65,7 @@ try {
    target.x=THREE.MathUtils.clamp(target.x,-24.5,24.5);target.y=Math.max(.4,target.y);target.z=THREE.MathUtils.clamp(target.z,-24.5,24.5);
    previousHoldTarget.copy(holdTarget);goalDelta.subVectors(target,holdTarget).clampLength(0,7/120);holdTarget.add(goalDelta);targetVelocity.subVectors(holdTarget,previousHoldTarget).multiplyScalar(120);
    activeBody.pointToWorldFrame(anchor,grabWorld);activeBody.getVelocityAtWorldPoint(grabWorld,grabVelocity);grabWorld.vsub(activeBody.position,relative);
+   if(activeBody===container.body){holdTarget.y=grabWorld.y;targetVelocity.y=0;}
    errorDirection.set(holdTarget.x-grabWorld.x,holdTarget.y-grabWorld.y,holdTarget.z-grabWorld.z);
    const error=errorDirection.length();if(error>4){release();return;}if(error>.001)errorDirection.scale(1/error,errorDirection);else errorDirection.set(0,1,0);
    relative.cross(errorDirection,crossR);activeBody.invInertiaWorld.vmult(crossR,inertiaCross);
@@ -83,7 +84,7 @@ try {
   if(b.aabb.lowerBound[axis]<lower){b.position[axis]+=lower-b.aabb.lowerBound[axis];if(b.velocity[axis]<0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
   if(b.aabb.upperBound[axis]>upper){b.position[axis]-=b.aabb.upperBound[axis]-upper;if(b.velocity[axis]>0)b.velocity[axis]*=-.08;b.aabbNeedsUpdate=true;}
  }}
- world.addEventListener('postStep',()=>{contain(player);contain(container.body);for(const prop of props){if(!prop.broken&&prop.price>0)contain(prop.body);prop.physics();}});
+ world.addEventListener('postStep',()=>{contain(player);container.physics();contain(container.body);for(const prop of props){if(!prop.broken&&prop.price>0)contain(prop.body);prop.physics();}});
  const wallRay=new THREE.Raycaster(),obstructionDirection=new THREE.Vector3();wallRay.far=1.4;
  function render(dt=1/60){syncView();outdoors.tick(camera);
   // First synchronize all transforms, then select only the nearest grabbable object.
