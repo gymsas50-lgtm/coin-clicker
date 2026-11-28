@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import {RoundedBoxGeometry} from 'three/addons/geometries/RoundedBoxGeometry.js';
 export function createGravityGun(camera){
  const gun=new THREE.Group();gun.name='Gravity manipulator';camera.add(gun);
- gun.position.set(.29,-.25,-.60);gun.rotation.set(.01,-.08,-.035);gun.scale.setScalar(.60);
+ gun.position.set(.41,-.25,-.60);gun.rotation.set(.01,-.08,-.035);gun.scale.setScalar(.60);
  const mat=c=>new THREE.MeshBasicMaterial({color:c});
  const dark=mat(0x252b30),black=mat(0x151b20),steel=mat(0x7c8990),edge=mat(0xa8b1b2),orange=mat(0xa66a30),copper=mat(0xc69150),glow=mat(0xffba57),white=mat(0xffe5a1),grip=mat(0x41454a);
  function part(geometry,material,position){const m=new THREE.Mesh(geometry,material);m.position.set(...position);gun.add(m);return m;}
@@ -43,5 +43,5 @@ export function createGravityGun(camera){
  for(let i=0;i<3;i++)box([.018,.008,.05],[-.025+i*.025,.165,.18],glow,.002);
  box([.09,.08,.23],[.015,-.34,.43],grip,.025);box([.13,.095,.14],[.01,-.27,.31],mat(0x8a7765),.025);
  let recoil=0,retract=0;
- return {gun,kick(){recoil=.08;},update(dt,blocked,holding){recoil*=Math.exp(-13*dt);retract=THREE.MathUtils.damp(retract,blocked,13,dt);gun.position.set(.29,-.25-retract*.14,-.60+retract*.70+recoil);gun.rotation.x=.01-retract*.70;white.color.setHex(holding?0xffefd0:0xffdfa1);},muzzle(target){gun.updateWorldMatrix(true,false);return target.set(0,.025,-.81).applyMatrix4(gun.matrixWorld);}};
+ return {gun,kick(){recoil=.08;},update(dt,blocked,holding){recoil*=Math.exp(-13*dt);retract=THREE.MathUtils.damp(retract,blocked,13,dt);gun.position.set(.41,-.25-retract*.14,-.60+retract*.70+recoil);gun.rotation.x=.01-retract*.70;white.color.setHex(holding?0xffefd0:0xffdfa1);},muzzle(target){gun.updateWorldMatrix(true,false);return target.set(0,.025,-.81).applyMatrix4(gun.matrixWorld);}};
 }

@@ -52,7 +52,7 @@ try {
  world.addEventListener('postStep',()=>{contain(player);contain(cubeBody);});
  const wallRay=new THREE.Raycaster(),obstructionDirection=new THREE.Vector3();wallRay.far=1.4;
  function render(dt=1/60){syncView();const p=cubeBody.interpolatedPosition,q=cubeBody.interpolatedQuaternion;cube.position.set(p.x,p.y,p.z);cube.quaternion.set(q.x,q.y,q.z,q.w);
-  obstructionDirection.set(.31,-.27,-1.1).applyMatrix4(camera.matrixWorld).sub(camera.position).normalize();wallRay.set(camera.position,obstructionDirection);
+  obstructionDirection.set(.43,-.27,-1.1).applyMatrix4(camera.matrixWorld).sub(camera.position).normalize();wallRay.set(camera.position,obstructionDirection);
   const obstruction=wallRay.intersectObjects(roomMeshes,false)[0];const blocked=obstruction?THREE.MathUtils.clamp((1.25-obstruction.distance)/.9,0,1):0;
   weapon.update(dt,blocked,holding);
   if(holding){cubeBody.pointToWorldFrame(anchor,grabWorld);weapon.muzzle(gunTip);const a=beamGeometry.attributes.position;a.setXYZ(0,gunTip.x,gunTip.y,gunTip.z);a.setXYZ(1,grabWorld.x,grabWorld.y,grabWorld.z);a.needsUpdate=true;beam.visible=true;point.visible=true;point.position.set(grabWorld.x,grabWorld.y,grabWorld.z);}else{beam.visible=false;point.visible=false;}
