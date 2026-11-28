@@ -1,10 +1,13 @@
 import * as THREE from 'three';
+import { createHingeMotion } from './hinge.js';
 
 export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPivot,keyholeSlot,reduceMotion,economy}) {
   const canvas=renderer.domElement;
-  const duration=6.9;
+  const duration=8.88;
   let phase='closed',started=0,force=true,shadow=true,closingAngle=0;
   let manualTime=null;
+  const openHinge=createHingeMotion(true);
+  let closeHinge=createHingeMotion(false,1.62);
   const gold=new THREE.MeshStandardMaterial({color:0x9e783b,metalness:.82,roughness:.34,transparent:true});
   const polished=new THREE.MeshStandardMaterial({color:0xd6b778,metalness:.87,roughness:.26,transparent:true});
   const darkGold=new THREE.MeshStandardMaterial({color:0x5e4528,metalness:.76,roughness:.47,transparent:true});
@@ -129,8 +132,7 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
     for(const mat of [gold,polished,darkGold]) {mat.opacity=opacity;mat.depthTest=true;}
     // The heavy lid moves only after the key is turned and the hasp clears the catch.
     haspPivot.rotation.x=-smooth(segment(t,4.2,4.65))*.35;
-    const opening=smoother(segment(t,5.08,6.85));
-    lidPivot.rotation.x=-opening*1.62;
+    lidPivot.rotation.x=-openHinge(Math.max(0,t-5.08));
     lightLevel(smooth(segment(t,5.35,6.7)),t);
   }
   function setPhase(next) {
@@ -143,7 +145,7 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
     if(phase==='closed' && economy && !economy.consumeKey())return;
     manualTime=null;started=performance.now();force=true;
     if(phase==='closed') {paths();setPhase('opening');key.visible=true;}
-    else {closingAngle=lidPivot.rotation.x;key.visible=false;setPhase('closing');}
+    else {closingAngle=lidPivot.rotation.x;closeHinge=createHingeMotion(false,-closingAngle);key.visible=false;setPhase('closing');}
   }
   const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();let press=null;
   function hit(event) {
@@ -176,11 +178,12 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
         return true;
       }
       if(phase==='closing') {
-        const t=clamp((now-started)/(reduceMotion?350:1100));
-        lidPivot.rotation.x=THREE.MathUtils.lerp(closingAngle,0,smoother(t));
-        haspPivot.rotation.x=-.35*(1-smooth(segment(t,.55,1)));
-        lightLevel(1-smooth(t),(now-started)/1000);shadow=true;
-        if(t>=1){lidPivot.rotation.x=0;haspPivot.rotation.x=0;keyholeSlot.rotation.z=0;lightLevel(0,0);setPhase('closed');}
+        const elapsed=Math.max(0,(now-started)/1000)*(reduceMotion?2.2:1);
+        const angle=closeHinge(elapsed);
+        lidPivot.rotation.x=-angle;
+        haspPivot.rotation.x=-.35*clamp(angle/.28);
+        lightLevel(smooth(clamp(angle/1.62)),elapsed);shadow=true;
+        if(elapsed>=2.5){lidPivot.rotation.x=0;haspPivot.rotation.x=0;keyholeSlot.rotation.z=0;lightLevel(0,0);setPhase('closed');}
         return true;
       }
       if(phase==='open'){lightLevel(1,(now-started)/1000);return true;}
