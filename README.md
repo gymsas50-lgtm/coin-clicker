@@ -1,5 +1,5 @@
-# Cube sandbox
+# 2D case game
 
-Self-contained 2D rigid-body sandbox with one draggable throwable rotating cube. Mouse and touch support. R resets the cube.
+Dark, self-contained HTML scene with a centered illustrated metal case. No external images, fonts or libraries. Responsive on desktop and mobile; respects reduced-motion preferences.
 
-Physics: Matter.js 0.20.0 (MIT), bundled inline for offline play. Source files live in src/. Run node server.js or use the existing Windows updater.
+Run `node server.js` or use the existing Windows launcher. The page retains the existing automatic update protocol. Roblox project is separate under `roblox-sync/` and is unchanged by browser updates.
