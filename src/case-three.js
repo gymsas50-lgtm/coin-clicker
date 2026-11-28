@@ -128,7 +128,29 @@ try {
   box(model,[5.08,.06,1.94],[0,-.73,0],lining,.025);
   for(const z of [-1.08,1.08]) box(model,[5.36,.075,.10],[0,.95,z],dark,.02);
   for(const x of [-2.64,2.64]) box(model,[.10,.075,2.12],[x,.95,0],dark,.02);
-  box(model, [5.52, 0.62, 2.34], [0, 1.30, 0], shell, 0.13);
+  // Hollow barrel-vault lid, built from individually curved wooden staves.
+  function archPart(x,width,start,end,material,outerOffset=0,solidEnd=false) {
+    const shape=new THREE.Shape(),steps=Math.max(6,Math.ceil((end-start)*24));
+    const point=(t,inner)=>new THREE.Vector2((inner?1.025:1.17+outerOffset)*Math.cos(t),.99+(inner?.68:.84+outerOffset)*Math.sin(t));
+    for(let i=0;i<=steps;i++) {const v=point(start+(end-start)*i/steps,false);if(i===0)shape.moveTo(v.x,v.y);else shape.lineTo(v.x,v.y);}
+    if(solidEnd) {const v=point(end,false),u=point(start,false);shape.lineTo(v.x,.99);shape.lineTo(u.x,.99);}
+    else for(let i=steps;i>=0;i--) {const v=point(start+(end-start)*i/steps,true);shape.lineTo(v.x,v.y);}
+    shape.closePath();
+    const geo=new THREE.ExtrudeGeometry(shape,{depth:width,bevelEnabled:true,bevelThickness:.009,bevelSize:.009,bevelSegments:2,steps:1,curveSegments:32});
+    geo.rotateY(Math.PI/2);
+    const vertices=geo.attributes.position,uv=geo.attributes.uv;
+    for(let i=0;i<vertices.count;i++) {
+      const z=vertices.getZ(i),y=vertices.getY(i);
+      uv.setXY(i,solidEnd?(z/2.34+.5):vertices.getX(i)/5.24,solidEnd?(y-.99)/.84:Math.atan2((y-.99)/.84,-z/1.17)/Math.PI);
+    }
+    uv.needsUpdate=true;
+    const piece=new THREE.Mesh(geo,material);piece.position.x=x;piece.castShadow=true;piece.receiveShadow=true;piece.userData.lid=true;model.add(piece);return piece;
+  }
+  for(let i=0;i<10;i++) archPart(-2.62,5.24,i*Math.PI/10+.004,(i+1)*Math.PI/10-.004,i%2?shell:panel);
+  for(const side of [-1,1]) {
+    archPart(side<0?-2.76:2.62,.14,0,Math.PI,panel,0,true);
+    archPart(side<0?-2.79:2.73,.065,0,Math.PI,aluminum,.026);
+  }
   for(const z of [-1.08,1.08]) box(model,[5.28,.033,.055],[0,.986,z],aluminum,.012);
   for(const x of [-2.62,2.62]) box(model,[.055,.033,2.12],[x,.986,0],aluminum,.012);
   // Four separate wooden boards on the front and back.
@@ -146,17 +168,19 @@ try {
     box(model, [0.53, 0.48, 0.11], [x * 2.465, -0.76, z * 1.18], aluminum, 0.06);
     box(model, [0.11, 0.48, 0.54], [x * 2.74, -0.76, z * 0.96], aluminum, 0.04);
     box(model, [0.48, 0.13, 0.52], [x * 2.49, -0.985, z * 0.94], aluminum, 0.04);
-    box(model, [0.47, 0.35, 0.105], [x * 2.48, 1.405, z * 1.19], aluminum, 0.045);
-    box(model, [0.105, 0.35, 0.48], [x * 2.75, 1.405, z * 0.97], aluminum, 0.04);
     screw(x * 2.49, -0.76, z * 1.25, z > 0);
-    screw(x * 2.48, 1.42, z * 1.25, z > 0);
   }
   // Old forged iron straps: heavy rivets instead of modern suitcase latches.
   for(const x of [-1.85,1.85]) {
     box(model,[.26,1.8,.09],[x,-.03,1.285],aluminum,.012);
-    box(model,[.26,.55,.09],[x,1.31,1.245],aluminum,.012);
-    box(model,[.27,.07,2.15],[x,1.70,0],aluminum,.012);
-    for(const y of [-.74,-.36,.15,.63,1.35]) cylinder(model,.05,.04,[x,y,1.35],steel);
+    archPart(x-.13,.26,0,Math.PI,aluminum,.032);
+    for(let i=1;i<8;i++) {
+      const t=i*Math.PI/8;
+      const rivet=new THREE.Mesh(new THREE.SphereGeometry(.042,12,8),steel);
+      rivet.position.set(x,1.0+.88*Math.sin(t),-1.212*Math.cos(t));
+      rivet.castShadow=true;rivet.userData.lid=true;model.add(rivet);
+    }
+    for(const y of [-.74,-.36,.15,.63]) cylinder(model,.05,.04,[x,y,1.35],steel);
   }
   const hasp=box(model,[.32,.65,.10],[0,.81,1.29],aluminum,.025);
   cylinder(model,.065,.15,[0,.62,1.39],steel);
@@ -167,10 +191,6 @@ try {
     screw(x - 0.2, 1.13, -1.27, false); screw(x + 0.2, 0.79, -1.27, false);
   }
   // A worn plank lid and simple old iron side handles.
-  for(let i=0;i<4;i++) {
-    const board=box(model,[5.14,.075,.49],[0,1.63,-.78+i*.52],i%2?shell:panel,.018);
-    board.rotation.z=(i%2?1:-1)*.002;
-  }
   for(const side of [-1,1]) {
     box(model,[.09,.47,.60],[side*2.85,.2,0],aluminum,.035);
     for(const z of [-.2,.2]) cylinder(model,.065,.09,[side*2.94,.24,z],steel,'x');
@@ -193,7 +213,7 @@ try {
     for (const z of [-.77,.77]) box(model,[.77,.24,.48],[side*1.93,-1.10,z],panel,.07);
   }
   // Rear-hinged lid: metal bands, cap boards and corner shoes travel as one assembly.
-  const lidParts=model.children.filter(p=>p.isMesh && p.position.y>1.0);
+  const lidParts=model.children.filter(p=>p.isMesh && (p.position.y>1.0 || p.userData.lid));
   const lidPivot=new THREE.Group();lidPivot.position.set(0,.985,-1.16);model.add(lidPivot);
   model.updateMatrixWorld(true);
   for(const p of lidParts) lidPivot.attach(p);

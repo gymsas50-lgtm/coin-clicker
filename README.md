@@ -1,6 +1,6 @@
 # Case game / Three.js
 
-Centered, detailed 3D wooden case with a fixed camera, aged oak planks, hairline splits, rusty iron straps and side ring handles, procedural wood grain, studio lighting and soft contact shadows. Version v0.2.2 is shown in the bottom-left corner. No external assets or CDN requests at runtime. A built-in SVG fallback is shown if WebGL is unavailable.
+Centered, detailed 3D wooden case with a fixed camera, aged oak planks, hairline splits, rusty iron straps and side ring handles, procedural wood grain, studio lighting and soft contact shadows. Version v0.3.0 is shown in the bottom-left corner. No external assets or CDN requests at runtime. A built-in SVG fallback is shown if WebGL is unavailable.
 
 Run `node server.js` or use the existing Windows launcher. The built `index.html` also runs offline. The live-update marker and protocol are unchanged.
 
@@ -22,3 +22,5 @@ Roblox is separate under `roblox-sync/` and is not modified by this browser-game
 Version 0.2.1 refines the key into a symmetric antique brass design with an in-plane bow, a straight shaft and a slot-sized bit. The approach aligns before a fixed-axis insertion; the key no longer scales or bypasses depth testing.
 
 Version 0.2.2 rotates the key bow 90 degrees about the shaft. Animation renders on every requestAnimationFrame without a 30 FPS cap; all motion uses elapsed time, not frame counts. Airborne key shadow passes are avoided. Actual FPS depends on GPU and resolution.
+
+Version 0.3.0 replaces the flat lid with a hollow barrel-vault lid: ten curved wooden staves, arched end panels and continuous riveted iron bands. The entire curved assembly opens on the existing rear hinge.
