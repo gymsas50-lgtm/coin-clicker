@@ -12,7 +12,8 @@ export function createGravityBeam(scene){
  const strands=[strand(.005,0xd9ffdc,.92,0),strand(.018,0x34ff72,.18,0)];
  const canvas=document.createElement('canvas');canvas.width=canvas.height=64;const c=canvas.getContext('2d'),gradient=c.createRadialGradient(32,32,0,32,32,32);gradient.addColorStop(0,'rgba(225,255,230,1)');gradient.addColorStop(.15,'rgba(100,255,145,.9)');gradient.addColorStop(.4,'rgba(35,255,100,.25)');gradient.addColorStop(1,'rgba(25,255,85,0)');c.fillStyle=gradient;c.fillRect(0,0,64,64);
  const spriteMat=new THREE.SpriteMaterial({map:new THREE.CanvasTexture(canvas),transparent:true,blending:THREE.AdditiveBlending,depthWrite:false,toneMapped:false});
- const contact=new THREE.Sprite(spriteMat);contact.scale.setScalar(.34);group.add(contact);
+ const contactMat=spriteMat.clone();contactMat.depthTest=false;
+ const contact=new THREE.Sprite(contactMat);contact.renderOrder=9999;contact.scale.setScalar(.34);group.add(contact);
  const startGlow=new THREE.Sprite(spriteMat);startGlow.scale.setScalar(.12);group.add(startGlow);
  const pulses=[];for(let i=0;i<7;i++){const s=new THREE.Sprite(spriteMat);s.scale.setScalar(.038);group.add(s);pulses.push(s);}
  const light=new THREE.PointLight(0x45ff83,0,3,2);group.add(light);
