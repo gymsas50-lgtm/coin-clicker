@@ -2,13 +2,13 @@ import * as THREE from 'three';
 import { createHingeMotion } from './hinge.js';
 import { createDroppedKeys } from './dropped-keys.js';
 
-export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPivot,keyholeSlot,reduceMotion,economy}) {
+export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPivot,keyholeSlot,reduceMotion,economy,loot}) {
   const canvas=renderer.domElement;
   const duration=7.0;
   let phase='closed',started=0,force=true,shadow=true,closingAngle=0;
   let manualTime=null;
   const dropped=createDroppedKeys(scene);
-  let released=false,openedAt=0;
+  let released=false,rewarded=false,openedAt=0;
   const openHinge=createHingeMotion(true);
   let closeHinge=createHingeMotion(false,1.62);
   const gold=new THREE.MeshStandardMaterial({color:0x9e783b,metalness:.82,roughness:.34,transparent:true});
@@ -147,7 +147,7 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
     if(phase==='opening'||phase==='closing')return;
     if(phase==='closed' && economy && !economy.consumeKey())return;
     manualTime=null;started=performance.now();force=true;
-    if(phase==='closed') {released=false;paths();setPhase('opening');key.visible=true;}
+    if(phase==='closed') {released=false;rewarded=false;paths();setPhase('opening');key.visible=true;}
     else {closingAngle=lidPivot.rotation.x;closeHinge=createHingeMotion(false,-closingAngle);key.visible=false;setPhase('closing');}
   }
   const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();let press=null;
@@ -179,6 +179,7 @@ export function createChestOpening({scene,model,camera,renderer,lidPivot,haspPiv
       if(phase==='opening') {
         const t=(now-started)/1000*(reduceMotion?2.2:1);frameAt(Math.min(t,duration));shadow=debrisAnimated||t>=4.2;
         if(t>=5.12&&!released){frameAt(5.12);dropped.drop(key,now);released=true;frameAt(Math.min(t,duration));shadow=true;}
+        if(t>=5.7&&!rewarded){rewarded=true;loot?.award();}
         if(t>=duration){key.visible=false;openedAt=now;setPhase('open');}
         return true;
       }

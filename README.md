@@ -1,6 +1,6 @@
 # Case game / Three.js
 
-Centered, detailed 3D wooden case with a fixed camera, aged oak planks, hairline splits, rusty iron straps and side ring handles, procedural wood grain, studio lighting and soft contact shadows. Version v0.5.0 is shown in the bottom-left corner. No external assets or CDN requests at runtime. A built-in SVG fallback is shown if WebGL is unavailable.
+Centered, detailed 3D wooden case with a fixed camera, aged oak planks, hairline splits, rusty iron straps and side ring handles, procedural wood grain, studio lighting and soft contact shadows. Version v0.6.0 is shown in the bottom-left corner. No external assets or CDN requests at runtime. A built-in SVG fallback is shown if WebGL is unavailable.
 
 Run `node server.js` or use the existing Windows launcher. The built `index.html` also runs offline. The live-update marker and protocol are unchanged.
 
@@ -32,3 +32,5 @@ Version 0.4.0 adds a top-right money/key HUD, +15 money per elapsed second while
 Version 0.4.1 changes key price to 1,000 money and models lid motion with a fixed-step angular torque simulation: spring-assisted opening, gravity, friction and damped rebounds at mechanical stops. Closing falls under gravity with a small closing torque; results are independent of display refresh rate.
 
 Version 0.5.0 automatically closes the chest after opening. Extracted keys become cannon-es rigid bodies with gravity, friction, angular velocity, floor/chest collisions and compound key-to-key contacts. Each key is removed 10 seconds after its first landing contact; removal releases its body and cloned materials. Physics uses a fixed 120 Hz step with interpolated transforms. cannon-es 0.20.0 is bundled offline (MIT).
+
+Version 0.6.0 adds an embedded custom brass cursor, one loot roll per opening (key 10%, wooden sword 50%, stone sword 25%, iron sword 15%), a result toast and sword counts. Key rewards credit the spendable key balance; sword counts persist in localStorage when available.

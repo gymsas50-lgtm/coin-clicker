@@ -19,5 +19,5 @@ export function createEconomy() {
   buy.addEventListener('click',()=>{accrue();if(money<keyPrice)return;money-=keyPrice;keys++;render();save();message('Ключ куплен');});
   render();setInterval(accrue,250);
   addEventListener('pagehide',()=>{accrue();save();});
-  return {consumeKey(){accrue();if(keys<1){message('Купи ключ за 1 000 денег');panel.classList.remove('attention');void panel.offsetWidth;panel.classList.add('attention');return false;}keys--;render();save();return true;},get money(){return money;},get keys(){return keys;}};
+  return {addKeys(amount=1){if(!Number.isSafeInteger(amount)||amount<1)return;keys+=amount;render();save();},consumeKey(){accrue();if(keys<1){message('Купи ключ за 1 000 денег');panel.classList.remove('attention');void panel.offsetWidth;panel.classList.add('attention');return false;}keys--;render();save();return true;},get money(){return money;},get keys(){return keys;}};
 }
