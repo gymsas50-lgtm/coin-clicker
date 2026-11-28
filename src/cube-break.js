@@ -3,10 +3,10 @@ import * as CANNON from 'cannon-es';
 import {convexShape} from './crystal.js';
 export function createCubeBreak(scene,world){
  const pieces=[],geometry=new THREE.OctahedronGeometry(.15,0);
- const material=new THREE.MeshStandardMaterial({color:0x46bace,roughness:.2,metalness:.3,emissive:0x087e8e,emissiveIntensity:.18,flatShading:true});
+ const material=new THREE.MeshStandardMaterial({color:0xd4d9de,roughness:.2,metalness:.3,emissive:0xdde4ed,emissiveIntensity:.3,flatShading:true});
  const dustGeometry=new THREE.BufferGeometry(),dustPositions=new Float32Array(72*3),dustVelocities=[];
  dustGeometry.setAttribute('position',new THREE.BufferAttribute(dustPositions,3));
- const dust=new THREE.Points(dustGeometry,new THREE.PointsMaterial({color:0xa3efff,size:.11,transparent:true,opacity:.55,depthWrite:false}));dust.visible=false;scene.add(dust);
+ const dust=new THREE.Points(dustGeometry,new THREE.PointsMaterial({color:0xe8f0ff,size:.11,transparent:true,opacity:.55,depthWrite:false}));dust.visible=false;scene.add(dust);
  let age=0;
  function clear(){for(const p of pieces){scene.remove(p.mesh);world.removeBody(p.body);}pieces.length=0;dust.visible=false;age=0;}
  return{pieces,clear,burst(source){clear();

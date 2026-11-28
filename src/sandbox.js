@@ -15,13 +15,13 @@ try {
  const roomMeshes=[outdoors.ground];
  const crystal=createCrystal(),cube=crystal.mesh;cube.position.set(0,.5,0);scene.add(cube);
  // Camera-facing price tag stays upright above the physical cube.
- const priceCanvas=document.createElement('canvas');priceCanvas.width=256;priceCanvas.height=128;
+ const priceCanvas=document.createElement('canvas');priceCanvas.width=256;priceCanvas.height=192;
  const priceContext=priceCanvas.getContext('2d');let cubePrice=10,lastDamageTime=-Infinity,breakAt=Infinity,broken=false;
  const breakEffect=createCubeBreak(scene,world);
  const priceTexture=new THREE.CanvasTexture(priceCanvas);priceTexture.colorSpace=THREE.SRGBColorSpace;
- const priceTag=new THREE.Sprite(new THREE.SpriteMaterial({map:priceTexture,depthTest:true,depthWrite:false,toneMapped:false}));priceTag.scale.set(.68,.34,1);priceTag.name='Cube price 10$';scene.add(priceTag);
+ const priceTag=new THREE.Sprite(new THREE.SpriteMaterial({map:priceTexture,depthTest:true,depthWrite:false,toneMapped:false}));priceTag.scale.set(.68,.51,1);priceTag.name='Cube price 10$';scene.add(priceTag);
  function updateCondition(){
-  priceContext.clearRect(0,0,256,128);priceContext.font='bold 76px Arial';priceContext.textAlign='center';priceContext.textBaseline='middle';priceContext.lineJoin='round';priceContext.lineWidth=3;priceContext.strokeStyle='rgba(0,0,0,.8)';priceContext.strokeText(cubePrice+'$',128,66);priceContext.fillStyle=cubePrice===10?'#ffffff':cubePrice>3?'#ffd578':'#ff7979';priceContext.fillText(cubePrice+'$',128,66);priceTexture.needsUpdate=true;priceTag.name='Cube price '+cubePrice+'$';
+  priceContext.clearRect(0,0,256,192);priceContext.font='bold 76px Arial';priceContext.textAlign='center';priceContext.textBaseline='middle';priceContext.lineJoin='round';priceContext.lineWidth=3;priceContext.strokeStyle='rgba(0,0,0,.8)';priceContext.strokeText(cubePrice+'$',128,66);priceContext.fillStyle=cubePrice===10?'#ffffff':cubePrice>3?'#ffd578':'#ff7979';priceContext.fillText(cubePrice+'$',128,66);priceContext.font='36px Arial';priceContext.fillStyle='#e4e7eb';priceContext.lineWidth=2;priceContext.strokeText('Default',128,132);priceContext.fillText('Default',128,132);priceTexture.needsUpdate=true;priceTag.name='Default '+cubePrice+'$';
  }
  updateCondition();
  // Back-face shell draws only the silhouette, never a filled tint on the cube.
