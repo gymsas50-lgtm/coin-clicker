@@ -37,7 +37,7 @@ try {
  document.addEventListener('pointerlockchange',()=>{locked=document.pointerLockElement===renderer.domElement;hint.classList.toggle('hidden',locked);if(!locked){keys.clear();jump=false;release();}last=null;});
  document.addEventListener('mousemove',e=>{if(!locked)return;yaw-=e.movementX*.0023;pitch=THREE.MathUtils.clamp(pitch-e.movementY*.0023,-1.48,1.48);});
  renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());renderer.domElement.addEventListener('wheel',e=>{if(!locked)return;e.preventDefault();holdDistance=THREE.MathUtils.clamp(holdDistance+e.deltaY*.004,1.8,6.5);},{passive:false});
- addEventListener('keydown',e=>{if(['KeyW','KeyA','KeyS','KeyD','Space','KeyE','KeyR'].includes(e.code)&&locked){e.preventDefault();keys.add(e.code);if(e.code==='Space'&&!e.repeat)jump=true;if(e.code==='KeyE'&&!e.repeat)grab();if(e.code==='KeyR'&&!e.repeat)resetCube();}});addEventListener('keyup',e=>keys.delete(e.code));addEventListener('blur',()=>{keys.clear();release();});
+ addEventListener('keydown',e=>{if(e.code==='Escape'&&locked){document.exitPointerLock();return;}if(['KeyW','KeyA','KeyS','KeyD','Space','KeyE','KeyR'].includes(e.code)&&locked){e.preventDefault();keys.add(e.code);if(e.code==='Space'&&!e.repeat)jump=true;if(e.code==='KeyE'&&!e.repeat)grab();if(e.code==='KeyR'&&!e.repeat)resetCube();}});addEventListener('keyup',e=>keys.delete(e.code));addEventListener('blur',()=>{keys.clear();release();});
  world.addEventListener('preStep',()=>{
   const x=Number(keys.has('KeyD'))-Number(keys.has('KeyA')),z=Number(keys.has('KeyS'))-Number(keys.has('KeyW')),n=Math.hypot(x,z)||1;
   player.velocity.x=(Math.cos(yaw)*x+Math.sin(yaw)*z)/n*4.5;player.velocity.z=(-Math.sin(yaw)*x+Math.cos(yaw)*z)/n*4.5;
